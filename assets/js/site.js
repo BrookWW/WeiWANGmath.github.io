@@ -133,7 +133,7 @@ function renderSearchResults(matches) {
     if (!matches.length) {
         const empty = document.createElement('div');
         empty.className = 'p-3 text-xs text-center text-gray-500';
-        empty.textContent = 'No matches';
+        empty.textContent = 'No matches (Case Sensitive)';
         results.appendChild(empty);
         results.style.display = 'block';
         return;
@@ -161,7 +161,7 @@ function renderSearchResults(matches) {
 }
 
 function handleSearchInput(event) {
-    const query = event.target.value.trim().toLowerCase();
+    const query = event.target.value.trim();
 
     if (!query) {
         SELECTORS.searchResults.style.display = 'none';
@@ -169,7 +169,7 @@ function handleSearchInput(event) {
     }
 
     const matches = Array.from(document.querySelectorAll('[data-search-id]'))
-        .filter(element => element.textContent.toLowerCase().includes(query))
+        .filter(element => element.innerText.includes(query))
         .map(element => {
             const pageId = element.closest('.page').id;
             const compactText = element.textContent.replace(/\s+/g, ' ').trim();

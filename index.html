@@ -13,12 +13,13 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#1f5fbf',
-                        secondary: '#2f7dd1',
-                        accent: '#0f766e',
-                        light: '#eef6ff',
-                        bgDark: '#111827',
-                        cardDark: '#1f2937'
+                        primary: '#165DFF',
+                        secondary: '#4080FF',
+                        light: '#E8F3FF',
+                        darkBlue: '#0E42D2',
+                        neutral: '#F0F7FF',
+                        bgDark: '#0f172a',
+                        cardDark: '#1e293b'
                     },
                     fontFamily: {
                         inter: ['Inter', 'sans-serif']
@@ -33,6 +34,171 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="assets/css/site.css" rel="stylesheet">
 
+    <style type="text/tailwindcss">
+        @layer base {
+            html { scroll-behavior: smooth; }
+
+            body {
+                @apply font-inter bg-white dark:bg-bgDark text-gray-800 dark:text-gray-300 transition-colors duration-300;
+            }
+
+            h1 {
+                @apply text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 leading-tight;
+            }
+
+            h2 {
+                @apply text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6 border-b pb-2 border-gray-100 dark:border-gray-800;
+            }
+
+            h3 {
+                @apply text-xl font-semibold mb-3 mt-8 text-gray-900 dark:text-blue-400;
+            }
+
+            h4 {
+                @apply text-lg font-medium mb-2 text-gray-800 dark:text-gray-200;
+            }
+
+            p {
+                @apply text-gray-700 dark:text-gray-400 mb-2;
+            }
+
+            a {
+                @apply text-primary hover:underline transition-colors;
+            }
+        }
+
+        @layer components {
+            .page {
+                display: none;
+            }
+
+            .page.active {
+                display: block;
+                animation: pageFadeIn 0.35s ease-out;
+            }
+
+            .section-soft {
+                @apply py-10 md:py-16 bg-gradient-to-r from-white to-light dark:from-bgDark dark:to-bgDark/50;
+            }
+
+            .section-inner {
+                @apply container mx-auto px-4 sm:px-6 lg:px-8;
+            }
+
+            .nav-link {
+                @apply relative px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary transition-colors cursor-pointer no-underline;
+            }
+
+            .nav-link.active {
+                @apply text-primary font-semibold;
+            }
+
+            .nav-link::after {
+                content: '';
+                @apply absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300;
+            }
+
+            .nav-link:hover::after,
+            .nav-link.active::after {
+                @apply w-full;
+            }
+
+            .card {
+                @apply bg-gray-50 dark:bg-cardDark p-6 rounded-2xl border border-gray-100 dark:border-gray-800;
+            }
+
+            .content-indent {
+                @apply pl-0;
+            }
+
+            .paper-list {
+                list-style-type: decimal;
+                list-style-position: outside;
+                @apply pl-5 md:pl-6;
+            }
+
+            .paper-list > li {
+                @apply pb-2 mb-2 border-b border-gray-100 dark:border-gray-800 leading-snug text-sm md:text-base text-gray-700 dark:text-gray-400;
+            }
+
+            .paper-list > li:last-child {
+                @apply border-0 pb-0 mb-0;
+            }
+
+            .paper-title {
+                @apply font-normal text-gray-900 dark:text-gray-100 leading-snug;
+            }
+
+            .paper-title a {
+                @apply font-normal;
+            }
+
+            .paper-meta {
+                @apply text-gray-600 dark:text-gray-400;
+            }
+
+            .paper-note {
+                @apply text-xs md:text-sm text-gray-500 dark:text-gray-500;
+            }
+
+            .collaborator-list {
+                @apply text-sm md:text-base leading-relaxed text-gray-700 dark:text-gray-400;
+            }
+
+            .collaborator-list a,
+            .nowrap-email {
+                white-space: nowrap;
+            }
+
+            .teaching-table th {
+                @apply px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-slate-800;
+            }
+
+            .teaching-table td {
+                @apply px-4 py-4 text-sm border-b border-gray-100 dark:border-gray-800;
+            }
+
+            #search-results {
+                @apply absolute top-full right-0 mt-2 w-72 md:w-96 bg-white dark:bg-cardDark shadow-xl rounded-lg border border-gray-100 dark:border-gray-700 max-h-96 overflow-y-auto hidden z-[60];
+            }
+
+            .search-item {
+                @apply p-3 border-b border-gray-50 dark:border-gray-800 hover:bg-light dark:hover:bg-gray-800 cursor-pointer;
+            }
+        }
+
+        @layer utilities {
+            .page-transition {
+                transition: all 0.3s ease-in-out;
+            }
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-highlight-active {
+            animation: highlightFade 2s ease-out;
+            border-radius: 4px;
+        }
+
+        @keyframes highlightFade {
+            0% {
+                background-color: rgba(22, 93, 255, 0.3);
+            }
+            100% {
+                background-color: transparent;
+            }
+        }
+    </style>
+
     <script>
         window.MathJax = {
             tex: {
@@ -46,7 +212,7 @@
 </head>
 
 <body>
-    <header id="navbar" class="fixed w-full bg-white/95 dark:bg-bgDark/95 backdrop-blur-md z-50 border-b border-gray-100 dark:border-gray-800">
+    <header id="navbar" class="fixed w-full bg-white/90 dark:bg-bgDark/90 backdrop-blur-md z-50 border-b border-gray-100 dark:border-gray-800">
         <div class="section-inner">
             <div class="flex justify-between items-center h-16">
                 <a class="nav-logo shrink-0 text-xl font-bold text-primary no-underline" href="#home" data-page="home-page">Wei Wang</a>
@@ -60,7 +226,7 @@
                             type="text"
                             id="global-search"
                             class="block w-full pl-10 pr-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-full bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
-                            placeholder="Search"
+                            placeholder="Search (Case Sensitive)..."
                             autocomplete="off"
                         >
                         <div id="search-results"></div>
@@ -75,10 +241,10 @@
                     </nav>
 
                     <div class="flex items-center border-l dark:border-gray-800 pl-2">
-                        <button id="theme-toggle" class="icon-button" aria-label="Toggle dark mode">
+                        <button id="theme-toggle" class="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all" aria-label="Toggle dark mode">
                             <i id="theme-icon" class="fa fa-moon-o text-lg"></i>
                         </button>
-                        <button id="menu-toggle" class="icon-button lg:hidden ml-1" aria-label="Toggle menu">
+                        <button id="menu-toggle" class="lg:hidden p-2 text-gray-600 dark:text-gray-400 ml-1" aria-label="Toggle menu">
                             <i class="fa fa-bars text-xl"></i>
                         </button>
                     </div>
