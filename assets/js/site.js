@@ -1,9 +1,9 @@
 const SECTIONS = [
-    { id: 'home-page', slug: 'home', label: 'Home', path: 'sections/home.html' },
-    { id: 'research-page', slug: 'research', label: 'Research', path: 'sections/research.html' },
-    { id: 'teaching-page', slug: 'teaching', label: 'Teaching', path: 'sections/teaching.html' },
-    { id: 'talks-page', slug: 'talks', label: 'Talks', path: 'sections/talks.html' },
-    { id: 'notes-page', slug: 'notes', label: 'Notes', path: 'sections/notes.html' }
+    { id: 'home-page', slug: 'home', label: 'Home' },
+    { id: 'research-page', slug: 'research', label: 'Research' },
+    { id: 'teaching-page', slug: 'teaching', label: 'Teaching' },
+    { id: 'talks-page', slug: 'talks', label: 'Talks' },
+    { id: 'notes-page', slug: 'notes', label: 'Notes' }
 ];
 
 const SECTION_BY_ID = Object.fromEntries(SECTIONS.map(section => [section.id, section]));
@@ -84,35 +84,18 @@ function switchPage(pageId, targetElementId = null, options = {}) {
     }
 }
 
-async function loadSections() {
-    try {
-        const html = await Promise.all(
-            SECTIONS.map(async section => {
-                const response = await fetch(section.path, { cache: 'no-cache' });
-                if (!response.ok) {
-                    throw new Error(`Failed to load ${section.path}`);
-                }
-                return response.text();
-            })
-        );
+function initializePages() {
+    pages = Array.from(SELECTORS.pageContainer.querySelectorAll('.page'));
 
-        SELECTORS.pageContainer.innerHTML = html.join('\n');
-        pages = Array.from(document.querySelectorAll('.page'));
-        return true;
-    } catch (error) {
-        const fileHint = window.location.protocol === 'file:'
-            ? 'This split version should be opened through a local web server or GitHub Pages, not directly as a file.'
-            : 'Please check that the section files are present.';
+    if (pages.length) return true;
 
-        SELECTORS.pageContainer.innerHTML = `
-            <div class="load-error">
-                <h1>Content could not be loaded</h1>
-                <p>${fileHint}</p>
-                <p class="text-sm">${error.message}</p>
-            </div>
-        `;
-        return false;
-    }
+    SELECTORS.pageContainer.innerHTML = `
+        <div class="load-error">
+            <h1>Content could not be loaded</h1>
+            <p>Please rebuild the static page with <code>python scripts/build_site.py</code>.</p>
+        </div>
+    `;
+    return false;
 }
 
 function initializeSearchIndex() {
@@ -133,7 +116,7 @@ function renderSearchResults(matches) {
     if (!matches.length) {
         const empty = document.createElement('div');
         empty.className = 'p-3 text-xs text-center text-gray-500';
-        empty.textContent = 'No matches (Case Sensitive)';
+        empty.textContent = 'No matches';
         results.appendChild(empty);
         results.style.display = 'block';
         return;
@@ -161,7 +144,7 @@ function renderSearchResults(matches) {
 }
 
 function handleSearchInput(event) {
-    const query = event.target.value.trim();
+    const query = event.target.value.trim().toLowerCase();
 
     if (!query) {
         SELECTORS.searchResults.style.display = 'none';
@@ -169,7 +152,7 @@ function handleSearchInput(event) {
     }
 
     const matches = Array.from(document.querySelectorAll('[data-search-id]'))
-        .filter(element => element.innerText.includes(query))
+        .filter(element => element.innerText.toLowerCase().includes(query))
         .map(element => {
             const pageId = element.closest('.page').id;
             const compactText = element.textContent.replace(/\s+/g, ' ').trim();
@@ -227,9 +210,9 @@ function typesetMath() {
     }
 }
 
-window.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('DOMContentLoaded', () => {
     initializeTheme();
-    const loaded = await loadSections();
+    const loaded = initializePages();
     bindEvents();
 
     if (!loaded) return;
