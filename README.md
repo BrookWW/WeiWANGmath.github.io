@@ -15,6 +15,7 @@ This repository contains the split, maintainable version of Wei Wang's academic 
 - `assets/css/site.css`: small layout patches that should not override the original visual style.
 - `assets/js/site.js`: page switching, search, and dark mode.
 - `scripts/build_site.py`: rebuilds `index.html` from the files in `sections/`.
+- `sitemap.xml` and `robots.txt`: search-engine hints for the public GitHub Pages URL.
 
 ### Local Preview
 
@@ -42,6 +43,12 @@ python scripts/build_site.py
 
 Only edit `assets/css/site.css` or `assets/js/site.js` when changing global layout or behavior.
 
+The canonical public URL is:
+
+```text
+https://brookww.github.io/WeiWANGmath.github.io/
+```
+
 ## 中文版
 
 本仓库存放 Wei Wang 学术个人主页的拆分维护版。原始单文件草稿在本地保留为 `PersonalWeb.txt`；网站入口文件为 `index.html`。
@@ -57,6 +64,7 @@ Only edit `assets/css/site.css` or `assets/js/site.js` when changing global layo
 - `assets/css/site.css`：少量布局补丁，不覆盖原始视觉风格。
 - `assets/js/site.js`：页面切换、搜索和深色模式。
 - `scripts/build_site.py`：根据 `sections/` 里的栏目文件重新生成 `index.html`。
+- `sitemap.xml` 和 `robots.txt`：给搜索引擎使用的公开 GitHub Pages 地址提示。
 
 ### 本地预览
 
@@ -83,3 +91,9 @@ python scripts/build_site.py
 ```
 
 只有在调整全局布局或交互行为时，才需要修改 `assets/css/site.css` 或 `assets/js/site.js`。
+
+当前规范公开地址是：
+
+```text
+https://brookww.github.io/WeiWANGmath.github.io/
+```

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Allow: /assets/
+Disallow: /sections/
+
+Sitemap: https://brookww.github.io/WeiWANGmath.github.io/sitemap.xml
