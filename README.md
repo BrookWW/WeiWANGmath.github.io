@@ -2,11 +2,11 @@
 
 ## English
 
-This repository contains the split, maintainable version of Wei Wang's academic homepage. The original single-file draft is kept locally as `PersonalWeb.txt`; the website entry point is `index.html`.
+This repository contains the split, maintainable version of Wei Wang's academic homepage. The original single-file draft is kept locally as `PersonalWeb.txt`; the website entry point is `index.html`, and the page content is loaded directly from the files in `sections/`.
 
 ### File Structure
 
-- `index.html`: generated static page, navigation bar, search box, footer, external libraries, shared Tailwind styles, and embedded section content.
+- `index.html`: static page shell, navigation bar, search box, footer, external libraries, and shared Tailwind styles.
 - `sections/home.html`: profile, CV link, academic profiles, and contact information.
 - `sections/cv.html`: brief CV and full CV download link.
 - `sections/research.html`: research interests, collaborators, published papers, and preprints.
@@ -14,8 +14,8 @@ This repository contains the split, maintainable version of Wei Wang's academic 
 - `sections/talks.html`: conference talks, seminar talks, and posters.
 - `sections/notes.html`: notes and expository papers.
 - `assets/css/site.css`: small layout patches that should not override the original visual style.
-- `assets/js/site.js`: page switching, search, and dark mode.
-- `scripts/build_site.py`: rebuilds `index.html` from the files in `sections/`.
+- `assets/js/site.js`: loads section files, page switching, search, and dark mode.
+- `scripts/build_site.py`: resets the `index.html` content placeholder and checks that all section files exist.
 - `sitemap.xml` and `robots.txt`: search-engine hints for the public GitHub Pages URL.
 
 ### Local Preview
@@ -34,13 +34,7 @@ http://localhost:8000
 
 ### Maintenance
 
-Update the corresponding section file whenever possible. For example, add new papers in `sections/research.html`, new teaching records in `sections/teaching.html`, and new talks in `sections/talks.html`.
-
-After editing any file in `sections/`, rebuild `index.html`:
-
-```powershell
-python scripts/build_site.py
-```
+Update the corresponding section file directly. For example, add new papers in `sections/research.html`, new teaching records in `sections/teaching.html`, and new talks in `sections/talks.html`. After pushing those section files, the website reads them directly; you do not need to edit or rebuild `index.html`.
 
 Only edit `assets/css/site.css` or `assets/js/site.js` when changing global layout or behavior.
 
@@ -52,11 +46,11 @@ https://brookww.github.io/WeiWANGmath.github.io/
 
 ## 中文版
 
-本仓库存放 Wei Wang 学术个人主页的拆分维护版。原始单文件草稿在本地保留为 `PersonalWeb.txt`；网站入口文件为 `index.html`。
+本仓库存放 Wei Wang 学术个人主页的拆分维护版。原始单文件草稿在本地保留为 `PersonalWeb.txt`；网站入口文件为 `index.html`，页面正文会直接从 `sections/` 里的栏目文件读取。
 
 ### 文件结构
 
-- `index.html`：生成后的静态页面，包含导航栏、搜索框、页脚、第三方资源、公共 Tailwind 样式和内嵌栏目内容。
+- `index.html`：静态页面外壳，包含导航栏、搜索框、页脚、第三方资源和公共 Tailwind 样式。
 - `sections/home.html`：个人简介、CV 链接、学术主页链接和联系方式。
 - `sections/cv.html`：简版 CV 和完整 CV 下载链接。
 - `sections/research.html`：研究兴趣、合作者、已发表论文和预印本。
@@ -64,8 +58,8 @@ https://brookww.github.io/WeiWANGmath.github.io/
 - `sections/talks.html`：会议报告、讨论班报告和海报展示。
 - `sections/notes.html`：讲义、读书笔记和综述材料。
 - `assets/css/site.css`：少量布局补丁，不覆盖原始视觉风格。
-- `assets/js/site.js`：页面切换、搜索和深色模式。
-- `scripts/build_site.py`：根据 `sections/` 里的栏目文件重新生成 `index.html`。
+- `assets/js/site.js`：读取栏目文件、页面切换、搜索和深色模式。
+- `scripts/build_site.py`：重置 `index.html` 的内容占位，并检查所有栏目文件是否存在。
 - `sitemap.xml` 和 `robots.txt`：给搜索引擎使用的公开 GitHub Pages 地址提示。
 
 ### 本地预览
@@ -84,13 +78,7 @@ http://localhost:8000
 
 ### 维护方式
 
-更新内容时优先修改对应栏目文件。例如，新增论文请改 `sections/research.html`，新增课程请改 `sections/teaching.html`，新增报告请改 `sections/talks.html`。
-
-修改 `sections/` 里的任意文件后，请重新生成 `index.html`：
-
-```powershell
-python scripts/build_site.py
-```
+更新内容时直接修改对应栏目文件。例如，新增论文请改 `sections/research.html`，新增课程请改 `sections/teaching.html`，新增报告请改 `sections/talks.html`。这些栏目文件 push 之后，网页会直接读取它们；不需要再修改或重新生成 `index.html`。
 
 只有在调整全局布局或交互行为时，才需要修改 `assets/css/site.css` 或 `assets/js/site.js`。
 

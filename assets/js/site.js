@@ -22,6 +22,18 @@ const SELECTORS = {
 let pages = [];
 let navLinks = [];
 
+async function loadSections() {
+    const htmlParts = await Promise.all(SECTIONS.map(async section => {
+        const response = await fetch(`sections/${section.slug}.html`, { cache: 'no-cache' });
+        if (!response.ok) {
+            throw new Error(`Could not load sections/${section.slug}.html`);
+        }
+        return response.text();
+    }));
+
+    SELECTORS.pageContainer.innerHTML = htmlParts.join('\n\n');
+}
+
 function setTheme(isDark) {
     SELECTORS.html.classList.toggle('dark', isDark);
     SELECTORS.themeIcon.className = isDark ? 'fa fa-sun-o text-lg' : 'fa fa-moon-o text-lg';
@@ -52,7 +64,15 @@ function setActiveNavigation(pageId) {
 function switchPage(pageId, targetElementId = null, options = {}) {
     const { updateHash = true, scrollToTop = true } = options;
     const nextPage = document.getElementById(pageId);
-    if (!nextPage) return;
+    if (!nextPage) {
+        if (updateHash) {
+            const slug = getSlugFromPageId(pageId);
+            if (window.location.hash !== `#${slug}`) {
+                history.pushState(null, '', `#${slug}`);
+            }
+        }
+        return;
+    }
 
     pages.forEach(page => page.classList.remove('active'));
     nextPage.classList.add('active');
@@ -93,7 +113,7 @@ function initializePages() {
     SELECTORS.pageContainer.innerHTML = `
         <div class="load-error">
             <h1>Content could not be loaded</h1>
-            <p>Please rebuild the static page with <code>python scripts/build_site.py</code>.</p>
+            <p>Please check the files in <code>sections/</code> and preview the site through a local server.</p>
         </div>
     `;
     return false;
@@ -211,12 +231,23 @@ function typesetMath() {
     }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
     initializeTheme();
-    const loaded = initializePages();
     bindEvents();
 
-    if (!loaded) return;
+    try {
+        await loadSections();
+    } catch (error) {
+        SELECTORS.pageContainer.innerHTML = `
+            <div class="load-error">
+                <h1>Content could not be loaded</h1>
+                <p>${error.message}</p>
+            </div>
+        `;
+        return;
+    }
+
+    if (!initializePages()) return;
 
     initializeSearchIndex();
     switchPage(getPageIdFromHash(), null, { updateHash: false, scrollToTop: false });
