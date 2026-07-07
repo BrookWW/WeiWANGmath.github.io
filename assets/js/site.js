@@ -1,5 +1,6 @@
 const SECTIONS = [
     { id: 'home-page', slug: 'home', label: 'Home' },
+    { id: 'cv-page', slug: 'cv', label: 'Curriculum Vitae' },
     { id: 'research-page', slug: 'research', label: 'Research' },
     { id: 'teaching-page', slug: 'teaching', label: 'Teaching' },
     { id: 'talks-page', slug: 'talks', label: 'Talks' },

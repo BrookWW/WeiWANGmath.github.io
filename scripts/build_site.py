@@ -5,6 +5,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "index.html"
 SECTION_FILES = [
     ROOT / "sections" / "home.html",
+    ROOT / "sections" / "cv.html",
     ROOT / "sections" / "research.html",
     ROOT / "sections" / "teaching.html",
     ROOT / "sections" / "talks.html",

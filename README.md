@@ -8,6 +8,7 @@ This repository contains the split, maintainable version of Wei Wang's academic 
 
 - `index.html`: generated static page, navigation bar, search box, footer, external libraries, shared Tailwind styles, and embedded section content.
 - `sections/home.html`: profile, CV link, academic profiles, and contact information.
+- `sections/cv.html`: brief CV and full CV download link.
 - `sections/research.html`: research interests, collaborators, published papers, and preprints.
 - `sections/teaching.html`: teaching experience.
 - `sections/talks.html`: conference talks, seminar talks, and posters.
@@ -57,6 +58,7 @@ https://brookww.github.io/WeiWANGmath.github.io/
 
 - `index.html`：生成后的静态页面，包含导航栏、搜索框、页脚、第三方资源、公共 Tailwind 样式和内嵌栏目内容。
 - `sections/home.html`：个人简介、CV 链接、学术主页链接和联系方式。
+- `sections/cv.html`：简版 CV 和完整 CV 下载链接。
 - `sections/research.html`：研究兴趣、合作者、已发表论文和预印本。
 - `sections/teaching.html`：教学经历。
 - `sections/talks.html`：会议报告、讨论班报告和海报展示。
