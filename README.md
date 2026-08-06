@@ -15,6 +15,7 @@ This repository contains the split, maintainable version of Wei Wang's academic 
 - `sections/notes.html`: notes and expository papers.
 - `assets/css/site.css`: small layout patches that should not override the original visual style.
 - `assets/js/site.js`: loads section files, page switching, search, and dark mode.
+- `assets/cv/`: the current full academic CV in PDF format.
 - `assets/teaching/`: local teaching notes, slides, answers, and solutions grouped by course.
 - `assets/notes/`: local notes and expository paper PDFs grouped by topic.
 - `assets/talks/`: local talk, slide, schedule, and poster materials grouped by event.
@@ -62,6 +63,7 @@ https://brookww.github.io/WeiWANGmath.github.io/
 - `sections/notes.html`：讲义、读书笔记和综述材料。
 - `assets/css/site.css`：少量布局补丁，不覆盖原始视觉风格。
 - `assets/js/site.js`：读取栏目文件、页面切换、搜索和深色模式。
+- `assets/cv/`：当前完整版学术 CV PDF。
 - `assets/teaching/`：按课程分组保存本地讲义、课件、答案和习题解答。
 - `assets/notes/`：按主题分组保存本地 notes 和综述 PDF。
 - `assets/talks/`：按报告或展示活动分组保存本地 slides、日程和 poster 材料。
