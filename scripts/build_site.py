@@ -14,9 +14,6 @@ SECTION_FILES = [
 
 START = "        <!-- SECTION_CONTENT_START -->"
 END = "        <!-- SECTION_CONTENT_END -->"
-PLACEHOLDER = """        <div id="section-loading" class="pt-16 section-inner text-sm text-gray-500 dark:text-gray-400">
-            Loading sections...
-        </div>"""
 
 
 def main() -> None:
@@ -26,7 +23,10 @@ def main() -> None:
         raise FileNotFoundError(f"Missing section file(s): {missing}")
 
     index_html = INDEX.read_text(encoding="utf-8")
-    replacement = f"{START}\n{PLACEHOLDER}\n        {END.strip()}"
+    section_html = "\n\n".join(
+        path.read_text(encoding="utf-8").strip() for path in SECTION_FILES
+    )
+    replacement = f"{START}\n{section_html}\n        {END.strip()}"
 
     start_index = index_html.index(START)
     end_index = index_html.index(END, start_index) + len(END)

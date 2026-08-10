@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Wei Wang">
+    <rect width="64" height="64" rx="14" fill="#172235"/>
+    <circle cx="16" cy="16" r="5" fill="#8fc8ff"/>
+    <path d="M13 25h8l5 22 6-22h7l6 22 5-22h8L49 53h-8l-5.5-19L30 53h-8z" fill="#fff"/>
+</svg>

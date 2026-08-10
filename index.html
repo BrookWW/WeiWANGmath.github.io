@@ -3,279 +3,524 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Wei Wang's academic profile, research, teaching, talks, and notes.">
-    <title>Wei Wang - Academic Profile</title>
+    <meta name="description" content="Wei Wang's academic profile, publications, teaching, talks, and mathematical notes.">
+    <meta name="theme-color" content="#f7f9fb">
+    <title>Wei Wang | Mathematics</title>
     <link rel="canonical" href="https://brookww.github.io/WeiWANGmath.github.io/">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
-    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#165DFF',
-                        secondary: '#4080FF',
-                        light: '#E8F3FF',
-                        darkBlue: '#0E42D2',
-                        neutral: '#F0F7FF',
-                        bgDark: '#0f172a',
-                        cardDark: '#1e293b'
-                    },
-                    fontFamily: {
-                        inter: ['Inter', 'sans-serif']
-                    }
+        (() => {
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                    document.documentElement.dataset.theme = 'dark';
                 }
+            } catch (error) {
+                // The site remains usable if browser storage is unavailable.
             }
-        };
+        })();
     </script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="assets/css/site.css" rel="stylesheet">
-
-    <style type="text/tailwindcss">
-        @layer base {
-            html { scroll-behavior: smooth; }
-
-            body {
-                @apply font-inter bg-white dark:bg-bgDark text-gray-800 dark:text-gray-300 transition-colors duration-300;
-            }
-
-            h1 {
-                @apply text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 leading-tight;
-            }
-
-            h2 {
-                @apply text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6 border-b pb-2 border-gray-100 dark:border-gray-800;
-            }
-
-            h3 {
-                @apply text-xl font-semibold mb-3 mt-8 text-gray-900 dark:text-blue-400;
-            }
-
-            h4 {
-                @apply text-lg font-medium mb-2 text-gray-800 dark:text-gray-200;
-            }
-
-            p {
-                @apply text-gray-700 dark:text-gray-400 mb-2;
-            }
-
-            a {
-                @apply text-primary hover:underline transition-colors;
-            }
-        }
-
-        @layer components {
-            .page {
-                display: none;
-            }
-
-            .page.active {
-                display: block;
-                animation: pageFadeIn 0.35s ease-out;
-            }
-
-            .section-soft {
-                @apply py-10 md:py-16 bg-gradient-to-r from-white to-light dark:from-bgDark dark:to-bgDark/50;
-            }
-
-            .section-inner {
-                @apply container mx-auto px-4 sm:px-6 lg:px-8;
-            }
-
-            .nav-link {
-                @apply relative px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary transition-colors cursor-pointer no-underline;
-            }
-
-            .nav-link.active {
-                @apply text-primary font-semibold;
-            }
-
-            .nav-link::after {
-                content: '';
-                @apply absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300;
-            }
-
-            .nav-link:hover::after,
-            .nav-link.active::after {
-                @apply w-full;
-            }
-
-            .card {
-                @apply bg-gray-50 dark:bg-cardDark p-6 rounded-2xl border border-gray-100 dark:border-gray-800;
-            }
-
-            .content-indent {
-                @apply pl-0;
-            }
-
-            .paper-list {
-                list-style-type: decimal;
-                list-style-position: outside;
-                @apply pl-5 md:pl-6;
-            }
-
-            .paper-list > li {
-                @apply pb-2 mb-2 border-b border-gray-100 dark:border-gray-800 leading-snug text-sm md:text-base text-gray-700 dark:text-gray-400;
-            }
-
-            .paper-list > li:last-child {
-                @apply border-0 pb-0 mb-0;
-            }
-
-            .paper-title {
-                @apply font-normal text-gray-900 dark:text-gray-100 leading-snug;
-            }
-
-            .paper-title a {
-                @apply font-normal;
-            }
-
-            .paper-meta {
-                @apply text-gray-600 dark:text-gray-400;
-            }
-
-            .paper-note {
-                @apply text-xs md:text-sm text-gray-500 dark:text-gray-500;
-            }
-
-            .collaborator-list {
-                @apply text-sm md:text-base leading-relaxed text-gray-700 dark:text-gray-400;
-            }
-
-            .collaborator-list a,
-            .nowrap-email {
-                white-space: nowrap;
-            }
-
-            .teaching-table th {
-                @apply px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-slate-800;
-            }
-
-            .teaching-table td {
-                @apply px-4 py-4 text-sm border-b border-gray-100 dark:border-gray-800;
-            }
-
-            #search-results {
-                @apply absolute top-full right-0 mt-2 w-72 md:w-96 bg-white dark:bg-cardDark shadow-xl rounded-lg border border-gray-100 dark:border-gray-700 max-h-96 overflow-y-auto hidden z-[60];
-            }
-
-            .search-item {
-                @apply p-3 border-b border-gray-50 dark:border-gray-800 hover:bg-light dark:hover:bg-gray-800 cursor-pointer;
-            }
-        }
-
-        @layer utilities {
-            .page-transition {
-                transition: all 0.3s ease-in-out;
-            }
-        }
-
-        @keyframes pageFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .search-highlight-active {
-            animation: highlightFade 2s ease-out;
-            border-radius: 4px;
-        }
-
-        @keyframes highlightFade {
-            0% {
-                background-color: rgba(22, 93, 255, 0.3);
-            }
-            100% {
-                background-color: transparent;
-            }
-        }
-    </style>
-
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            },
-            svg: { fontCache: 'global' }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&amp;display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/site.css?v=20260811" rel="stylesheet">
 </head>
 
 <body>
-    <header id="navbar" class="fixed w-full bg-white/90 dark:bg-bgDark/90 backdrop-blur-md z-50 border-b border-gray-100 dark:border-gray-800">
-        <div class="section-inner">
-            <div class="flex justify-between items-center h-16">
-                <a class="nav-logo shrink-0 text-xl font-bold text-primary no-underline" href="#home" data-page="home-page">Wei Wang</a>
+    <header class="site-header" id="navbar">
+        <div class="site-shell header-inner">
+            <a class="brand" href="#home" data-page="home-page" aria-label="Wei Wang, home">Wei Wang</a>
 
-                <div class="flex items-center space-x-1 md:space-x-4 flex-1 justify-end">
-                    <div class="relative max-w-xs w-full group ml-4">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fa fa-search text-gray-400 group-focus-within:text-primary transition-colors"></i>
-                        </div>
-                        <input
-                            type="text"
-                            id="global-search"
-                            class="block w-full pl-10 pr-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-full bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
-                            placeholder="Search..."
-                            autocomplete="off"
-                        >
-                        <div id="search-results"></div>
-                    </div>
-
-                    <nav class="hidden lg:flex space-x-1" aria-label="Main navigation">
-                        <a class="nav-link active" href="#home" data-page="home-page">Home</a>
-                        <a class="nav-link" href="#cv" data-page="cv-page">Curriculum Vitae</a>
-                        <a class="nav-link" href="#research" data-page="research-page">Research</a>
-                        <a class="nav-link" href="#teaching" data-page="teaching-page">Teaching</a>
-                        <a class="nav-link" href="#talks" data-page="talks-page">Talks</a>
-                        <a class="nav-link" href="#notes" data-page="notes-page">Notes</a>
-                    </nav>
-
-                    <div class="flex items-center border-l dark:border-gray-800 pl-2">
-                        <button id="theme-toggle" class="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-all" aria-label="Toggle dark mode">
-                            <i id="theme-icon" class="fa fa-moon-o text-lg"></i>
-                        </button>
-                        <button id="menu-toggle" class="lg:hidden p-2 text-gray-600 dark:text-gray-400 ml-1" aria-label="Toggle menu">
-                            <i class="fa fa-bars text-xl"></i>
-                        </button>
+            <div class="header-actions">
+                <div class="search-area">
+                    <button class="icon-button search-toggle" id="search-toggle" type="button" aria-label="Open search" aria-expanded="false" aria-controls="search-shell">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                    <div class="search-shell" id="search-shell">
+                        <i class="fa fa-search search-icon" aria-hidden="true"></i>
+                        <input type="search" id="global-search" placeholder="Search the site" autocomplete="off" aria-label="Search the site">
+                        <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
                     </div>
                 </div>
+
+                <nav class="desktop-nav" aria-label="Main navigation">
+                    <a class="nav-link active" href="#home" data-page="home-page">Home</a>
+                    <a class="nav-link" href="#cv" data-page="cv-page">CV</a>
+                    <a class="nav-link" href="#research" data-page="research-page">Research</a>
+                    <a class="nav-link" href="#teaching" data-page="teaching-page">Teaching</a>
+                    <a class="nav-link" href="#talks" data-page="talks-page">Talks</a>
+                    <a class="nav-link" href="#notes" data-page="notes-page">Notes</a>
+                </nav>
+
+                <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch to dark mode">
+                    <i id="theme-icon" class="fa fa-moon-o" aria-hidden="true"></i>
+                </button>
+                <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-menu">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                </button>
             </div>
         </div>
 
-        <nav id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-bgDark border-t dark:border-gray-800 px-4 py-4 space-y-2" aria-label="Mobile navigation">
-            <a class="nav-link active block" href="#home" data-page="home-page">Home</a>
-            <a class="nav-link block" href="#cv" data-page="cv-page">Curriculum Vitae</a>
-            <a class="nav-link block" href="#research" data-page="research-page">Research</a>
-            <a class="nav-link block" href="#teaching" data-page="teaching-page">Teaching</a>
-            <a class="nav-link block" href="#talks" data-page="talks-page">Talks</a>
-            <a class="nav-link block" href="#notes" data-page="notes-page">Notes</a>
+        <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
+            <div class="site-shell mobile-menu-inner">
+                <a class="nav-link active" href="#home" data-page="home-page">Home</a>
+                <a class="nav-link" href="#cv" data-page="cv-page">Curriculum Vitae</a>
+                <a class="nav-link" href="#research" data-page="research-page">Research</a>
+                <a class="nav-link" href="#teaching" data-page="teaching-page">Teaching</a>
+                <a class="nav-link" href="#talks" data-page="talks-page">Talks</a>
+                <a class="nav-link" href="#notes" data-page="notes-page">Notes</a>
+            </div>
         </nav>
     </header>
 
     <div id="page-container">
         <!-- SECTION_CONTENT_START -->
-        <div id="section-loading" class="pt-16 section-inner text-sm text-gray-500 dark:text-gray-400">
-            Loading sections...
+<main id="home-page" class="page active searchable">
+    <section class="hero">
+        <div class="site-shell hero-inner">
+            <p class="eyebrow">Mathematics · Peking University</p>
+            <h1>Wei Wang <span lang="zh">(王尉)</span></h1>
+            <p class="hero-role">Ph.D. Candidate in Theoretical Mathematics</p>
+            <p class="hero-affiliation">School of Mathematical Sciences, Peking University</p>
+            <p class="hero-focus">Geometric variational problems, elliptic and parabolic equations, with particular interests in defect analysis and homogenization.</p>
+            <div class="hero-actions">
+                <a class="button-link primary" href="#research" data-page="research-page">Research &amp; publications</a>
+                <a class="button-link" href="assets/cv/cv.pdf"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Download CV</a>
+            </div>
         </div>
+    </section>
+
+    <section class="home-content">
+        <div class="site-shell home-layout">
+            <div>
+                <h2 class="section-heading">About Me</h2>
+                <div class="prose-width">
+                    <p>I am a fifth-year Ph.D. candidate in Mathematics at the School of Mathematical Sciences, <a href="http://english.math.pku.edu.cn/">Peking University</a>, supervised by <a href="https://mathscinet.ams.org/mathscinet/author?authorId=703192">Prof. Zhifei Zhang</a>. Previously, I obtained my Bachelor's degree in Mathematics and Applied Mathematics from <a href="http://www.math.zju.edu.cn/mathen/">Zhejiang University</a> in 2022, where I was advised by <a href="https://person.zju.edu.cn/en/zhangting">Prof. Ting Zhang</a>.</p>
+                    <p>I co-organize long-term <a href="https://luisyanka.github.io/GMT/">analysis seminars</a> at Peking University, focusing on PDEs and geometric measure theory.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3>Academic Profiles</h3>
+                    <div class="profile-links" aria-label="Academic profiles">
+                        <a href="https://scholar.google.com/citations?user=B4MyT2gAAAAJ&amp;hl=en">Google Scholar</a>
+                        <a href="https://mathscinet.ams.org/mathscinet/author?authorId=1548566">MathSciNet</a>
+                        <a href="https://orcid.org/0000-0002-7483-4310">ORCID</a>
+                        <a href="https://www.researchgate.net/profile/Wei-Wang-1293">ResearchGate</a>
+                        <a href="https://zbmath.org/authors/wang.wei.359">zbMATH</a>
+                        <a href="https://github.com/BrookWW">GitHub</a>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="contact-card">
+                <h3>Contact</h3>
+                <div class="contact-row">
+                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                    <p>Room 314, 20th Building, Peking University<br>No. 5 Yiheyuan Road, Haidian District<br>Beijing 100871, P. R. China</p>
+                </div>
+                <div class="contact-row">
+                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                    <p>wwmath166 [at] outlook [dot] com<br><span class="nowrap-email">2201110024 [at] stu [dot] pku [dot] edu [dot] cn</span></p>
+                </div>
+            </aside>
+        </div>
+    </section>
+</main>
+
+<main id="cv-page" class="page searchable">
+    <section class="page-section">
+        <div class="site-shell reading-width">
+            <h2 class="section-heading">Curriculum Vitae</h2>
+
+            <section class="cv-group" aria-labelledby="education-heading">
+                <h3 id="education-heading">Education</h3>
+                <article class="cv-entry">
+                    <div>
+                        <h4>Peking University</h4>
+                        <p>Ph.D. Candidate in Mathematics, School of Mathematical Sciences</p>
+                        <p>Advisor: Prof. Zhifei Zhang</p>
+                    </div>
+                    <div class="cv-date">Beijing · Sept. 2022–2027 (expected)</div>
+                </article>
+                <article class="cv-entry">
+                    <div>
+                        <h4>Zhejiang University</h4>
+                        <p>B.S. in Mathematics and Applied Mathematics, School of Mathematical Sciences</p>
+                        <p>Advisor: Prof. Ting Zhang · Thesis: <em>Homogenization Problem of Second Order Elliptic Systems with Lower Order Terms</em></p>
+                    </div>
+                    <div class="cv-date">Hangzhou · Sept. 2018–June 2022</div>
+                </article>
+            </section>
+
+            <section class="cv-group" aria-labelledby="visits-heading">
+                <h3 id="visits-heading">Research Visits and Programs</h3>
+                <article class="cv-entry">
+                    <div>
+                        <h4>University of Verona</h4>
+                        <p>Visiting Ph.D. Student, Department of Computer Science</p>
+                        <p>Host: Prof. Giacomo Canevari</p>
+                    </div>
+                    <div class="cv-date">Verona · Mar.–Apr. 2026</div>
+                </article>
+                <article class="cv-entry">
+                    <div>
+                        <h4>Hong Kong University of Science and Technology</h4>
+                        <p>Summer Research Program, Department of Mathematics</p>
+                        <p>Advisor: Prof. Tianling Jin</p>
+                    </div>
+                    <div class="cv-date">Hong Kong · June–Sept. 2021</div>
+                </article>
+            </section>
+
+            <section class="download-panel" aria-label="Download full curriculum vitae">
+                <div>
+                    <h3>Full CV</h3>
+                    <p>PDF · Last updated Aug. 6, 2026</p>
+                </div>
+                <a class="button-link primary" href="assets/cv/cv.pdf"><i class="fa fa-download" aria-hidden="true"></i> View full CV</a>
+            </section>
+        </div>
+    </section>
+</main>
+
+<main id="research-page" class="page searchable">
+    <section class="page-section soft-section">
+        <div class="site-shell reading-width">
+            <h2 class="section-heading">Research</h2>
+
+            <section class="subsection" aria-labelledby="interests-heading">
+                <h3 id="interests-heading">Research Interests</h3>
+                <ul class="interest-list">
+                    <li>Geometric variational problems</li>
+                    <li>Elliptic equations</li>
+                    <li>Parabolic equations</li>
+                </ul>
+                <p class="topic-line">Selected topics: homogenization theory, semilinear elliptic and parabolic equations, harmonic maps, liquid crystal theory, and nonlocal Laplacian operators.</p>
+            </section>
+
+            <section class="subsection" aria-labelledby="collaborators-heading">
+                <h3 id="collaborators-heading">Collaborators</h3>
+                <p class="collaborator-list">
+                    Haotong Fu (8) ·
+                    <a href="https://mathscinet.ams.org/mathscinet/author?authorId=703192" rel="nofollow">Zhifei Zhang</a> (6) ·
+                    <a href="https://mathscinet.ams.org/mathscinet/author?authorId=1622718" rel="nofollow">Huaijie Wang</a> (3) ·
+                    <a href="https://mathscinet.ams.org/mathscinet/MRAuthorID/Canevari%2C%20Giacomo" rel="nofollow">Giacomo Canevari</a> (2) ·
+                    <a href="https://mathscinet.ams.org/mathscinet/author?authorId=728268" rel="nofollow">Rupert L. Frank</a> (1) ·
+                    <a href="https://mathscinet.ams.org/mathscinet/author?authorId=878128" rel="nofollow">Tianling Jin</a> (1) ·
+                    <a href="https://mathscinet.ams.org/mathscinet/author?authorId=740741" rel="nofollow">Ting Zhang</a> (1) ·
+                    <a href="https://mathscinet.ams.org/mathscinet/author?authorId=1354183" rel="nofollow">Wei Wang (王伟)</a> (1) ·
+                    <a href="https://mathscinet.ams.org/mathscinet/author?authorId=1423398" rel="nofollow">Ke Wu</a> (1)
+                </p>
+            </section>
+
+            <section class="subsection" aria-labelledby="published-heading">
+                <h3 id="published-heading">Published and Accepted Papers</h3>
+                <ol class="paper-list" reversed>
+                    <li>
+                        <div class="paper-title">Landau-de Gennes model with sextic potentials: asymptotic behavior of minimizers</div>
+                        <div class="paper-meta">With Zhifei Zhang. Accepted for publication in <em>Memoirs of the European Mathematical Society</em>. <a href="https://arxiv.org/abs/2404.00677" rel="nofollow">arXiv 2404.00677</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Existence of weak solutions for two-phase matrix-valued harmonic map flows</div>
+                        <div class="paper-meta">With Wei Wang (王伟) and Zhifei Zhang. <em>Journal of Functional Analysis</em>, <b>291</b> (2026), no. 11, Article 111623. <a href="https://doi.org/10.1016/j.jfa.2026.111623" rel="nofollow">DOI</a> <a href="https://arxiv.org/abs/2506.16278" rel="nofollow">arXiv 2506.16278</a><br><span class="paper-note">Wei Wang (王伟) denotes the collaborator with the same English name.</span></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Uniform estimates of Landau-de Gennes minimizers in the vanishing elasticity limit with line defects</div>
+                        <div class="paper-meta">With Haotong Fu and Huaijie Wang. <em>SIAM Journal on Mathematical Analysis</em>, <b>58</b> (2026), no. 4, 3306–3324. <a href="https://doi.org/10.1137/25M179868X" rel="nofollow">DOI</a> <a href="https://arxiv.org/abs/2508.01811" rel="nofollow">arXiv 2508.01811</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Stratification and rectifiability of harmonic map flows via tangent measures</div>
+                        <div class="paper-meta">With Haotong Fu, Ke Wu, and Zhifei Zhang. <em>Mathematische Annalen</em>, <b>395</b> (2026), Article 92. <a href="https://doi.org/10.1007/s00208-026-03524-3" rel="nofollow">DOI</a> <a href="https://arxiv.org/abs/2504.14880" rel="nofollow">arXiv 2504.14880</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">On the sharp constants in the regional fractional Sobolev inequalities</div>
+                        <div class="paper-meta">With Rupert L. Frank and Tianling Jin. <em>SN Partial Differential Equations and Applications</em>, <b>6</b> (2025), Article 15. <a href="https://doi.org/10.1007/s42985-025-00317-2" rel="nofollow">DOI</a> <a href="https://arxiv.org/abs/2403.00357" rel="nofollow">arXiv 2403.00357</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Uniform estimates of resolvents in homogenization theory of elliptic systems</div>
+                        <div class="paper-meta">Single-authored. <em>Journal of Differential Equations</em>, <b>370</b> (2023), 1–65. <a href="https://doi.org/10.1016/j.jde.2023.06.015" rel="nofollow">DOI</a> <a href="https://arxiv.org/abs/2211.14614" rel="nofollow">arXiv 2211.14614</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Homogenization theory of elliptic systems with lower order terms in dimension two</div>
+                        <div class="paper-meta">With Ting Zhang. <em>Communications on Pure and Applied Analysis</em>, <b>22</b> (2023), no. 3, 787–824. <a href="https://doi.org/10.3934/cpaa.2023010" rel="nofollow">DOI</a> <a href="https://arxiv.org/abs/2210.06329" rel="nofollow">arXiv 2210.06329</a></div>
+                    </li>
+                </ol>
+            </section>
+
+            <section class="subsection" aria-labelledby="preprints-heading">
+                <h3 id="preprints-heading">Preprints</h3>
+                <ol class="paper-list" reversed>
+                    <li>
+                        <div class="paper-title">On the absence of point defects in biaxial Landau-de Gennes models</div>
+                        <div class="paper-meta">With Haotong Fu, Huaijie Wang, and Zhifei Zhang. <a href="https://arxiv.org/abs/2608.04908" rel="nofollow">arXiv 2608.04908</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Singular limits for three-dimensional global minimizers of Ginzburg–Landau-type functionals: uniform estimates and singular sets</div>
+                        <div class="paper-meta">With Giacomo Canevari and Haotong Fu. <a href="https://arxiv.org/abs/2606.27691" rel="nofollow">arXiv 2606.27691</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">A note on an approximate fixed point theorem for VMO maps</div>
+                        <div class="paper-meta">With Haotong Fu. <a href="https://arxiv.org/abs/2606.15670" rel="nofollow">arXiv 2606.15670</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Sharp convergence rates for parabolic Green's functions in time-independent periodic homogenization</div>
+                        <div class="paper-meta">Single-authored. <a href="https://arxiv.org/abs/2606.12101" rel="nofollow">arXiv 2606.12101</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Asymptotics of minimizers for Ginzburg–Landau-type functionals in high dimensions</div>
+                        <div class="paper-meta">With Giacomo Canevari and Haotong Fu. <a href="https://arxiv.org/abs/2605.04442" rel="nofollow">arXiv 2605.04442</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Improved convergence of Landau-de Gennes minimizers in the vanishing elasticity limit</div>
+                        <div class="paper-meta">With Haotong Fu and Huaijie Wang. <a href="https://arxiv.org/abs/2507.14955" rel="nofollow">arXiv 2507.14955</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Fine structure of rupture set for semilinear elliptic equation with singular nonlinearity</div>
+                        <div class="paper-meta">With Zhifei Zhang. <a href="https://arxiv.org/abs/2411.16048" rel="nofollow">arXiv 2411.16048</a></div>
+                    </li>
+                    <li>
+                        <div class="paper-title">Quantitative stratification and sharp regularity estimates for supercritical semilinear elliptic equations</div>
+                        <div class="paper-meta">With Haotong Fu and Zhifei Zhang. <a href="https://arxiv.org/abs/2408.06726" rel="nofollow">arXiv 2408.06726</a></div>
+                    </li>
+                </ol>
+            </section>
+        </div>
+    </section>
+</main>
+
+<main id="teaching-page" class="page searchable">
+    <section class="page-section">
+        <div class="site-shell">
+            <h2 class="section-heading">Teaching Experience</h2>
+            <div class="table-wrap">
+                <table class="teaching-table">
+                    <thead>
+                        <tr>
+                            <th>Institution</th>
+                            <th>Course</th>
+                            <th>Semester</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Institution">Peking University</td>
+                            <td data-label="Course">Real Analysis (Graduate Course)</td>
+                            <td data-label="Semester">Spring 2026</td>
+                            <td data-label="Role">Teaching Assistant</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Institution">Peking University</td>
+                            <td data-label="Course"><div class="cell-content">Advanced Mathematics (C) (I)<div class="course-resources"><a href="assets/teaching/2025-fall-advanced-mathematics-c-i/lecture-notes.pdf">Lecture Notes</a><a href="assets/teaching/2025-fall-advanced-mathematics-c-i/slides.pdf">Slides</a></div></div></td>
+                            <td data-label="Semester">Fall 2025</td>
+                            <td data-label="Role">Teaching Assistant</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Institution">Peking University</td>
+                            <td data-label="Course"><div class="cell-content">Advanced Mathematics (B) (II)<div class="course-resources"><a href="assets/teaching/2025-spring-advanced-mathematics-b-ii/lecture-notes.pdf">Lecture Notes</a></div></div></td>
+                            <td data-label="Semester">Spring 2025</td>
+                            <td data-label="Role">Teaching Assistant</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Institution">Peking University</td>
+                            <td data-label="Course"><div class="cell-content">Advanced Mathematics (A) (I)<div class="course-resources"><a href="assets/teaching/2024-fall-advanced-mathematics-a-i/lecture-notes.pdf">Lecture Notes</a><a href="assets/teaching/2024-fall-advanced-mathematics-a-i/finals-answers.pdf">Finals Answers</a></div></div></td>
+                            <td data-label="Semester">Fall 2024</td>
+                            <td data-label="Role">Teaching Assistant</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Institution">Peking University</td>
+                            <td data-label="Course">Advanced Mathematics (B) (II)</td>
+                            <td data-label="Semester">Spring 2024</td>
+                            <td data-label="Role">Teaching Assistant</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Institution">Peking University</td>
+                            <td data-label="Course"><div class="cell-content">Harmonic Analysis (Graduate Course)<div class="course-resources"><a href="assets/teaching/2023-fall-harmonic-analysis/homework-solutions.pdf">Homework Solutions</a></div></div></td>
+                            <td data-label="Semester">Fall 2023</td>
+                            <td data-label="Role">Teaching Assistant</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Institution">Peking University</td>
+                            <td data-label="Course">Functional Analysis (I)</td>
+                            <td data-label="Semester">Spring 2023</td>
+                            <td data-label="Role">Teaching Assistant</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Institution">Peking University</td>
+                            <td data-label="Course">Advanced Mathematics (C) (I)</td>
+                            <td data-label="Semester">Fall 2022</td>
+                            <td data-label="Role">Teaching Assistant</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Institution">Zhejiang University</td>
+                            <td data-label="Course">Mathematical Analysis (II)</td>
+                            <td data-label="Semester">Spring 2022</td>
+                            <td data-label="Role">Teaching Assistant</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Institution">Zhejiang University</td>
+                            <td data-label="Course">Mathematical Analysis (I)</td>
+                            <td data-label="Semester">Fall 2021</td>
+                            <td data-label="Role">Teaching Assistant</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
+
+<main id="talks-page" class="page searchable">
+    <section class="page-section soft-section">
+        <div class="site-shell reading-width">
+            <h2 class="section-heading">Talks and Presentations</h2>
+
+            <section class="event-section" aria-labelledby="conference-talks-heading">
+                <h3 id="conference-talks-heading">Conference and Workshop Talks</h3>
+                <ol class="event-list">
+                    <li class="event-item">
+                        <div class="event-date">July 2026</div>
+                        <article>
+                            <h4 class="event-title">Uniform Estimates for Landau–de Gennes Minimizers with Point and Line Defects</h4>
+                            <p class="event-name">Academic Forum on Theory and Numerical Analysis of Liquid Crystals and Complex Systems</p>
+                            <p class="event-place">Xiangtan University · Xiangtan, Hunan, PRC</p>
+                            <div class="event-resources"><a class="resource-link" href="assets/talks/2026-xiangtan-liquid-crystals/schedule.jpg" rel="nofollow">Details</a><a class="resource-link" href="assets/talks/2026-xiangtan-liquid-crystals/slides.pdf" rel="nofollow">Slides</a></div>
+                        </article>
+                    </li>
+                    <li class="event-item">
+                        <div class="event-date">Jan. 2026</div>
+                        <article>
+                            <h4 class="event-title">Landau-de Gennes Model with Sextic Potentials: Asymptotic Behavior of Minimizers</h4>
+                            <p class="event-name">Academic Workshop on Fluid Dynamics Equations</p>
+                            <p class="event-place">Peking University · Beijing, PRC</p>
+                            <div class="event-resources"><a class="resource-link" href="assets/talks/2026-pku-fluid-dynamics-workshop/details.pdf" rel="nofollow">Details</a><a class="resource-link" href="assets/talks/2026-pku-fluid-dynamics-workshop/slides.pdf" rel="nofollow">Slides</a></div>
+                        </article>
+                    </li>
+                    <li class="event-item">
+                        <div class="event-date">Nov. 29, 2025</div>
+                        <article>
+                            <h4 class="event-title">Stratification for Harmonic Map Flows via Tangent Measures: Rectifiability and Regularity</h4>
+                            <p class="event-name">Jinhua Conference on Harmonic Analysis and Its Applications</p>
+                            <p class="event-place">Zhejiang Normal University · Jinhua, Zhejiang, PRC</p>
+                            <div class="event-resources"><a class="resource-link" href="assets/talks/2025-jinhua-harmonic-analysis/details.png" rel="nofollow">Details</a><a class="resource-link" href="assets/talks/2025-jinhua-harmonic-analysis/slides.pdf" rel="nofollow">Slides</a></div>
+                        </article>
+                    </li>
+                    <li class="event-item">
+                        <div class="event-date">Nov. 1, 2025</div>
+                        <article>
+                            <h4 class="event-title">Vanishing Elasticity Limit and Defect Analysis in the Landau-de Gennes Model</h4>
+                            <p class="event-name">3rd National Academic Exchange Forum for Doctoral Students in Frontier Mathematics</p>
+                            <p class="event-place">Peking University · Beijing, PRC</p>
+                            <div class="event-resources"><a class="resource-link" href="assets/talks/2025-pku-doctoral-frontier-math-forum/details.jpg" rel="nofollow">Details</a><a class="resource-link" href="assets/talks/2025-pku-doctoral-frontier-math-forum/slides.pdf" rel="nofollow">Slides</a></div>
+                        </article>
+                    </li>
+                    <li class="event-item">
+                        <div class="event-date">Aug. 2025</div>
+                        <article>
+                            <h4 class="event-title">Improved Convergence of Landau-de Gennes Minimizers in the Vanishing Elasticity Limit</h4>
+                            <p class="event-name">Conference on Theory and Computation of Quasi Crystals</p>
+                            <p class="event-place">Nankai University · Tianjin, PRC</p>
+                            <div class="event-resources"><a class="resource-link" href="assets/talks/2025-nankai-quasicrystals/details.jpg" rel="nofollow">Details</a><a class="resource-link" href="assets/talks/2025-nankai-quasicrystals/slides.pdf" rel="nofollow">Slides</a></div>
+                        </article>
+                    </li>
+                    <li class="event-item">
+                        <div class="event-date">Dec. 2024</div>
+                        <article>
+                            <h4 class="event-title">Semilinear Elliptic Equation with Singular Nonlinearity: Regularity and Singularity</h4>
+                            <p class="event-name">Year-End Workshop of the PDE Group</p>
+                            <p class="event-place">Peking University · Beijing, PRC</p>
+                            <div class="event-resources"><a class="resource-link" href="assets/talks/2024-pku-pde-year-end-workshop/slides.pdf" rel="nofollow">Slides</a></div>
+                        </article>
+                    </li>
+                    <li class="event-item">
+                        <div class="event-date">Aug. 2022</div>
+                        <article>
+                            <h4 class="event-title">Homogenization of Elliptic Systems with Lower Order Terms</h4>
+                            <p class="event-name">Exhibition of ICCM Creative Undergraduate Thesis</p>
+                            <p class="event-place">Southeast University · Nanjing, Jiangsu, PRC</p>
+                            <div class="event-resources"><a class="resource-link" href="assets/talks/2022-iccm-undergraduate-thesis/details.jpg" rel="nofollow">Details</a><a class="resource-link" href="assets/talks/2022-iccm-undergraduate-thesis/slides.pdf" rel="nofollow">Slides</a></div>
+                        </article>
+                    </li>
+                </ol>
+            </section>
+
+            <section class="event-section" aria-labelledby="seminar-talks-heading">
+                <h3 id="seminar-talks-heading">Seminar and Colloquium Talks</h3>
+                <ol class="event-list">
+                    <li class="event-item">
+                        <div class="event-date">June 2025</div>
+                        <article>
+                            <h4 class="event-title">Rectifiability of the Stratification for Harmonic Map Flows via Tangent Measures</h4>
+                            <p class="event-name">PDE and Geometry Seminar</p>
+                            <p class="event-place">Zhejiang University · Hangzhou, Zhejiang, PRC</p>
+                            <div class="event-resources"><a class="resource-link" href="assets/talks/2025-zju-pde-geometry-seminar/details.png" rel="nofollow">Details</a><a class="resource-link" href="assets/talks/2025-zju-pde-geometry-seminar/slides.pdf" rel="nofollow">Slides</a></div>
+                        </article>
+                    </li>
+                </ol>
+            </section>
+
+            <section class="event-section" aria-labelledby="poster-heading">
+                <h3 id="poster-heading">Poster Presentations</h3>
+                <ol class="event-list">
+                    <li class="event-item">
+                        <div class="event-date">Apr. 2025</div>
+                        <article>
+                            <h4 class="event-title">Fine Structure of Rupture Set for Semilinear Elliptic Equation with Singular Nonlinearity</h4>
+                            <p class="event-name">2025 Graduate Research Exhibition of the School of Mathematical Sciences</p>
+                            <p class="event-place">Peking University · Beijing, PRC</p>
+                            <div class="event-resources"><a class="resource-link" href="assets/talks/2025-pku-graduate-research-exhibition/details.jpg" rel="nofollow">Details</a><a class="resource-link" href="assets/talks/2025-pku-graduate-research-exhibition/poster.pdf" rel="nofollow">Poster</a></div>
+                        </article>
+                    </li>
+                    <li class="event-item">
+                        <div class="event-date">Apr. 2024</div>
+                        <article>
+                            <h4 class="event-title">Landau-de Gennes Model with Sextic Potentials: Asymptotics of Minimizers and Defects</h4>
+                            <p class="event-name">2024 Graduate Research Exhibition of the School of Mathematical Sciences</p>
+                            <p class="event-place">Peking University · Beijing, PRC</p>
+                            <div class="event-resources"><a class="resource-link" href="assets/talks/2024-pku-graduate-research-exhibition/details.jpg" rel="nofollow">Details</a><a class="resource-link" href="assets/talks/2024-pku-graduate-research-exhibition/poster.pdf" rel="nofollow">Poster</a></div>
+                        </article>
+                    </li>
+                </ol>
+            </section>
+        </div>
+    </section>
+</main>
+
+<main id="notes-page" class="page searchable">
+    <section class="page-section soft-section">
+        <div class="site-shell reading-width">
+            <h2 class="section-heading">Notes and Expository Papers</h2>
+            <ul class="note-grid">
+                <li><a class="note-card" href="assets/notes/minimal-surfaces-bernstein-problem/note.pdf" rel="nofollow"><span class="note-title">Regularity of Minimal Surfaces and the Bernstein Problem</span><span class="note-meta">Expository note · PDF</span></a></li>
+                <li><a class="note-card" href="assets/notes/alt-phillips-problem/note.pdf" rel="nofollow"><span class="note-title">The Alt–Phillips Problem</span><span class="note-meta">Reading note · PDF</span></a></li>
+                <li><a class="note-card" href="assets/notes/a-free-measures/note.pdf" rel="nofollow"><span class="note-title">A-free Measures</span><span class="note-meta">Reading note · PDF</span></a></li>
+                <li><a class="note-card" href="assets/notes/ginzburg-landau-bubbling-analysis/note.pdf" rel="nofollow"><span class="note-title">Bubbling Analysis of the Ginzburg–Landau Model</span><span class="note-meta">Expository note · PDF</span></a></li>
+                <li><a class="note-card" href="assets/notes/ergodic-theory/note.pdf" rel="nofollow"><span class="note-title">Studying Notes on Ergodic Theory</span><span class="note-meta">In Chinese · PDF</span></a></li>
+                <li><a class="note-card" href="assets/notes/obstacle-problems-chen-wang/note.pdf" rel="nofollow"><span class="note-title">Recent Progress on Obstacle Problems</span><span class="note-meta">With Yuxuan Chen · PDF</span></a></li>
+                <li><a class="note-card" href="assets/notes/schoen-uhlenbeck-harmonic-maps/note.pdf" rel="nofollow"><span class="note-title">Schoen–Uhlenbeck Theory for Harmonic Maps</span><span class="note-meta">Expository note · PDF</span></a></li>
+                <li><a class="note-card" href="assets/notes/elliptic-free-boundary-problems/note.pdf" rel="nofollow"><span class="note-title">Elliptic Free Boundary Problems</span><span class="note-meta">Reading note · PDF</span></a></li>
+            </ul>
+        </div>
+    </section>
+</main>
         <!-- SECTION_CONTENT_END -->
     </div>
 
-    <footer class="mt-20 py-12 border-t border-gray-100 dark:border-gray-800 text-center">
-        <p class="text-sm text-gray-500">&copy; 2026 Wei Wang. All rights reserved.</p>
+    <footer class="site-footer">
+        <div class="site-shell footer-inner">
+            <p>&copy; 2026 Wei Wang</p>
+            <div class="footer-links">
+                <a href="assets/cv/cv.pdf">CV</a>
+                <a href="https://orcid.org/0000-0002-7483-4310">ORCID</a>
+                <a href="https://github.com/BrookWW">GitHub</a>
+            </div>
+        </div>
     </footer>
 
-    <script src="assets/js/site.js?v=20260707-dynamic" defer></script>
+    <script src="assets/js/site.js?v=20260811" defer></script>
 </body>
 </html>

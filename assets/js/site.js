@@ -10,40 +10,43 @@ const SECTIONS = [
 const SECTION_BY_ID = Object.fromEntries(SECTIONS.map(section => [section.id, section]));
 const SECTION_BY_SLUG = Object.fromEntries(SECTIONS.map(section => [section.slug, section]));
 
-const SELECTORS = {
+const elements = {
     html: document.documentElement,
-    pageContainer: document.getElementById('page-container'),
     mobileMenu: document.getElementById('mobile-menu'),
+    menuToggle: document.getElementById('menu-toggle'),
+    searchArea: document.querySelector('.search-area'),
+    searchShell: document.getElementById('search-shell'),
+    searchToggle: document.getElementById('search-toggle'),
     searchInput: document.getElementById('global-search'),
     searchResults: document.getElementById('search-results'),
+    themeToggle: document.getElementById('theme-toggle'),
     themeIcon: document.getElementById('theme-icon')
 };
 
-let pages = [];
-let navLinks = [];
+const pages = Array.from(document.querySelectorAll('.page'));
+const pageLinks = Array.from(document.querySelectorAll('[data-page]'));
+const navLinks = Array.from(document.querySelectorAll('.nav-link'));
 
-async function loadSections() {
-    const htmlParts = await Promise.all(SECTIONS.map(async section => {
-        const response = await fetch(`sections/${section.slug}.html`, { cache: 'no-cache' });
-        if (!response.ok) {
-            throw new Error(`Could not load sections/${section.slug}.html`);
-        }
-        return response.text();
-    }));
-
-    SELECTORS.pageContainer.innerHTML = htmlParts.join('\n\n');
+function isDarkTheme() {
+    return elements.html.dataset.theme === 'dark';
 }
 
-function setTheme(isDark) {
-    SELECTORS.html.classList.toggle('dark', isDark);
-    SELECTORS.themeIcon.className = isDark ? 'fa fa-sun-o text-lg' : 'fa fa-moon-o text-lg';
-    localStorage.theme = isDark ? 'dark' : 'light';
-}
+function setTheme(dark) {
+    if (dark) {
+        elements.html.dataset.theme = 'dark';
+    } else {
+        delete elements.html.dataset.theme;
+    }
 
-function initializeTheme() {
-    const savedTheme = localStorage.theme;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setTheme(savedTheme === 'dark' || (!savedTheme && prefersDark));
+    elements.themeIcon.className = dark ? 'fa fa-sun-o' : 'fa fa-moon-o';
+    elements.themeToggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    document.querySelector('meta[name="theme-color"]').content = dark ? '#0f1720' : '#f7f9fb';
+
+    try {
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+    } catch (error) {
+        // Theme switching still works when browser storage is unavailable.
+    }
 }
 
 function getPageIdFromHash() {
@@ -57,46 +60,57 @@ function getSlugFromPageId(pageId) {
 
 function setActiveNavigation(pageId) {
     navLinks.forEach(link => {
-        link.classList.toggle('active', link.dataset.page === pageId);
+        const active = link.dataset.page === pageId;
+        link.classList.toggle('active', active);
+        if (active) {
+            link.setAttribute('aria-current', 'page');
+        } else {
+            link.removeAttribute('aria-current');
+        }
     });
+}
+
+function closeMenu() {
+    elements.mobileMenu.classList.remove('is-open');
+    elements.menuToggle.setAttribute('aria-expanded', 'false');
+    elements.menuToggle.setAttribute('aria-label', 'Open navigation');
+}
+
+function closeSearch() {
+    elements.searchShell.classList.remove('is-open');
+    elements.searchResults.classList.remove('is-visible');
+    elements.searchToggle.setAttribute('aria-expanded', 'false');
+    elements.searchToggle.setAttribute('aria-label', 'Open search');
 }
 
 function switchPage(pageId, targetElementId = null, options = {}) {
     const { updateHash = true, scrollToTop = true } = options;
-    const nextPage = document.getElementById(pageId);
-    if (!nextPage) {
-        if (updateHash) {
-            const slug = getSlugFromPageId(pageId);
-            if (window.location.hash !== `#${slug}`) {
-                history.pushState(null, '', `#${slug}`);
-            }
-        }
-        return;
-    }
+    const nextPage = document.getElementById(pageId) || document.getElementById('home-page');
+    const resolvedPageId = nextPage.id;
 
-    pages.forEach(page => page.classList.remove('active'));
-    nextPage.classList.add('active');
-    setActiveNavigation(pageId);
+    pages.forEach(page => page.classList.toggle('active', page === nextPage));
+    setActiveNavigation(resolvedPageId);
+    closeMenu();
+    closeSearch();
 
-    SELECTORS.mobileMenu.classList.add('hidden');
-    SELECTORS.searchResults.style.display = 'none';
+    const section = SECTION_BY_ID[resolvedPageId] || SECTION_BY_ID['home-page'];
+    document.title = resolvedPageId === 'home-page' ? 'Wei Wang | Mathematics' : `${section.label} | Wei Wang`;
 
     if (updateHash) {
-        const slug = getSlugFromPageId(pageId);
-        if (window.location.hash !== `#${slug}`) {
-            history.pushState(null, '', `#${slug}`);
+        const nextHash = `#${getSlugFromPageId(resolvedPageId)}`;
+        if (window.location.hash !== nextHash) {
+            history.pushState(null, '', nextHash);
         }
     }
 
     if (targetElementId) {
-        setTimeout(() => {
+        window.setTimeout(() => {
             const target = document.querySelector(`[data-search-id="${targetElementId}"]`);
             if (!target) return;
-
             target.scrollIntoView({ behavior: 'smooth', block: 'center' });
             target.classList.add('search-highlight-active');
-            setTimeout(() => target.classList.remove('search-highlight-active'), 2000);
-        }, 120);
+            window.setTimeout(() => target.classList.remove('search-highlight-active'), 2000);
+        }, 80);
         return;
     }
 
@@ -105,75 +119,62 @@ function switchPage(pageId, targetElementId = null, options = {}) {
     }
 }
 
-function initializePages() {
-    pages = Array.from(SELECTORS.pageContainer.querySelectorAll('.page'));
-
-    if (pages.length) return true;
-
-    SELECTORS.pageContainer.innerHTML = `
-        <div class="load-error">
-            <h1>Content could not be loaded</h1>
-            <p>Please check the files in <code>sections/</code> and preview the site through a local server.</p>
-        </div>
-    `;
-    return false;
+function initializeSearchIndex() {
+    let index = 0;
+    document.querySelectorAll('.searchable h1, .searchable h2, .searchable h3, .searchable h4, .searchable p, .searchable li, .searchable tr')
+        .forEach(element => {
+            element.dataset.searchId = `idx-${index++}`;
+        });
 }
 
-function initializeSearchIndex() {
-    let idCounter = 0;
-    const searchableElements = document.querySelectorAll(
-        '.searchable h1, .searchable h2, .searchable h3, .searchable h4, .searchable p, .searchable li, .searchable tr'
-    );
-
-    searchableElements.forEach(element => {
-        element.dataset.searchId = `idx-${idCounter++}`;
-    });
+function showSearchResults() {
+    elements.searchResults.classList.add('is-visible');
 }
 
 function renderSearchResults(matches) {
-    const results = SELECTORS.searchResults;
-    results.innerHTML = '';
+    elements.searchResults.replaceChildren();
 
     if (!matches.length) {
         const empty = document.createElement('div');
-        empty.className = 'p-3 text-xs text-center text-gray-500';
+        empty.className = 'search-empty';
         empty.textContent = 'No matches';
-        results.appendChild(empty);
-        results.style.display = 'block';
+        elements.searchResults.appendChild(empty);
+        showSearchResults();
         return;
     }
 
     matches.slice(0, 10).forEach(match => {
         const item = document.createElement('button');
         item.type = 'button';
-        item.className = 'search-item block w-full text-left';
+        item.className = 'search-result';
+        item.setAttribute('role', 'option');
         item.addEventListener('click', () => switchPage(match.pageId, match.id));
 
         const label = document.createElement('div');
-        label.className = 'text-[10px] text-primary font-bold uppercase';
+        label.className = 'search-result-label';
         label.textContent = match.label;
 
         const text = document.createElement('div');
-        text.className = 'text-xs text-gray-700 dark:text-gray-300 line-clamp-2';
+        text.className = 'search-result-text';
         text.textContent = match.text;
 
         item.append(label, text);
-        results.appendChild(item);
+        elements.searchResults.appendChild(item);
     });
 
-    results.style.display = 'block';
+    showSearchResults();
 }
 
 function handleSearchInput(event) {
     const query = event.target.value.trim().toLowerCase();
 
     if (!query) {
-        SELECTORS.searchResults.style.display = 'none';
+        elements.searchResults.classList.remove('is-visible');
         return;
     }
 
     const matches = Array.from(document.querySelectorAll('[data-search-id]'))
-        .filter(element => element.innerText.toLowerCase().includes(query))
+        .filter(element => element.textContent.toLowerCase().includes(query))
         .map(element => {
             const pageId = element.closest('.page').id;
             const compactText = element.textContent.replace(/\s+/g, ' ').trim();
@@ -181,7 +182,7 @@ function handleSearchInput(event) {
                 id: element.dataset.searchId,
                 pageId,
                 label: SECTION_BY_ID[pageId]?.label || 'Page',
-                text: compactText.length > 110 ? `${compactText.substring(0, 110)}...` : compactText
+                text: compactText.length > 120 ? `${compactText.slice(0, 120)}…` : compactText
             };
         });
 
@@ -189,35 +190,46 @@ function handleSearchInput(event) {
 }
 
 function bindEvents() {
-    navLinks = Array.from(document.querySelectorAll('[data-page]'));
-
-    navLinks.forEach(link => {
+    pageLinks.forEach(link => {
         link.addEventListener('click', event => {
             event.preventDefault();
             switchPage(link.dataset.page);
         });
     });
 
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-        setTheme(!SELECTORS.html.classList.contains('dark'));
+    elements.themeToggle.addEventListener('click', () => setTheme(!isDarkTheme()));
+
+    elements.menuToggle.addEventListener('click', () => {
+        const open = elements.mobileMenu.classList.toggle('is-open');
+        elements.menuToggle.setAttribute('aria-expanded', String(open));
+        elements.menuToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+        if (open) closeSearch();
     });
 
-    document.getElementById('menu-toggle').addEventListener('click', () => {
-        SELECTORS.mobileMenu.classList.toggle('hidden');
+    elements.searchToggle.addEventListener('click', () => {
+        const open = elements.searchShell.classList.toggle('is-open');
+        elements.searchToggle.setAttribute('aria-expanded', String(open));
+        elements.searchToggle.setAttribute('aria-label', open ? 'Close search' : 'Open search');
+        if (open) {
+            closeMenu();
+            window.setTimeout(() => elements.searchInput.focus(), 0);
+        }
     });
 
-    SELECTORS.searchInput.addEventListener('input', handleSearchInput);
-
-    SELECTORS.searchInput.addEventListener('keydown', event => {
+    elements.searchInput.addEventListener('input', handleSearchInput);
+    elements.searchInput.addEventListener('keydown', event => {
         if (event.key === 'Escape') {
-            SELECTORS.searchInput.value = '';
-            SELECTORS.searchResults.style.display = 'none';
+            elements.searchInput.value = '';
+            closeSearch();
+            elements.searchToggle.focus();
         }
     });
 
     document.addEventListener('click', event => {
-        const clickedSearch = SELECTORS.searchInput.contains(event.target) || SELECTORS.searchResults.contains(event.target);
-        if (!clickedSearch) SELECTORS.searchResults.style.display = 'none';
+        if (!elements.searchArea.contains(event.target)) {
+            elements.searchResults.classList.remove('is-visible');
+            if (window.matchMedia('(max-width: 820px)').matches) closeSearch();
+        }
     });
 
     window.addEventListener('hashchange', () => {
@@ -225,31 +237,7 @@ function bindEvents() {
     });
 }
 
-function typesetMath() {
-    if (window.MathJax?.typesetPromise) {
-        window.MathJax.typesetPromise();
-    }
-}
-
-window.addEventListener('DOMContentLoaded', async () => {
-    initializeTheme();
-    bindEvents();
-
-    try {
-        await loadSections();
-    } catch (error) {
-        SELECTORS.pageContainer.innerHTML = `
-            <div class="load-error">
-                <h1>Content could not be loaded</h1>
-                <p>${error.message}</p>
-            </div>
-        `;
-        return;
-    }
-
-    if (!initializePages()) return;
-
-    initializeSearchIndex();
-    switchPage(getPageIdFromHash(), null, { updateHash: false, scrollToTop: false });
-    typesetMath();
-});
+setTheme(isDarkTheme());
+initializeSearchIndex();
+bindEvents();
+switchPage(getPageIdFromHash(), null, { updateHash: false, scrollToTop: false });
