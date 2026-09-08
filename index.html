@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Wei Wang's academic profile, publications, teaching, talks, and mathematical notes.">
-    <meta name="theme-color" content="#f7f9fb">
+    <meta name="theme-color" content="#02070d">
     <title>Wei Wang | Mathematics</title>
     <link rel="canonical" href="https://brookww.github.io/WeiWANGmath.github.io/">
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
     <script>
         (() => {
+            const root = document.documentElement;
+            root.classList.add('js');
+            window.setTimeout(() => root.classList.remove('js'), 2400);
             try {
                 const savedTheme = localStorage.getItem('theme');
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-                    document.documentElement.dataset.theme = 'dark';
-                }
+                root.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
             } catch (error) {
-                // The site remains usable if browser storage is unavailable.
+                root.dataset.theme = 'dark';
             }
         })();
     </script>
@@ -27,10 +27,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&amp;display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/css/site.css?v=20260811-2" rel="stylesheet">
+    <link href="assets/css/site.css?v=20260908" rel="stylesheet">
 </head>
 
-<body>
+<body data-active-page="home">
+    <a class="skip-link" href="#page-container">Skip to content</a>
+    <div class="cosmos-backdrop" aria-hidden="true">
+        <canvas class="starfield" id="starfield"></canvas>
+        <div class="nebula nebula-one"></div>
+        <div class="nebula nebula-two"></div>
+        <div class="constellation-grid"></div>
+    </div>
+    <div class="warp-transition" id="warp-transition" aria-hidden="true">
+        <span class="warp-core"></span>
+        <span class="warp-lines"></span>
+    </div>
+    <div class="sr-only" id="page-announcer" aria-live="polite"></div>
+
     <header class="site-header" id="navbar">
         <div class="site-shell header-inner">
             <a class="brand" href="#home" data-page="home-page" aria-label="Wei Wang, home">Wei Wang</a>
@@ -42,7 +55,7 @@
                     </button>
                     <div class="search-shell" id="search-shell">
                         <i class="fa fa-search search-icon" aria-hidden="true"></i>
-                        <input type="search" id="global-search" placeholder="Search the site" autocomplete="off" aria-label="Search the site">
+                        <input type="search" id="global-search" placeholder="Search the site" autocomplete="off" aria-label="Search the site" role="combobox" aria-autocomplete="list" aria-controls="search-results" aria-expanded="false">
                         <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
                     </div>
                 </div>
@@ -56,8 +69,8 @@
                     <a class="nav-link" href="#notes" data-page="notes-page">Notes</a>
                 </nav>
 
-                <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch to dark mode">
-                    <i id="theme-icon" class="fa fa-moon-o" aria-hidden="true"></i>
+                <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch to brighter sky">
+                    <i id="theme-icon" class="fa fa-sun-o" aria-hidden="true"></i>
                 </button>
                 <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-menu">
                     <i class="fa fa-bars" aria-hidden="true"></i>
@@ -77,20 +90,55 @@
         </nav>
     </header>
 
-    <div id="page-container">
+    <div id="page-container" tabindex="-1">
         <!-- SECTION_CONTENT_START -->
-<main id="home-page" class="page active searchable">
-    <section class="hero">
-        <div class="site-shell hero-inner">
-            <p class="eyebrow">Mathematics · Peking University</p>
-            <h1>Wei Wang <span lang="zh">(王尉)</span></h1>
-            <p class="hero-role">Ph.D. Candidate in Theoretical Mathematics</p>
-            <p class="hero-affiliation">School of Mathematical Sciences, Peking University</p>
-            <p class="hero-focus">Geometric variational problems, elliptic and parabolic equations, with particular interests in defect analysis and homogenization.</p>
-            <div class="hero-actions">
-                <a class="button-link primary" href="#research" data-page="research-page">Research &amp; publications</a>
-                <a class="button-link" href="assets/cv/cv.pdf?v=20260819"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Download CV</a>
+<main id="home-page" class="page active searchable" data-world="home">
+    <section class="hero galaxy-hero" aria-labelledby="home-title">
+        <div class="galaxy-stage" id="galaxy-stage">
+            <div class="galaxy-coordinate galaxy-coordinate-x" aria-hidden="true"></div>
+            <div class="galaxy-coordinate galaxy-coordinate-y" aria-hidden="true"></div>
+            <div class="gravity-web" aria-hidden="true"><span></span><span></span><span></span></div>
+            <div class="galaxy-orbit galaxy-orbit-one" aria-hidden="true"></div>
+            <div class="galaxy-orbit galaxy-orbit-two" aria-hidden="true"></div>
+            <div class="galaxy-orbit galaxy-orbit-three" aria-hidden="true"></div>
+
+            <div class="galaxy-core">
+                <span class="core-star" aria-hidden="true"></span>
+                <p class="eyebrow">Mathematics · Peking University</p>
+                <h1 id="home-title">Wei Wang <span lang="zh">(王尉)</span></h1>
+                <p class="hero-role">Ph.D. Candidate in Theoretical Mathematics</p>
+                <p class="hero-affiliation">School of Mathematical Sciences, Peking University</p>
+                <p class="hero-focus">Geometric variational problems, elliptic and parabolic equations, with particular interests in defect analysis and homogenization.</p>
+                <div class="hero-actions">
+                    <a class="button-link primary" href="#research" data-page="research-page">Research &amp; publications</a>
+                    <a class="button-link" href="assets/cv/cv.pdf?v=20260904"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Download CV</a>
+                </div>
             </div>
+
+            <nav class="planet-nav" aria-label="Explore the site by world">
+                <a class="planet planet-cv" href="#cv" data-page="cv-page" aria-describedby="planet-cv-description">
+                    <span class="planet-system" aria-hidden="true"><span class="planet-sphere"></span></span>
+                    <span class="planet-copy"><strong>CV</strong><span id="planet-cv-description">Education, visits and full curriculum vitae</span></span>
+                </a>
+                <a class="planet planet-research" href="#research" data-page="research-page" aria-describedby="planet-research-description">
+                    <span class="planet-system" aria-hidden="true"><span class="planet-sphere"></span></span>
+                    <span class="planet-copy"><strong>Research</strong><span id="planet-research-description">Publications, preprints and collaborators</span></span>
+                </a>
+                <a class="planet planet-teaching" href="#teaching" data-page="teaching-page" aria-describedby="planet-teaching-description">
+                    <span class="planet-system" aria-hidden="true"><span class="planet-sphere"></span></span>
+                    <span class="planet-copy"><strong>Teaching</strong><span id="planet-teaching-description">Courses, notes and teaching materials</span></span>
+                </a>
+                <a class="planet planet-talks" href="#talks" data-page="talks-page" aria-describedby="planet-talks-description">
+                    <span class="planet-system" aria-hidden="true"><span class="planet-sphere"></span></span>
+                    <span class="planet-copy"><strong>Talks</strong><span id="planet-talks-description">Conference, seminar and poster presentations</span></span>
+                </a>
+                <a class="planet planet-notes" href="#notes" data-page="notes-page" aria-describedby="planet-notes-description">
+                    <span class="planet-system" aria-hidden="true"><span class="planet-sphere"></span></span>
+                    <span class="planet-copy"><strong>Notes</strong><span id="planet-notes-description">Reading notes and expository papers</span></span>
+                </a>
+            </nav>
+
+            <p class="galaxy-instruction"><span aria-hidden="true">◌</span> Select a world to enter · use Tab to explore by keyboard</p>
         </div>
     </section>
 
@@ -131,9 +179,10 @@
     </section>
 </main>
 
-<main id="cv-page" class="page searchable">
+<main id="cv-page" class="page searchable" data-world="cv">
     <section class="page-section">
         <div class="site-shell reading-width">
+            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Galaxy</a>
             <h2 class="section-heading">Curriculum Vitae</h2>
 
             <section class="cv-group" aria-labelledby="education-heading">
@@ -187,9 +236,10 @@
     </section>
 </main>
 
-<main id="research-page" class="page searchable">
+<main id="research-page" class="page searchable" data-world="research">
     <section class="page-section soft-section">
         <div class="site-shell reading-width">
+            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Galaxy</a>
             <h2 class="section-heading">Research</h2>
 
             <section class="subsection" aria-labelledby="interests-heading">
@@ -310,9 +360,10 @@
     </section>
 </main>
 
-<main id="teaching-page" class="page searchable">
+<main id="teaching-page" class="page searchable" data-world="teaching">
     <section class="page-section">
         <div class="site-shell">
+            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Galaxy</a>
             <h2 class="section-heading">Teaching Experience</h2>
             <div class="table-wrap">
                 <table class="teaching-table">
@@ -392,9 +443,10 @@
     </section>
 </main>
 
-<main id="talks-page" class="page searchable">
+<main id="talks-page" class="page searchable" data-world="talks">
     <section class="page-section soft-section">
         <div class="site-shell reading-width">
+            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Galaxy</a>
             <h2 class="section-heading">Talks and Presentations</h2>
 
             <section class="event-section" aria-labelledby="conference-talks-heading">
@@ -517,9 +569,10 @@
     </section>
 </main>
 
-<main id="notes-page" class="page searchable">
+<main id="notes-page" class="page searchable" data-world="notes">
     <section class="page-section soft-section">
         <div class="site-shell reading-width">
+            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Galaxy</a>
             <h2 class="section-heading">Notes and Expository Papers</h2>
             <ul class="note-grid">
                 <li><a class="note-card" href="assets/notes/minimal-surfaces-bernstein-problem/note.pdf" rel="nofollow"><span class="note-title">Regularity of Minimal Surfaces and the Bernstein Problem</span><span class="note-meta">Expository note · PDF</span></a></li>
@@ -541,13 +594,13 @@
         <div class="site-shell footer-inner">
             <p>&copy; 2026 Wei Wang</p>
             <div class="footer-links">
-                <a href="assets/cv/cv.pdf?v=20260813">CV</a>
+                <a href="assets/cv/cv.pdf?v=20260904">CV</a>
                 <a href="https://orcid.org/0000-0002-7483-4310">ORCID</a>
                 <a href="https://github.com/BrookWW">GitHub</a>
             </div>
         </div>
     </footer>
 
-    <script src="assets/js/site.js?v=20260811" defer></script>
+    <script src="assets/js/site.js?v=20260908" defer></script>
 </body>
 </html>
