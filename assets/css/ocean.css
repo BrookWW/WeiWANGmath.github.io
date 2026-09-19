@@ -1,0 +1,1208 @@
+/* ================================================================
+   Midnight nautical atlas — local ocean redesign
+   ================================================================ */
+
+:root,
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #020912;
+    --bg-soft: #061522;
+    --surface: #081b29;
+    --surface-raised: #0d2636;
+    --ink: #ecf2f1;
+    --ink-soft: #c2ced0;
+    --muted: #8299a2;
+    --accent: #77aeb8;
+    --accent-strong: #b8d7db;
+    --accent-soft: #0d3142;
+    --border: #21485a;
+    --border-soft: #153648;
+    --shadow: 0 24px 70px rgba(0, 5, 10, 0.38);
+    --world-accent: #77aeb8;
+    --world-rgb: 119, 174, 184;
+    --sky-top: #020912;
+    --sky-mid: #061522;
+    --horizon: #12384a;
+    --sea-top: #072c43;
+    --sea-mid: #052338;
+    --sea-near: #041926;
+    --sail-color: #d7d8d0;
+    --sail-shadow: #7e98a3;
+    --hull-color: #09131d;
+    --hull-stroke: #5c7d8e;
+    --rigging-color: #7b96a2;
+    --flag-color: #6ea7c4;
+    --flag-stroke: #285c78;
+    --chart-color: #7296a8;
+    --canvas-wave-rgb: 108, 166, 181;
+    --canvas-highlight-rgb: 188, 215, 218;
+    --canvas-glint-rgb: 200, 224, 225;
+    --canvas-sky-rgb: 181, 211, 216;
+    --canvas-sky-alpha: 1;
+}
+
+html[data-theme="light"] {
+    color-scheme: light;
+    --bg: #eaf6fa;
+    --bg-soft: #d8ecf3;
+    --surface: #f6fbfc;
+    --surface-raised: #ffffff;
+    --ink: #153447;
+    --ink-soft: #294b5e;
+    --muted: #526f80;
+    --accent: #266c8e;
+    --accent-strong: #174c68;
+    --accent-soft: #d5eaf1;
+    --border: #a9cbd7;
+    --border-soft: #c9e0e7;
+    --shadow: 0 22px 58px rgba(27, 78, 100, 0.14);
+    --world-accent: #266c8e;
+    --world-rgb: 38, 108, 142;
+    --sky-top: #f2fbfd;
+    --sky-mid: #cfe7f0;
+    --horizon: #a6cfde;
+    --sea-top: #91c3d5;
+    --sea-mid: #78afc3;
+    --sea-near: #6fa6bc;
+    --sail-color: #f7f6ee;
+    --sail-shadow: #688b9c;
+    --hull-color: #16384b;
+    --hull-stroke: #315f77;
+    --rigging-color: #4f7486;
+    --flag-color: #2f7298;
+    --flag-stroke: #194d6b;
+    --chart-color: #477c94;
+    --canvas-wave-rgb: 68, 132, 158;
+    --canvas-highlight-rgb: 255, 255, 255;
+    --canvas-glint-rgb: 255, 255, 255;
+    --canvas-sky-rgb: 68, 132, 158;
+    --canvas-sky-alpha: 0;
+}
+
+body {
+    background:
+        linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 36%, var(--horizon) 43%, var(--sea-mid) 44%, var(--sea-near) 100%);
+}
+
+.ocean-backdrop {
+    background:
+        linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 36%, var(--horizon) 42.8%, var(--sea-top) 43.5%, var(--sea-mid) 70%, var(--sea-near) 100%);
+}
+
+.ocean-backdrop::before {
+    content: "";
+    position: absolute;
+    inset: 43% 0 0;
+    opacity: 0.34;
+    background:
+        repeating-linear-gradient(176deg, transparent 0 12px, rgba(121, 175, 189, 0.11) 13px, transparent 15px 27px),
+        repeating-linear-gradient(184deg, transparent 0 20px, rgba(190, 221, 225, 0.06) 21px, transparent 23px 39px);
+    transform: translateZ(0);
+}
+
+.ocean-backdrop::after {
+    content: "";
+    position: absolute;
+    top: 11%;
+    left: 63%;
+    width: 12rem;
+    height: 12rem;
+    border-radius: 50%;
+    opacity: 0.36;
+    background: radial-gradient(circle, rgba(222, 232, 227, 0.2) 0 5%, rgba(134, 176, 186, 0.09) 22%, transparent 68%);
+    filter: blur(1px);
+}
+
+.ocean-surface {
+    opacity: 0.92;
+}
+
+.sea-mist {
+    width: 30rem;
+    height: 12rem;
+    opacity: 0.1;
+    background: radial-gradient(ellipse, rgba(153, 196, 204, 0.48), transparent 70%);
+    filter: blur(44px);
+    animation: sea-mist-drift 28s ease-in-out infinite alternate;
+}
+
+.sea-mist-one {
+    top: 32%;
+    right: -10rem;
+}
+
+.sea-mist-two {
+    bottom: 18%;
+    left: -12rem;
+    animation-delay: -14s;
+}
+
+@keyframes sea-mist-drift {
+    from { transform: translate3d(-2rem, 0, 0) scaleX(0.96); }
+    to { transform: translate3d(3rem, 0.8rem, 0) scaleX(1.06); }
+}
+
+.current-grid {
+    inset: 42% -10% -30%;
+    opacity: 0.1;
+    background-image:
+        repeating-radial-gradient(ellipse at 50% 0%, transparent 0 42px, rgba(119, 174, 184, 0.2) 44px, transparent 46px 82px);
+    background-size: auto;
+    -webkit-mask-image: linear-gradient(black, transparent 86%);
+    mask-image: linear-gradient(black, transparent 86%);
+    transform: perspective(650px) rotateX(66deg) translateY(11%);
+}
+
+.site-header {
+    border-bottom-color: rgba(93, 149, 166, 0.22);
+    background: rgba(2, 10, 18, 0.78);
+}
+
+.brand::before {
+    border-color: rgba(184, 215, 219, 0.76);
+    background:
+        radial-gradient(circle at center, transparent 0 26%, var(--chart-color) 28% 34%, transparent 36%),
+        conic-gradient(from 45deg, #87b8c1 0 3%, transparent 3% 22%, #87b8c1 22% 25%, transparent 25% 47%, #87b8c1 47% 50%, transparent 50% 72%, #87b8c1 72% 75%, transparent 75%);
+    box-shadow: none;
+}
+
+.desktop-nav::before {
+    background: linear-gradient(90deg, transparent, rgba(119, 174, 184, 0.28), transparent);
+}
+
+.nav-link::after {
+    width: 1.1rem;
+    height: 2px;
+    border-radius: 0;
+    background: linear-gradient(90deg, transparent, var(--world-accent), transparent);
+    box-shadow: none;
+}
+
+.search-shell input,
+.search-results {
+    background-color: rgba(4, 21, 32, 0.94);
+}
+
+/* Continuous ocean hero */
+
+.ocean-hero {
+    background: transparent;
+}
+
+.voyage-stage {
+    min-height: max(calc(100svh - var(--header-height)), 700px);
+}
+
+.voyage-stage::before {
+    inset: 36% 15% 8%;
+    opacity: 0.68;
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(105, 162, 178, 0.12), transparent 58%),
+        repeating-radial-gradient(ellipse at center, transparent 0 44px, rgba(112, 171, 185, 0.08) 45px, transparent 47px 88px);
+    filter: none;
+}
+
+.voyage-stage::after {
+    display: none;
+}
+
+.sea-horizon {
+    position: absolute;
+    z-index: 1;
+    top: 43%;
+    right: 0;
+    left: 0;
+    height: 2px;
+    opacity: 0.48;
+    background: linear-gradient(90deg, transparent 3%, rgba(161, 199, 207, 0.38) 35%, rgba(213, 226, 226, 0.54) 50%, rgba(161, 199, 207, 0.3) 70%, transparent 97%);
+    box-shadow: 0 5px 14px rgba(126, 178, 189, 0.08);
+    pointer-events: none;
+}
+
+.moon-path {
+    position: absolute;
+    z-index: 1;
+    top: 42.7%;
+    left: 50%;
+    width: min(34vw, 30rem);
+    height: 48%;
+    opacity: 0.2;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(191, 219, 221, 0.3), transparent 72%);
+    clip-path: polygon(44% 0, 56% 0, 86% 100%, 14% 100%);
+    filter: blur(11px);
+    transform: translateX(-50%);
+}
+
+.sea-routes {
+    position: absolute;
+    z-index: 2;
+    inset: 8% 4% 4%;
+    width: 92%;
+    height: 88%;
+    overflow: visible;
+    pointer-events: none;
+    transform: translate3d(var(--parallax-far-x), var(--parallax-far-y), 0);
+}
+
+.sea-routes path {
+    fill: none;
+    stroke: rgba(113, 174, 189, 0.25);
+    stroke-width: 1;
+    stroke-dasharray: 5 10;
+    vector-effect: non-scaling-stroke;
+    animation: route-flow 38s linear infinite;
+}
+
+.sea-routes path:nth-child(2) { animation-duration: 52s; animation-direction: reverse; }
+.sea-routes path:nth-child(3) { animation-duration: 43s; }
+.sea-routes path:nth-child(4) { animation-duration: 61s; animation-direction: reverse; }
+.sea-routes path:nth-child(5) { animation-duration: 48s; }
+
+@keyframes route-flow {
+    to { stroke-dashoffset: -300; }
+}
+
+.harbor-core {
+    top: 47%;
+    width: min(43vw, 32rem);
+}
+
+.compass-rose {
+    position: absolute;
+    z-index: -1;
+    top: 46%;
+    left: 50%;
+    width: clamp(18rem, 31vw, 29rem);
+    aspect-ratio: 1;
+    border: 1px solid rgba(119, 174, 184, 0.15);
+    border-radius: 50%;
+    background:
+        linear-gradient(45deg, transparent calc(50% - 0.5px), rgba(var(--world-rgb), 0.2) 50%, transparent calc(50% + 0.5px)),
+        linear-gradient(-45deg, transparent calc(50% - 0.5px), rgba(var(--world-rgb), 0.2) 50%, transparent calc(50% + 0.5px)),
+        radial-gradient(circle, transparent 0 33%, rgba(119, 174, 184, 0.14) 33.5% 34%, transparent 34.5% 64%, rgba(119, 174, 184, 0.1) 64.5% 65%, transparent 65.5%);
+    transform: translate(-50%, -50%) rotate(8deg);
+    animation: compass-drift 36s ease-in-out infinite alternate;
+}
+
+.compass-rose::before,
+.compass-rose::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: rgba(var(--world-rgb), 0.24);
+    transform: translate(-50%, -50%);
+}
+
+.compass-rose::before { width: 1px; height: 94%; }
+.compass-rose::after { width: 94%; height: 1px; }
+
+@keyframes compass-drift {
+    from { transform: translate(-50%, -50%) rotate(6deg); opacity: 0.7; }
+    to { transform: translate(-50%, -50%) rotate(11deg); opacity: 1; }
+}
+
+.harbor-core .eyebrow {
+    color: #8db5bd;
+}
+
+.harbor-core h1 {
+    text-shadow: 0 2px 20px rgba(2, 9, 18, 0.62);
+}
+
+.harbor-core .hero-focus {
+    color: #aebec2;
+}
+
+.button-link.primary,
+html[data-theme="dark"] .button-link.primary,
+html[data-theme="light"] .button-link.primary {
+    border-color: #a8cbd0;
+    background: #a8cbd0;
+    color: #031019;
+}
+
+/* Historic sailing fleet */
+
+.fleet-nav {
+    pointer-events: none;
+}
+
+.vessel {
+    --vessel-width: 10rem;
+    --vessel-angle: 0deg;
+    --vessel-sail: var(--sail-color);
+    --vessel-sail-shadow: var(--sail-shadow);
+    --vessel-hull: var(--hull-color);
+    --vessel-flag: var(--flag-color);
+    --vessel-flag-stroke: var(--flag-stroke);
+    width: 15rem;
+    min-height: 11rem;
+    pointer-events: auto;
+}
+
+.vessel-cv {
+    --vessel-width: 9.2rem;
+    --vessel-angle: 4deg;
+    top: 46%;
+    left: 14%;
+}
+
+.vessel-research {
+    --vessel-width: 13.2rem;
+    --vessel-angle: -5deg;
+    top: 44%;
+    left: 82%;
+}
+
+.vessel-teaching {
+    --vessel-width: 10.3rem;
+    --vessel-angle: -2deg;
+    top: 62%;
+    left: 88%;
+}
+
+.vessel-talks {
+    --vessel-width: 11.4rem;
+    --vessel-angle: 5deg;
+    top: 73%;
+    left: 17%;
+}
+
+.vessel-notes {
+    --vessel-width: 9.4rem;
+    --vessel-angle: -4deg;
+    top: 82%;
+    left: 69%;
+}
+
+.vessel-cv { --vessel-flag: #76a9c2; }
+.vessel-research { --vessel-flag: #4f86b2; }
+.vessel-teaching { --vessel-flag: #5a9fa8; }
+.vessel-talks { --vessel-flag: #6683af; }
+.vessel-notes { --vessel-flag: #4c95ac; }
+
+.vessel-graphic {
+    position: relative;
+    width: var(--vessel-width);
+    height: calc(var(--vessel-width) * 0.58);
+    border-radius: 0;
+    animation: vessel-bob 7.5s ease-in-out infinite alternate;
+    transition: transform 360ms cubic-bezier(0.2, 0.72, 0.2, 1), filter 260ms ease;
+}
+
+.vessel:nth-child(2) .vessel-graphic { animation-delay: -1.5s; }
+.vessel:nth-child(3) .vessel-graphic { animation-delay: -3.2s; }
+.vessel:nth-child(4) .vessel-graphic { animation-delay: -4.4s; }
+.vessel:nth-child(5) .vessel-graphic { animation-delay: -5.7s; }
+
+@keyframes vessel-bob {
+    from { transform: translateY(-2px) rotate(calc(var(--vessel-angle) - 0.7deg)); }
+    to { transform: translateY(3px) rotate(calc(var(--vessel-angle) + 0.7deg)); }
+}
+
+.vessel-graphic::before,
+.vessel-graphic::after {
+    display: none;
+}
+
+.vessel-svg {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter: drop-shadow(0 7px 6px rgba(0, 5, 10, 0.5));
+}
+
+.vessel-svg .hull {
+    fill: var(--vessel-hull);
+    stroke: var(--hull-stroke);
+    stroke-width: 2;
+}
+
+.vessel-svg .deck,
+.vessel-svg .mast,
+.vessel-svg .rigging {
+    fill: none;
+    stroke: var(--rigging-color);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+}
+
+.vessel-svg .rigging {
+    stroke-width: 0.8;
+    opacity: 0.7;
+}
+
+.vessel-svg .sail {
+    fill: var(--vessel-sail);
+    stroke: var(--vessel-sail-shadow);
+    stroke-width: 1.3;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+    animation: sail-breathe 6.6s ease-in-out infinite alternate;
+}
+
+.vessel-svg .sail-rear { animation-delay: -2.2s; }
+.vessel-svg .sail-fore { animation-delay: -4s; }
+
+@keyframes sail-breathe {
+    from { transform: skewX(-0.5deg) scaleX(0.992); }
+    to { transform: skewX(1.2deg) scaleX(1.018); }
+}
+
+.vessel-svg .flag {
+    fill: var(--vessel-flag);
+    stroke: var(--vessel-flag-stroke);
+    stroke-width: 0.8;
+}
+
+.vessel-svg .wake-line {
+    fill: none;
+    stroke: rgba(184, 215, 219, 0.58);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 12 9;
+    opacity: 0.25;
+    transition: opacity 260ms ease, stroke-width 260ms ease;
+}
+
+.vessel-cv .mast-secondary,
+.vessel-cv .sail-fore,
+.vessel-notes .sail-fore {
+    opacity: 0;
+}
+
+.vessel-talks .sail-rear {
+    transform: scaleX(0.82);
+}
+
+.vessel-teaching {
+    --vessel-sail: #c8cfca;
+    --vessel-sail-shadow: #77919d;
+}
+
+.vessel-research {
+    --vessel-sail: #d8d7c9;
+}
+
+.bow-spray,
+.stern-spray {
+    position: absolute;
+    z-index: 3;
+    bottom: 5%;
+    width: 1.8rem;
+    height: 0.8rem;
+    opacity: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 20% 70%, rgba(218, 235, 236, 0.82) 0 6%, transparent 8%),
+        radial-gradient(circle at 48% 42%, rgba(218, 235, 236, 0.68) 0 7%, transparent 9%),
+        radial-gradient(circle at 78% 72%, rgba(218, 235, 236, 0.58) 0 5%, transparent 7%);
+    transform: translateY(0.4rem) scale(0.6);
+    transition: opacity 240ms ease, transform 420ms ease;
+}
+
+.bow-spray { right: 1%; }
+.stern-spray { left: 2%; transform: translateY(0.35rem) scaleX(-0.6); }
+
+.vessel-copy {
+    margin-top: 0.25rem;
+}
+
+.vessel-copy strong {
+    color: #e5eceb;
+    font-size: 0.8rem;
+}
+
+.vessel-copy span {
+    color: #91a5aa;
+}
+
+.vessel:hover .vessel-graphic,
+.vessel:focus .vessel-graphic,
+.vessel:focus-visible .vessel-graphic {
+    filter: brightness(1.08) saturate(106%);
+    transform: translate3d(3px, -2px, 0) rotate(var(--vessel-angle)) scale(1.025);
+}
+
+.vessel:hover .wake-line,
+.vessel:focus .wake-line,
+.vessel:focus-visible .wake-line {
+    opacity: 0.85;
+    stroke-width: 2.7;
+    animation: wake-run 850ms linear infinite;
+}
+
+@keyframes wake-run {
+    to { stroke-dashoffset: -42; }
+}
+
+.vessel:hover .bow-spray,
+.vessel:hover .stern-spray,
+.vessel:focus .bow-spray,
+.vessel:focus .stern-spray,
+.vessel:focus-visible .bow-spray,
+.vessel:focus-visible .stern-spray {
+    opacity: 0.82;
+    transform: translateY(-0.1rem) scale(1);
+}
+
+.vessel:hover .stern-spray,
+.vessel:focus .stern-spray,
+.vessel:focus-visible .stern-spray {
+    transform: translateY(-0.05rem) scaleX(-1);
+}
+
+.vessel:focus .vessel-graphic,
+.vessel:focus-visible .vessel-graphic {
+    outline: none;
+}
+
+.vessel:focus .vessel-svg,
+.vessel:focus-visible .vessel-svg {
+    filter: drop-shadow(0 0 6px rgba(184, 215, 219, 0.8)) drop-shadow(0 7px 6px rgba(0, 5, 10, 0.5));
+}
+
+.vessel:focus .vessel-copy strong,
+.vessel:focus-visible .vessel-copy strong {
+    color: #ffffff;
+    text-decoration: underline;
+    text-decoration-color: #b8d7db;
+    text-underline-offset: 0.35rem;
+}
+
+.js .site-ready .vessel {
+    animation: vessel-arrival 700ms cubic-bezier(0.2, 0.72, 0.2, 1) both;
+}
+
+@keyframes vessel-arrival {
+    from { opacity: 0; transform: translate(-50%, calc(-50% + 10px)); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.voyage-instruction {
+    color: #78929a;
+}
+
+/* Nautical inner pages */
+
+.page-section::before {
+    width: min(90vw, 72rem);
+    height: min(60vw, 44rem);
+    top: -20rem;
+    right: -18rem;
+    opacity: 0.12;
+    background: repeating-radial-gradient(ellipse at center, transparent 0 38px, rgba(var(--world-rgb), 0.42) 40px, transparent 42px 78px);
+    filter: none;
+    animation: chart-current 30s ease-in-out infinite alternate;
+}
+
+@keyframes chart-current {
+    to { transform: translate3d(-2rem, 1rem, 0) rotate(2deg); }
+}
+
+.page-section > .site-shell {
+    border-color: rgba(74, 130, 150, 0.3);
+    background:
+        linear-gradient(135deg, rgba(var(--world-rgb), 0.04), transparent 24%),
+        linear-gradient(180deg, rgba(8, 27, 41, 0.97), rgba(5, 20, 32, 0.97));
+}
+
+.page-section > .site-shell::after,
+.section-heading::after {
+    background: repeating-linear-gradient(90deg, var(--chart-color) 0 1px, transparent 1px 6px);
+}
+
+.return-orbit span {
+    border-color: rgba(119, 174, 184, 0.5);
+    background: linear-gradient(180deg, transparent 48%, rgba(119, 174, 184, 0.22) 50%, transparent 52%);
+}
+
+.home-content {
+    border-top-color: rgba(103, 157, 174, 0.26);
+    background: linear-gradient(180deg, rgba(5, 24, 37, 0.96), rgba(3, 14, 23, 0.98));
+}
+
+.contact-card,
+.table-wrap,
+.note-card {
+    background-color: rgba(7, 28, 42, 0.96);
+}
+
+/* Wave-wash route transition, using the existing state/timers. */
+
+.voyage-transition {
+    background: transparent;
+}
+
+.voyage-transition .voyage-swell {
+    top: auto;
+    bottom: -62%;
+    left: -10%;
+    width: 120%;
+    height: 68%;
+    border-radius: 48% 52% 0 0 / 18% 21% 0 0;
+    background: linear-gradient(180deg, rgba(20, 76, 98, 0.94), rgba(2, 18, 29, 0.99));
+    transform: translateY(0);
+    transform-origin: center bottom;
+}
+
+.voyage-transition .voyage-foam {
+    top: auto;
+    bottom: -4%;
+    height: 18%;
+    opacity: 0;
+    background:
+        radial-gradient(ellipse at 15% 100%, rgba(190, 221, 224, 0.62) 0 3%, transparent 4%),
+        radial-gradient(ellipse at 42% 100%, rgba(190, 221, 224, 0.46) 0 4%, transparent 5%),
+        radial-gradient(ellipse at 71% 100%, rgba(190, 221, 224, 0.5) 0 3%, transparent 4%),
+        radial-gradient(ellipse at 92% 100%, rgba(190, 221, 224, 0.52) 0 4%, transparent 5%);
+    -webkit-mask-image: none;
+    mask-image: none;
+    transform: translateY(100%);
+}
+
+body.is-warping .voyage-transition .voyage-swell {
+    animation: swell-rise 720ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+body.is-warping .voyage-transition .voyage-foam {
+    animation: foam-wash 720ms ease both;
+}
+
+body.is-warping #page-container {
+    animation: sea-page-drift 720ms ease both;
+}
+
+@keyframes swell-rise {
+    0% { transform: translateY(4%); opacity: 0; }
+    36% { transform: translateY(-72%); opacity: 1; }
+    62% { transform: translateY(-78%); opacity: 1; }
+    100% { transform: translateY(-158%); opacity: 0; }
+}
+
+@keyframes foam-wash {
+    0% { transform: translateY(100%); opacity: 0; }
+    32% { transform: translateY(-280%); opacity: 0.82; }
+    100% { transform: translateY(-690%); opacity: 0; }
+}
+
+@keyframes sea-page-drift {
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    42% { transform: translateY(-5px); opacity: 0.88; }
+}
+
+/* Morning sea — the layout stays identical while light, water and ink change. */
+
+html[data-theme="light"] body {
+    background:
+        linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 36%, var(--horizon) 43%, var(--sea-mid) 44%, var(--sea-near) 100%);
+    color: var(--ink-soft);
+}
+
+html[data-theme="light"] .ocean-backdrop::before {
+    opacity: 0.48;
+    background:
+        repeating-linear-gradient(176deg, transparent 0 12px, rgba(255, 255, 255, 0.3) 13px, transparent 15px 27px),
+        repeating-linear-gradient(184deg, transparent 0 20px, rgba(44, 111, 139, 0.11) 21px, transparent 23px 39px);
+}
+
+html[data-theme="light"] .ocean-backdrop::after {
+    top: 8%;
+    left: 67%;
+    width: 15rem;
+    height: 15rem;
+    opacity: 0.9;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.96) 0 7%, rgba(255, 255, 255, 0.42) 20%, rgba(220, 241, 247, 0.2) 42%, transparent 70%);
+    filter: blur(2px);
+}
+
+html[data-theme="light"] .sea-mist {
+    opacity: 0.2;
+    background: radial-gradient(ellipse, rgba(255, 255, 255, 0.76), transparent 70%);
+}
+
+html[data-theme="light"] .current-grid {
+    opacity: 0.14;
+    background-image: repeating-radial-gradient(ellipse at 50% 0%, transparent 0 42px, rgba(36, 101, 129, 0.22) 44px, transparent 46px 82px);
+}
+
+html[data-theme="light"] .site-header {
+    border-bottom-color: rgba(56, 111, 134, 0.22);
+    background: rgba(242, 250, 252, 0.84);
+    box-shadow: 0 12px 34px rgba(30, 82, 104, 0.1);
+}
+
+html[data-theme="light"] .brand,
+html[data-theme="light"] .nav-link:hover,
+html[data-theme="light"] .nav-link.active,
+html[data-theme="light"] .icon-button:hover {
+    color: var(--ink);
+}
+
+html[data-theme="light"] .brand::before {
+    border-color: rgba(35, 90, 116, 0.72);
+    background:
+        radial-gradient(circle at center, transparent 0 26%, var(--chart-color) 28% 34%, transparent 36%),
+        conic-gradient(from 45deg, #2f7898 0 3%, transparent 3% 22%, #2f7898 22% 25%, transparent 25% 47%, #2f7898 47% 50%, transparent 50% 72%, #2f7898 72% 75%, transparent 75%);
+}
+
+html[data-theme="light"] .desktop-nav::before {
+    background: linear-gradient(90deg, transparent, rgba(38, 108, 142, 0.24), transparent);
+}
+
+html[data-theme="light"] .nav-link,
+html[data-theme="light"] .icon-button {
+    color: #496b7c;
+}
+
+html[data-theme="light"] .icon-button:hover {
+    border-color: rgba(38, 108, 142, 0.3);
+    background: rgba(38, 108, 142, 0.08);
+}
+
+html[data-theme="light"] .search-shell input,
+html[data-theme="light"] .search-results {
+    border-color: rgba(55, 111, 136, 0.28);
+    background-color: rgba(250, 253, 254, 0.97);
+    color: var(--ink);
+    box-shadow: 0 20px 50px rgba(36, 85, 105, 0.14);
+}
+
+html[data-theme="light"] .search-result,
+html[data-theme="light"] .search-empty {
+    border-bottom-color: var(--border-soft);
+    color: var(--ink-soft);
+}
+
+html[data-theme="light"] .search-result:hover,
+html[data-theme="light"] .search-result.is-active {
+    background: var(--accent-soft);
+}
+
+html[data-theme="light"] .mobile-menu {
+    border-top-color: var(--border-soft);
+    background: rgba(246, 251, 252, 0.98);
+}
+
+html[data-theme="light"] .voyage-stage::before {
+    opacity: 0.78;
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.28), transparent 58%),
+        repeating-radial-gradient(ellipse at center, transparent 0 44px, rgba(45, 111, 139, 0.12) 45px, transparent 47px 88px);
+}
+
+html[data-theme="light"] .sea-horizon {
+    opacity: 0.74;
+    background: linear-gradient(90deg, transparent 3%, rgba(255, 255, 255, 0.46) 26%, rgba(255, 255, 255, 0.92) 50%, rgba(255, 255, 255, 0.4) 74%, transparent 97%);
+    box-shadow: 0 5px 16px rgba(255, 255, 255, 0.24);
+}
+
+html[data-theme="light"] .moon-path {
+    opacity: 0.3;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), transparent 76%);
+}
+
+html[data-theme="light"] .sea-routes path {
+    stroke: rgba(34, 101, 130, 0.28);
+}
+
+html[data-theme="light"] .compass-rose {
+    border-color: rgba(38, 108, 142, 0.2);
+    background:
+        linear-gradient(45deg, transparent calc(50% - 0.5px), rgba(38, 108, 142, 0.18) 50%, transparent calc(50% + 0.5px)),
+        linear-gradient(-45deg, transparent calc(50% - 0.5px), rgba(38, 108, 142, 0.18) 50%, transparent calc(50% + 0.5px)),
+        radial-gradient(circle, transparent 0 33%, rgba(38, 108, 142, 0.14) 33.5% 34%, transparent 34.5% 64%, rgba(38, 108, 142, 0.1) 64.5% 65%, transparent 65.5%);
+}
+
+html[data-theme="light"] .harbor-core .eyebrow {
+    color: #266c8e;
+}
+
+html[data-theme="light"] .harbor-core h1 {
+    color: #123247;
+    text-shadow: 0 2px 18px rgba(255, 255, 255, 0.62);
+}
+
+html[data-theme="light"] .galaxy-core .hero-role {
+    color: #183e53;
+}
+
+html[data-theme="light"] .galaxy-core .hero-affiliation {
+    color: #153447;
+}
+
+html[data-theme="light"] .harbor-core .hero-focus {
+    color: #153447;
+}
+
+html[data-theme="light"] .button-link {
+    border-color: rgba(44, 104, 131, 0.34);
+    background: rgba(247, 252, 253, 0.86);
+    color: #183e53;
+}
+
+html[data-theme="light"] .button-link:hover {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.96);
+    color: var(--accent-strong);
+}
+
+html[data-theme="light"] .button-link.primary,
+html[data-theme="light"] .button-link.primary:hover {
+    border-color: #266c8e;
+    background: #266c8e;
+    color: #ffffff;
+}
+
+html[data-theme="light"] .button-link.primary:hover {
+    border-color: #174c68;
+    background: #174c68;
+}
+
+html[data-theme="light"] .vessel {
+    --vessel-sail: var(--sail-color);
+    --vessel-sail-shadow: var(--sail-shadow);
+    --vessel-hull: var(--hull-color);
+    --vessel-flag-stroke: #153f5a;
+}
+
+html[data-theme="light"] .vessel-cv { --vessel-flag: #34789b; }
+html[data-theme="light"] .vessel-research { --vessel-flag: #245f8c; }
+html[data-theme="light"] .vessel-teaching { --vessel-flag: #287586; }
+html[data-theme="light"] .vessel-talks { --vessel-flag: #365f8f; }
+html[data-theme="light"] .vessel-notes { --vessel-flag: #1f7188; }
+
+html[data-theme="light"] .vessel-svg {
+    filter: drop-shadow(0 7px 7px rgba(36, 82, 102, 0.24));
+}
+
+html[data-theme="light"] .vessel-svg .wake-line {
+    stroke: rgba(255, 255, 255, 0.88);
+}
+
+html[data-theme="light"] .bow-spray,
+html[data-theme="light"] .stern-spray {
+    background:
+        radial-gradient(circle at 20% 70%, rgba(255, 255, 255, 0.96) 0 6%, transparent 8%),
+        radial-gradient(circle at 48% 42%, rgba(255, 255, 255, 0.9) 0 7%, transparent 9%),
+        radial-gradient(circle at 78% 72%, rgba(255, 255, 255, 0.82) 0 5%, transparent 7%);
+}
+
+html[data-theme="light"] .vessel-copy strong {
+    color: #0f3448;
+}
+
+html[data-theme="light"] .vessel-copy span,
+html[data-theme="light"] .vessel:hover .vessel-copy span,
+html[data-theme="light"] .vessel:focus .vessel-copy span,
+html[data-theme="light"] .vessel:focus-visible .vessel-copy span {
+    color: #153447;
+}
+
+html[data-theme="light"] .vessel:focus .vessel-copy strong,
+html[data-theme="light"] .vessel:focus-visible .vessel-copy strong {
+    color: #0f3448;
+    text-decoration-color: #266c8e;
+}
+
+html[data-theme="light"] .voyage-instruction {
+    color: #0b2a3d;
+}
+
+html[data-theme="light"] #home-page {
+    --world-accent: #266c8e;
+    --world-rgb: 38, 108, 142;
+}
+
+html[data-theme="light"] #cv-page,
+html[data-theme="light"] body[data-active-page="cv"] { --world-accent: #326f91; --world-rgb: 50, 111, 145; }
+html[data-theme="light"] #research-page,
+html[data-theme="light"] body[data-active-page="research"] { --world-accent: #267a87; --world-rgb: 38, 122, 135; }
+html[data-theme="light"] #teaching-page,
+html[data-theme="light"] body[data-active-page="teaching"] { --world-accent: #3e6f93; --world-rgb: 62, 111, 147; }
+html[data-theme="light"] #talks-page,
+html[data-theme="light"] body[data-active-page="talks"] { --world-accent: #3c628f; --world-rgb: 60, 98, 143; }
+html[data-theme="light"] #notes-page,
+html[data-theme="light"] body[data-active-page="notes"] { --world-accent: #21758d; --world-rgb: 33, 117, 141; }
+
+html[data-theme="light"] .page-section > .site-shell {
+    border-color: rgba(var(--world-rgb), 0.28);
+    background:
+        linear-gradient(135deg, rgba(var(--world-rgb), 0.07), transparent 25%),
+        linear-gradient(180deg, rgba(250, 253, 254, 0.97), rgba(239, 248, 251, 0.97));
+    box-shadow: 0 32px 74px rgba(33, 82, 103, 0.13);
+}
+
+html[data-theme="light"] .home-content {
+    border-top-color: rgba(51, 111, 137, 0.24);
+    background: linear-gradient(180deg, rgba(241, 249, 251, 0.96), rgba(228, 242, 247, 0.98));
+}
+
+html[data-theme="light"] .contact-card {
+    border-color: rgba(var(--world-rgb), 0.26);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(235, 246, 249, 0.96));
+    box-shadow: 0 22px 52px rgba(32, 80, 100, 0.12);
+}
+
+html[data-theme="light"] .contact-card h3,
+html[data-theme="light"] .paper-title,
+html[data-theme="light"] .event-title,
+html[data-theme="light"] .event-name,
+html[data-theme="light"] .teaching-table th {
+    color: var(--ink);
+}
+
+html[data-theme="light"] .contact-row,
+html[data-theme="light"] .topic-line,
+html[data-theme="light"] .collaborator-list,
+html[data-theme="light"] .paper-meta,
+html[data-theme="light"] .cv-entry p,
+html[data-theme="light"] .cv-date,
+html[data-theme="light"] .event-place {
+    color: var(--muted);
+}
+
+html[data-theme="light"] .interest-list li,
+html[data-theme="light"] .download-panel,
+html[data-theme="light"] .table-wrap {
+    background: rgba(255, 255, 255, 0.62);
+}
+
+html[data-theme="light"] .teaching-table th {
+    background: rgba(var(--world-rgb), 0.09);
+}
+
+html[data-theme="light"] .teaching-table td {
+    border-top-color: rgba(var(--world-rgb), 0.15);
+    color: var(--ink-soft);
+}
+
+html[data-theme="light"] .event-item::before {
+    background: var(--surface);
+}
+
+html[data-theme="light"] .note-grid {
+    background: rgba(var(--world-rgb), 0.14);
+}
+
+html[data-theme="light"] .note-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(235, 246, 249, 0.98));
+    color: var(--ink);
+}
+
+html[data-theme="light"] .note-card:hover {
+    background: linear-gradient(145deg, rgba(var(--world-rgb), 0.12), rgba(248, 252, 253, 0.98));
+    color: var(--ink);
+}
+
+html[data-theme="light"] .site-footer {
+    border-top-color: var(--border-soft);
+    background: rgba(234, 246, 250, 0.96);
+}
+
+html[data-theme="light"] .footer-inner {
+    color: var(--muted);
+}
+
+html[data-theme="light"] .voyage-transition .voyage-swell {
+    background: linear-gradient(180deg, rgba(111, 177, 199, 0.94), rgba(61, 126, 151, 0.98));
+}
+
+html[data-theme="light"] .voyage-transition .voyage-foam {
+    background:
+        radial-gradient(ellipse at 15% 100%, rgba(255, 255, 255, 0.82) 0 3%, transparent 4%),
+        radial-gradient(ellipse at 42% 100%, rgba(255, 255, 255, 0.7) 0 4%, transparent 5%),
+        radial-gradient(ellipse at 71% 100%, rgba(255, 255, 255, 0.76) 0 3%, transparent 4%),
+        radial-gradient(ellipse at 92% 100%, rgba(255, 255, 255, 0.72) 0 4%, transparent 5%);
+}
+
+.effects-lite .sea-mist,
+.effects-lite .sea-routes,
+.effects-lite .sea-routes path,
+.effects-lite .vessel-graphic,
+.effects-lite .vessel-svg .sail,
+.effects-lite .wake-line,
+.effects-lite .compass-rose {
+    animation: none !important;
+}
+
+@media (max-width: 1179px) {
+    .vessel-cv { left: 13%; }
+    .vessel-research { left: 85%; }
+    .vessel-teaching { left: 90%; }
+    .vessel-talks { left: 13%; }
+}
+
+/* The same sea and vessels remain on tablets and phones; only their chart positions change. */
+@media (max-width: 1080px) {
+    html[data-theme="light"] .search-shell {
+        border-color: var(--border);
+        background: rgba(250, 253, 254, 0.98);
+        box-shadow: var(--shadow);
+    }
+
+    .ocean-hero,
+    .voyage-stage {
+        min-height: 1080px;
+    }
+
+    .voyage-stage {
+        width: min(100%, 48rem);
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .harbor-core,
+    .js .harbor-core,
+    .js .site-ready .harbor-core {
+        position: absolute;
+        top: 22%;
+        left: 50%;
+        width: min(calc(100% - 2rem), 36rem);
+        margin: 0;
+        transform: translate(-50%, -50%);
+    }
+
+    .fleet-nav {
+        position: absolute;
+        inset: 0;
+        width: auto;
+        margin: 0;
+        display: block;
+        border: 0;
+        background: transparent;
+    }
+
+    .vessel,
+    .js .vessel,
+    .js .site-ready .vessel {
+        position: absolute;
+        width: 13rem;
+        min-height: 9.5rem;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 0;
+        justify-items: initial;
+        opacity: 1;
+        background: transparent;
+        text-align: center;
+        transform: translate(-50%, -50%);
+        animation: none;
+    }
+
+    .vessel-cv { --vessel-width: 8.5rem; top: 49%; left: 22%; grid-column: auto; grid-row: auto; }
+    .vessel-research { --vessel-width: 10.5rem; top: 47%; left: 76%; grid-column: auto; grid-row: auto; }
+    .vessel-teaching { --vessel-width: 9rem; top: 68%; left: 76%; grid-column: auto; grid-row: auto; }
+    .vessel-talks { --vessel-width: 9.5rem; top: 70%; left: 23%; grid-column: auto; grid-row: auto; }
+    .vessel-notes { --vessel-width: 8.5rem; top: 87%; left: 50%; grid-column: auto; grid-row: auto; }
+
+    .vessel-graphic {
+        width: var(--vessel-width);
+        height: calc(var(--vessel-width) * 0.58);
+    }
+
+    .vessel-copy {
+        width: 100%;
+        margin-top: 0.2rem;
+        align-items: center;
+        text-align: center;
+    }
+
+    .vessel-copy span {
+        opacity: 0;
+    }
+
+    .sea-routes {
+        inset: 32% 1% 3%;
+        width: 98%;
+        height: 65%;
+        opacity: 0.72;
+    }
+
+    .sea-horizon { top: 38%; }
+    .moon-path { top: 37.7%; height: 48%; }
+
+    .voyage-instruction {
+        position: absolute;
+        bottom: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .ocean-hero,
+    .voyage-stage {
+        min-height: 1040px;
+    }
+
+    .harbor-core,
+    .js .harbor-core,
+    .js .site-ready .harbor-core {
+        top: 20%;
+        width: calc(100% - 1.25rem);
+    }
+
+    .harbor-core h1 {
+        font-size: clamp(2.55rem, 12vw, 3.5rem);
+    }
+
+    .vessel {
+        width: 10.5rem;
+        min-height: 8.4rem;
+    }
+
+    .vessel-cv { --vessel-width: 7.2rem; top: 48%; left: 24%; }
+    .vessel-research { --vessel-width: 8.8rem; top: 46%; left: 74%; }
+    .vessel-teaching { --vessel-width: 7.7rem; top: 66%; left: 74%; }
+    .vessel-talks { --vessel-width: 8.1rem; top: 68%; left: 24%; }
+    .vessel-notes { --vessel-width: 7.4rem; top: 86%; left: 50%; }
+
+    .vessel-copy strong { font-size: 0.76rem; }
+    .vessel-copy span { font-size: 0.72rem; }
+
+    .compass-rose {
+        width: min(84vw, 22rem);
+    }
+}
+
+@media (max-width: 350px) {
+    .ocean-hero,
+    .voyage-stage {
+        min-height: 1280px;
+    }
+
+    .vessel-cv { top: 43%; left: 31%; }
+    .vessel-research { top: 55%; left: 68%; }
+    .vessel-teaching { top: 67%; left: 31%; }
+    .vessel-talks { top: 79%; left: 68%; }
+    .vessel-notes { top: 91%; left: 34%; }
+}
+
+@media (hover: none), (pointer: coarse) {
+    .vessel:hover .vessel-graphic {
+        filter: none;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sea-mist,
+    .sea-routes path,
+    .vessel-graphic,
+    .vessel-svg .sail,
+    .compass-rose,
+    .wake-line,
+    .page-section::before {
+        animation: none !important;
+    }
+
+    .voyage-transition {
+        display: none !important;
+    }
+}

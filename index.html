@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Wei Wang's academic profile, publications, teaching, talks, and mathematical notes.">
-    <meta name="theme-color" content="#02070d">
+    <meta name="theme-color" content="#020912">
     <title>Wei Wang | Mathematics</title>
     <link rel="canonical" href="https://brookww.github.io/WeiWANGmath.github.io/">
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -14,12 +14,16 @@
             const root = document.documentElement;
             root.classList.add('js');
             window.setTimeout(() => root.classList.remove('js'), 2400);
+            let theme = 'dark';
             try {
                 const savedTheme = localStorage.getItem('theme');
-                root.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+                theme = savedTheme === 'light' ? 'light' : 'dark';
             } catch (error) {
-                root.dataset.theme = 'dark';
+                theme = 'dark';
             }
+            root.dataset.theme = theme;
+            const themeColor = document.querySelector('meta[name="theme-color"]');
+            if (themeColor) themeColor.content = theme === 'light' ? '#eaf6fa' : '#020912';
         })();
     </script>
 
@@ -28,19 +32,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&amp;display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="assets/css/site.css?v=20260908" rel="stylesheet">
+    <link href="assets/css/ocean.css?v=20260919-3" rel="stylesheet">
 </head>
 
 <body data-active-page="home">
     <a class="skip-link" href="#page-container">Skip to content</a>
-    <div class="cosmos-backdrop" aria-hidden="true">
-        <canvas class="starfield" id="starfield"></canvas>
-        <div class="nebula nebula-one"></div>
-        <div class="nebula nebula-two"></div>
-        <div class="constellation-grid"></div>
+    <div class="cosmos-backdrop ocean-backdrop" aria-hidden="true">
+        <canvas class="starfield ocean-surface" id="starfield"></canvas>
+        <div class="nebula nebula-one sea-mist sea-mist-one"></div>
+        <div class="nebula nebula-two sea-mist sea-mist-two"></div>
+        <div class="constellation-grid current-grid"></div>
     </div>
-    <div class="warp-transition" id="warp-transition" aria-hidden="true">
-        <span class="warp-core"></span>
-        <span class="warp-lines"></span>
+    <div class="warp-transition voyage-transition" id="warp-transition" aria-hidden="true">
+        <span class="warp-core voyage-swell"></span>
+        <span class="warp-lines voyage-foam"></span>
     </div>
     <div class="sr-only" id="page-announcer" aria-live="polite"></div>
 
@@ -69,7 +74,7 @@
                     <a class="nav-link" href="#notes" data-page="notes-page">Notes</a>
                 </nav>
 
-                <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch to brighter sky">
+                <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch to day mode">
                     <i id="theme-icon" class="fa fa-sun-o" aria-hidden="true"></i>
                 </button>
                 <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-menu">
@@ -93,17 +98,20 @@
     <div id="page-container" tabindex="-1">
         <!-- SECTION_CONTENT_START -->
 <main id="home-page" class="page active searchable" data-world="home">
-    <section class="hero galaxy-hero" aria-labelledby="home-title">
-        <div class="galaxy-stage" id="galaxy-stage">
-            <div class="galaxy-coordinate galaxy-coordinate-x" aria-hidden="true"></div>
-            <div class="galaxy-coordinate galaxy-coordinate-y" aria-hidden="true"></div>
-            <div class="gravity-web" aria-hidden="true"><span></span><span></span><span></span></div>
-            <div class="galaxy-orbit galaxy-orbit-one" aria-hidden="true"></div>
-            <div class="galaxy-orbit galaxy-orbit-two" aria-hidden="true"></div>
-            <div class="galaxy-orbit galaxy-orbit-three" aria-hidden="true"></div>
+    <section class="hero galaxy-hero ocean-hero" aria-labelledby="home-title">
+        <div class="galaxy-stage voyage-stage" id="galaxy-stage">
+            <div class="sea-horizon" aria-hidden="true"></div>
+            <div class="moon-path" aria-hidden="true"></div>
+            <svg class="sea-routes" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M500 350 C390 315 255 306 120 322"></path>
+                <path d="M500 350 C625 304 760 284 875 302"></path>
+                <path d="M500 350 C705 330 800 400 925 480"></path>
+                <path d="M500 350 C365 405 240 475 120 545"></path>
+                <path d="M500 350 C580 475 650 545 735 625"></path>
+            </svg>
 
-            <div class="galaxy-core">
-                <span class="core-star" aria-hidden="true"></span>
+            <div class="galaxy-core harbor-core">
+                <span class="compass-rose" aria-hidden="true"></span>
                 <p class="eyebrow">Mathematics · Peking University</p>
                 <h1 id="home-title">Wei Wang <span lang="zh">(王尉)</span></h1>
                 <p class="hero-role">Ph.D. Candidate in Theoretical Mathematics</p>
@@ -111,34 +119,108 @@
                 <p class="hero-focus">Geometric variational problems, elliptic and parabolic equations, with particular interests in defect analysis and homogenization.</p>
                 <div class="hero-actions">
                     <a class="button-link primary" href="#research" data-page="research-page">Research &amp; publications</a>
-                    <a class="button-link" href="assets/cv/cv.pdf?v=20260904"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Download CV</a>
+                    <a class="button-link" href="assets/cv/cv.pdf?v=20260919"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Download CV</a>
                 </div>
             </div>
 
-            <nav class="planet-nav" aria-label="Explore the site by world">
-                <a class="planet planet-cv" href="#cv" data-page="cv-page" aria-describedby="planet-cv-description">
-                    <span class="planet-system" aria-hidden="true"><span class="planet-sphere"></span></span>
-                    <span class="planet-copy"><strong>CV</strong><span id="planet-cv-description">Education, visits and full curriculum vitae</span></span>
+            <nav class="planet-nav fleet-nav" aria-label="Explore the site by sea">
+                <a class="planet vessel vessel-cv" href="#cv" data-page="cv-page" aria-describedby="vessel-cv-description">
+                    <span class="planet-system vessel-graphic" aria-hidden="true">
+                        <svg class="vessel-svg" viewBox="0 0 260 150">
+                            <path class="wake-line" d="M18 126 C62 116 90 132 132 123 C172 114 200 126 246 116"></path>
+                            <path class="hull" d="M34 102 L221 102 L198 128 Q130 142 59 126 Z"></path>
+                            <path class="deck" d="M54 101 Q130 94 208 101"></path>
+                            <path class="mast mast-main" d="M126 98 L126 20"></path>
+                            <path class="mast mast-secondary" d="M196 102 L196 48"></path>
+                            <path class="rigging" d="M126 24 L48 101 M126 24 L205 101 M196 49 L226 102"></path>
+                            <path class="sail sail-main" d="M120 29 L120 92 L61 84 Q87 50 120 29 Z"></path>
+                            <path class="sail sail-rear" d="M132 37 L132 94 L185 84 Q164 54 132 37 Z"></path>
+                            <path class="sail sail-fore" d="M191 53 L191 98 L225 91 Q213 68 191 53 Z"></path>
+                            <path class="flag" d="M126 22 L126 10 L150 17 Z"></path>
+                        </svg>
+                        <span class="bow-spray"></span><span class="stern-spray"></span>
+                    </span>
+                    <span class="planet-copy vessel-copy"><strong>CV</strong><span id="vessel-cv-description">Education, visits and full curriculum vitae</span></span>
                 </a>
-                <a class="planet planet-research" href="#research" data-page="research-page" aria-describedby="planet-research-description">
-                    <span class="planet-system" aria-hidden="true"><span class="planet-sphere"></span></span>
-                    <span class="planet-copy"><strong>Research</strong><span id="planet-research-description">Publications, preprints and collaborators</span></span>
+
+                <a class="planet vessel vessel-research" href="#research" data-page="research-page" aria-describedby="vessel-research-description">
+                    <span class="planet-system vessel-graphic" aria-hidden="true">
+                        <svg class="vessel-svg" viewBox="0 0 260 150">
+                            <path class="wake-line" d="M18 126 C62 116 90 132 132 123 C172 114 200 126 246 116"></path>
+                            <path class="hull" d="M34 102 L221 102 L198 128 Q130 142 59 126 Z"></path>
+                            <path class="deck" d="M54 101 Q130 94 208 101"></path>
+                            <path class="mast mast-main" d="M126 98 L126 20"></path>
+                            <path class="mast mast-secondary" d="M196 102 L196 48"></path>
+                            <path class="rigging" d="M126 24 L48 101 M126 24 L205 101 M196 49 L226 102"></path>
+                            <path class="sail sail-main" d="M120 29 L120 92 L61 84 Q87 50 120 29 Z"></path>
+                            <path class="sail sail-rear" d="M132 37 L132 94 L185 84 Q164 54 132 37 Z"></path>
+                            <path class="sail sail-fore" d="M191 53 L191 98 L225 91 Q213 68 191 53 Z"></path>
+                            <path class="flag" d="M126 22 L126 10 L150 17 Z"></path>
+                        </svg>
+                        <span class="bow-spray"></span><span class="stern-spray"></span>
+                    </span>
+                    <span class="planet-copy vessel-copy"><strong>Research</strong><span id="vessel-research-description">Publications, preprints and collaborators</span></span>
                 </a>
-                <a class="planet planet-teaching" href="#teaching" data-page="teaching-page" aria-describedby="planet-teaching-description">
-                    <span class="planet-system" aria-hidden="true"><span class="planet-sphere"></span></span>
-                    <span class="planet-copy"><strong>Teaching</strong><span id="planet-teaching-description">Courses, notes and teaching materials</span></span>
+
+                <a class="planet vessel vessel-teaching" href="#teaching" data-page="teaching-page" aria-describedby="vessel-teaching-description">
+                    <span class="planet-system vessel-graphic" aria-hidden="true">
+                        <svg class="vessel-svg" viewBox="0 0 260 150">
+                            <path class="wake-line" d="M18 126 C62 116 90 132 132 123 C172 114 200 126 246 116"></path>
+                            <path class="hull" d="M34 102 L221 102 L198 128 Q130 142 59 126 Z"></path>
+                            <path class="deck" d="M54 101 Q130 94 208 101"></path>
+                            <path class="mast mast-main" d="M126 98 L126 20"></path>
+                            <path class="mast mast-secondary" d="M196 102 L196 48"></path>
+                            <path class="rigging" d="M126 24 L48 101 M126 24 L205 101 M196 49 L226 102"></path>
+                            <path class="sail sail-main" d="M120 29 L120 92 L61 84 Q87 50 120 29 Z"></path>
+                            <path class="sail sail-rear" d="M132 37 L132 94 L185 84 Q164 54 132 37 Z"></path>
+                            <path class="sail sail-fore" d="M191 53 L191 98 L225 91 Q213 68 191 53 Z"></path>
+                            <path class="flag" d="M126 22 L126 10 L150 17 Z"></path>
+                        </svg>
+                        <span class="bow-spray"></span><span class="stern-spray"></span>
+                    </span>
+                    <span class="planet-copy vessel-copy"><strong>Teaching</strong><span id="vessel-teaching-description">Courses, notes and teaching materials</span></span>
                 </a>
-                <a class="planet planet-talks" href="#talks" data-page="talks-page" aria-describedby="planet-talks-description">
-                    <span class="planet-system" aria-hidden="true"><span class="planet-sphere"></span></span>
-                    <span class="planet-copy"><strong>Talks</strong><span id="planet-talks-description">Conference, seminar and poster presentations</span></span>
+
+                <a class="planet vessel vessel-talks" href="#talks" data-page="talks-page" aria-describedby="vessel-talks-description">
+                    <span class="planet-system vessel-graphic" aria-hidden="true">
+                        <svg class="vessel-svg" viewBox="0 0 260 150">
+                            <path class="wake-line" d="M18 126 C62 116 90 132 132 123 C172 114 200 126 246 116"></path>
+                            <path class="hull" d="M34 102 L221 102 L198 128 Q130 142 59 126 Z"></path>
+                            <path class="deck" d="M54 101 Q130 94 208 101"></path>
+                            <path class="mast mast-main" d="M126 98 L126 20"></path>
+                            <path class="mast mast-secondary" d="M196 102 L196 48"></path>
+                            <path class="rigging" d="M126 24 L48 101 M126 24 L205 101 M196 49 L226 102"></path>
+                            <path class="sail sail-main" d="M120 29 L120 92 L61 84 Q87 50 120 29 Z"></path>
+                            <path class="sail sail-rear" d="M132 37 L132 94 L185 84 Q164 54 132 37 Z"></path>
+                            <path class="sail sail-fore" d="M191 53 L191 98 L225 91 Q213 68 191 53 Z"></path>
+                            <path class="flag" d="M126 22 L126 10 L150 17 Z"></path>
+                        </svg>
+                        <span class="bow-spray"></span><span class="stern-spray"></span>
+                    </span>
+                    <span class="planet-copy vessel-copy"><strong>Talks</strong><span id="vessel-talks-description">Conference, seminar and poster presentations</span></span>
                 </a>
-                <a class="planet planet-notes" href="#notes" data-page="notes-page" aria-describedby="planet-notes-description">
-                    <span class="planet-system" aria-hidden="true"><span class="planet-sphere"></span></span>
-                    <span class="planet-copy"><strong>Notes</strong><span id="planet-notes-description">Reading notes and expository papers</span></span>
+
+                <a class="planet vessel vessel-notes" href="#notes" data-page="notes-page" aria-describedby="vessel-notes-description">
+                    <span class="planet-system vessel-graphic" aria-hidden="true">
+                        <svg class="vessel-svg" viewBox="0 0 260 150">
+                            <path class="wake-line" d="M18 126 C62 116 90 132 132 123 C172 114 200 126 246 116"></path>
+                            <path class="hull" d="M34 102 L221 102 L198 128 Q130 142 59 126 Z"></path>
+                            <path class="deck" d="M54 101 Q130 94 208 101"></path>
+                            <path class="mast mast-main" d="M126 98 L126 20"></path>
+                            <path class="mast mast-secondary" d="M196 102 L196 48"></path>
+                            <path class="rigging" d="M126 24 L48 101 M126 24 L205 101 M196 49 L226 102"></path>
+                            <path class="sail sail-main" d="M120 29 L120 92 L61 84 Q87 50 120 29 Z"></path>
+                            <path class="sail sail-rear" d="M132 37 L132 94 L185 84 Q164 54 132 37 Z"></path>
+                            <path class="sail sail-fore" d="M191 53 L191 98 L225 91 Q213 68 191 53 Z"></path>
+                            <path class="flag" d="M126 22 L126 10 L150 17 Z"></path>
+                        </svg>
+                        <span class="bow-spray"></span><span class="stern-spray"></span>
+                    </span>
+                    <span class="planet-copy vessel-copy"><strong>Notes</strong><span id="vessel-notes-description">Reading notes and expository papers</span></span>
                 </a>
             </nav>
 
-            <p class="galaxy-instruction"><span aria-hidden="true">◌</span> Select a world to enter · use Tab to explore by keyboard</p>
+            <p class="galaxy-instruction voyage-instruction"><span aria-hidden="true">≈</span> Choose a vessel · use Tab to navigate by keyboard</p>
         </div>
     </section>
 
@@ -182,7 +264,7 @@
 <main id="cv-page" class="page searchable" data-world="cv">
     <section class="page-section">
         <div class="site-shell reading-width">
-            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Galaxy</a>
+            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Harbor</a>
             <h2 class="section-heading">Curriculum Vitae</h2>
 
             <section class="cv-group" aria-labelledby="education-heading">
@@ -225,12 +307,23 @@
                 </article>
             </section>
 
+            <section class="cv-group" aria-labelledby="academic-service-heading">
+                <h3 id="academic-service-heading">Academic Service</h3>
+                <article class="cv-entry">
+                    <div>
+                        <h4>Mathematical Reviews / MathSciNet</h4>
+                        <p>American Mathematical Society</p>
+                        <p>Registered prospective reviewer</p>
+                    </div>
+                </article>
+            </section>
+
             <section class="download-panel" aria-label="Download full curriculum vitae">
                 <div>
                     <h3>Full CV</h3>
-                    <p>PDF · Last updated Sept. 4, 2026</p>
+                    <p>PDF · Last updated Sept. 19, 2026</p>
                 </div>
-                <a class="button-link primary" href="assets/cv/cv.pdf?v=20260904"><i class="fa fa-download" aria-hidden="true"></i> View full CV</a>
+                <a class="button-link primary" href="assets/cv/cv.pdf?v=20260919"><i class="fa fa-download" aria-hidden="true"></i> View full CV</a>
             </section>
         </div>
     </section>
@@ -239,7 +332,7 @@
 <main id="research-page" class="page searchable" data-world="research">
     <section class="page-section soft-section">
         <div class="site-shell reading-width">
-            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Galaxy</a>
+            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Harbor</a>
             <h2 class="section-heading">Research</h2>
 
             <section class="subsection" aria-labelledby="interests-heading">
@@ -363,7 +456,7 @@
 <main id="teaching-page" class="page searchable" data-world="teaching">
     <section class="page-section">
         <div class="site-shell">
-            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Galaxy</a>
+            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Harbor</a>
             <h2 class="section-heading">Teaching Experience</h2>
             <div class="table-wrap">
                 <table class="teaching-table">
@@ -446,7 +539,7 @@
 <main id="talks-page" class="page searchable" data-world="talks">
     <section class="page-section soft-section">
         <div class="site-shell reading-width">
-            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Galaxy</a>
+            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Harbor</a>
             <h2 class="section-heading">Talks and Presentations</h2>
 
             <section class="event-section" aria-labelledby="conference-talks-heading">
@@ -572,7 +665,7 @@
 <main id="notes-page" class="page searchable" data-world="notes">
     <section class="page-section soft-section">
         <div class="site-shell reading-width">
-            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Galaxy</a>
+            <a class="return-orbit" href="#home" data-page="home-page"><span aria-hidden="true">←</span> Back to Harbor</a>
             <h2 class="section-heading">Notes and Expository Papers</h2>
             <ul class="note-grid">
                 <li><a class="note-card" href="assets/notes/minimal-surfaces-bernstein-problem/note.pdf" rel="nofollow"><span class="note-title">Regularity of Minimal Surfaces and the Bernstein Problem</span><span class="note-meta">Expository note · PDF</span></a></li>
@@ -594,13 +687,13 @@
         <div class="site-shell footer-inner">
             <p>&copy; 2026 Wei Wang</p>
             <div class="footer-links">
-                <a href="assets/cv/cv.pdf?v=20260904">CV</a>
+                <a href="assets/cv/cv.pdf?v=20260919">CV</a>
                 <a href="https://orcid.org/0000-0002-7483-4310">ORCID</a>
                 <a href="https://github.com/BrookWW">GitHub</a>
             </div>
         </div>
     </footer>
 
-    <script src="assets/js/site.js?v=20260908" defer></script>
+    <script src="assets/js/site.js?v=20260919-3" defer></script>
 </body>
 </html>

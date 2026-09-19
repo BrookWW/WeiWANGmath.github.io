@@ -54,10 +54,14 @@ function isDarkTheme() {
 function setTheme(dark, persist = true) {
     elements.html.dataset.theme = dark ? 'dark' : 'light';
     elements.themeIcon.className = dark ? 'fa fa-sun-o' : 'fa fa-moon-o';
-    elements.themeToggle.setAttribute('aria-label', dark ? 'Switch to brighter sky' : 'Switch to dimmer sky');
+    elements.themeToggle.setAttribute('aria-label', dark ? 'Switch to day mode' : 'Switch to night mode');
 
     const themeColor = document.querySelector('meta[name="theme-color"]');
-    if (themeColor) themeColor.content = dark ? '#02070d' : '#071521';
+    if (themeColor) themeColor.content = dark ? '#020912' : '#eaf6fa';
+
+    document.dispatchEvent(new CustomEvent('site-theme-change', {
+        detail: { theme: dark ? 'dark' : 'light' }
+    }));
 
     if (!persist) return;
     try {
@@ -574,10 +578,227 @@ function initStarfield() {
     }
 }
 
+function initSeascape() {
+    const canvas = elements.starfield;
+    const context = canvas?.getContext?.('2d', { alpha: true });
+    elements.body.classList.toggle('effects-lite', reducedMotion || Boolean(lowPowerDevice));
+    if (!canvas || !context) {
+        elements.body.classList.add('effects-lite');
+        return;
+    }
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let horizon = 0;
+    let waveLayers = [];
+    let glints = [];
+    let skyLights = [];
+    let animationFrame = 0;
+    let lastFrame = 0;
+    let pointerX = 0;
+    let pointerY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let resizeTimer = 0;
+    let palette = {};
+
+    const refreshPalette = () => {
+        const styles = getComputedStyle(elements.html);
+        const value = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+        palette = {
+            wave: value('--canvas-wave-rgb', '108, 166, 181'),
+            highlight: value('--canvas-highlight-rgb', '188, 215, 218'),
+            glint: value('--canvas-glint-rgb', '200, 224, 225'),
+            sky: value('--canvas-sky-rgb', '181, 211, 216'),
+            skyAlpha: Number.parseFloat(value('--canvas-sky-alpha', '1')) || 0
+        };
+    };
+
+    const createScene = () => {
+        horizon = height * 0.43;
+        const compact = width <= 720;
+        const layerCount = lowPowerDevice ? 5 : compact ? 7 : 11;
+        const waterDepth = Math.max(1, height - horizon);
+
+        waveLayers = Array.from({ length: layerCount }, (_, index) => {
+            const depth = index / Math.max(1, layerCount - 1);
+            return {
+                baseY: horizon + waterDepth * (0.08 + depth * 0.88),
+                amplitude: 1.4 + depth * 4.8,
+                wavelength: 82 + depth * 94,
+                speed: 0.00022 + depth * 0.00034,
+                phase: Math.random() * Math.PI * 2,
+                alpha: 0.1 + depth * 0.16,
+                lineWidth: 0.65 + depth * 0.85
+            };
+        });
+
+        const glintCount = lowPowerDevice ? 12 : compact ? 24 : 44;
+        glints = Array.from({ length: glintCount }, () => ({
+            x: Math.random(),
+            y: 0.46 + Math.random() * 0.5,
+            width: 4 + Math.random() * 18,
+            alpha: 0.08 + Math.random() * 0.22,
+            phase: Math.random() * Math.PI * 2,
+            depth: 0.35 + Math.random() * 0.65
+        }));
+
+        const skyCount = lowPowerDevice ? 12 : compact ? 18 : 30;
+        skyLights = Array.from({ length: skyCount }, () => ({
+            x: Math.random(),
+            y: 0.05 + Math.random() * 0.32,
+            radius: 0.25 + Math.random() * 0.65,
+            alpha: 0.14 + Math.random() * 0.34
+        }));
+    };
+
+    const resize = () => {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, lowPowerDevice ? 1 : 1.5);
+        canvas.width = Math.max(1, Math.floor(width * dpr));
+        canvas.height = Math.max(1, Math.floor(height * dpr));
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        context.setTransform(dpr, 0, 0, dpr, 0, 0);
+        createScene();
+    };
+
+    const updateParallax = () => {
+        if (!elements.galaxyStage) return;
+        elements.galaxyStage.style.setProperty('--parallax-x', `${pointerX * 3}px`);
+        elements.galaxyStage.style.setProperty('--parallax-y', `${pointerY * 2}px`);
+        elements.galaxyStage.style.setProperty('--parallax-far-x', `${pointerX * -2}px`);
+        elements.galaxyStage.style.setProperty('--parallax-far-y', `${pointerY * -1.5}px`);
+    };
+
+    const drawSky = time => {
+        if (palette.skyAlpha <= 0) return;
+        skyLights.forEach(light => {
+            const pulse = reducedMotion ? 1 : 0.82 + Math.sin(time * 0.00045 + light.x * 18) * 0.18;
+            context.beginPath();
+            context.fillStyle = `rgba(${palette.sky}, ${light.alpha * pulse * palette.skyAlpha})`;
+            context.arc(light.x * width + pointerX * 2, light.y * height + pointerY, light.radius, 0, Math.PI * 2);
+            context.fill();
+        });
+    };
+
+    const drawWaves = time => {
+        waveLayers.forEach((wave, index) => {
+            const gradient = context.createLinearGradient(0, 0, width, 0);
+            gradient.addColorStop(0, `rgba(${palette.wave}, 0)`);
+            gradient.addColorStop(0.22, `rgba(${palette.wave}, ${wave.alpha * 0.72})`);
+            gradient.addColorStop(0.5, `rgba(${palette.highlight}, ${wave.alpha})`);
+            gradient.addColorStop(0.78, `rgba(${palette.wave}, ${wave.alpha * 0.62})`);
+            gradient.addColorStop(1, `rgba(${palette.wave}, 0)`);
+
+            context.beginPath();
+            const step = lowPowerDevice ? 36 : 22;
+            for (let x = -step; x <= width + step; x += step) {
+                const phase = x / wave.wavelength + time * wave.speed + wave.phase;
+                const cross = Math.sin(x / (wave.wavelength * 0.57) - time * wave.speed * 0.48 + index) * wave.amplitude * 0.28;
+                const y = wave.baseY
+                    + Math.sin(phase) * wave.amplitude
+                    + cross
+                    + pointerY * (index / Math.max(1, waveLayers.length - 1)) * 2.5;
+                if (x === -step) context.moveTo(x, y);
+                else context.lineTo(x, y);
+            }
+            context.strokeStyle = gradient;
+            context.lineWidth = wave.lineWidth;
+            context.stroke();
+        });
+
+        glints.forEach(glint => {
+            const shimmer = reducedMotion ? 1 : 0.5 + Math.sin(time * 0.0011 + glint.phase) * 0.5;
+            const x = glint.x * width + pointerX * glint.depth * 5;
+            const y = glint.y * height + Math.sin(time * 0.00035 + glint.phase) * glint.depth * 2;
+            context.beginPath();
+            context.moveTo(x - glint.width / 2, y);
+            context.lineTo(x + glint.width / 2, y);
+            context.strokeStyle = `rgba(${palette.glint}, ${glint.alpha * shimmer})`;
+            context.lineWidth = 0.7;
+            context.stroke();
+        });
+    };
+
+    const draw = time => {
+        if (!reducedMotion && !lowPowerDevice && time - lastFrame < 34) {
+            animationFrame = requestAnimationFrame(draw);
+            return;
+        }
+        lastFrame = time;
+        pointerX += (targetX - pointerX) * 0.04;
+        pointerY += (targetY - pointerY) * 0.04;
+        updateParallax();
+        context.clearRect(0, 0, width, height);
+        drawSky(time);
+        drawWaves(time);
+        if (!reducedMotion && !lowPowerDevice && !document.hidden) animationFrame = requestAnimationFrame(draw);
+    };
+
+    const start = () => {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = requestAnimationFrame(draw);
+    };
+
+    refreshPalette();
+    resize();
+    start();
+
+    document.addEventListener('site-theme-change', () => {
+        refreshPalette();
+        if (reducedMotion || lowPowerDevice) draw(0);
+    });
+
+    window.addEventListener('resize', () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
+            resize();
+            if (reducedMotion || lowPowerDevice) draw(0);
+        }, 120);
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) cancelAnimationFrame(animationFrame);
+        else if (!reducedMotion && !lowPowerDevice) start();
+    });
+
+    motionQuery.addEventListener('change', event => {
+        reducedMotion = event.matches;
+        elements.body.classList.toggle('effects-lite', reducedMotion || Boolean(lowPowerDevice));
+        elements.body.classList.remove('is-warping');
+        if (reducedMotion || lowPowerDevice) {
+            cancelAnimationFrame(animationFrame);
+            draw(0);
+        } else if (!document.hidden) {
+            start();
+        }
+    });
+
+    if (finePointerQuery.matches && !lowPowerDevice && elements.galaxyStage) {
+        elements.galaxyStage.addEventListener('pointermove', event => {
+            const rect = elements.galaxyStage.getBoundingClientRect();
+            targetX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+            targetY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+        }, { passive: true });
+        elements.galaxyStage.addEventListener('pointerleave', () => {
+            targetX = 0;
+            targetY = 0;
+        }, { passive: true });
+    }
+
+    if (reducedMotion || lowPowerDevice) {
+        cancelAnimationFrame(animationFrame);
+        draw(0);
+    }
+}
+
 setTheme(isDarkTheme(), false);
 initializeSearchIndex();
 bindEvents();
-initStarfield();
+initSeascape();
 
 const initialSlug = getHashSlug();
 if (initialSlug && !SECTION_BY_SLUG[initialSlug]) history.replaceState(null, '', '#home');
