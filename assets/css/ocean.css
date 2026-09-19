@@ -80,6 +80,7 @@ html[data-theme="light"] {
 }
 
 body {
+    min-width: 0;
     background:
         linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 36%, var(--horizon) 43%, var(--sea-mid) 44%, var(--sea-near) 100%);
 }
@@ -210,12 +211,12 @@ body {
     position: absolute;
     z-index: 1;
     top: 43%;
-    right: 0;
-    left: 0;
-    height: 2px;
-    opacity: 0.48;
-    background: linear-gradient(90deg, transparent 3%, rgba(161, 199, 207, 0.38) 35%, rgba(213, 226, 226, 0.54) 50%, rgba(161, 199, 207, 0.3) 70%, transparent 97%);
-    box-shadow: 0 5px 14px rgba(126, 178, 189, 0.08);
+    right: 8%;
+    left: 8%;
+    height: 1px;
+    opacity: 0.24;
+    background: linear-gradient(90deg, transparent, rgba(133, 177, 191, 0.2) 35%, rgba(159, 194, 205, 0.3) 50%, rgba(133, 177, 191, 0.18) 70%, transparent);
+    box-shadow: none;
     pointer-events: none;
 }
 
@@ -337,6 +338,8 @@ html[data-theme="light"] .button-link.primary {
     --vessel-hull: var(--hull-color);
     --vessel-flag: var(--flag-color);
     --vessel-flag-stroke: var(--flag-stroke);
+    top: var(--vessel-y);
+    left: var(--vessel-x);
     width: 15rem;
     min-height: 11rem;
     pointer-events: auto;
@@ -345,36 +348,36 @@ html[data-theme="light"] .button-link.primary {
 .vessel-cv {
     --vessel-width: 9.2rem;
     --vessel-angle: 4deg;
-    top: 46%;
-    left: 14%;
+    --vessel-y: 46%;
+    --vessel-x: 14%;
 }
 
 .vessel-research {
     --vessel-width: 13.2rem;
     --vessel-angle: -5deg;
-    top: 44%;
-    left: 82%;
+    --vessel-y: 44%;
+    --vessel-x: 82%;
 }
 
 .vessel-teaching {
     --vessel-width: 10.3rem;
     --vessel-angle: -2deg;
-    top: 62%;
-    left: 88%;
+    --vessel-y: 72%;
+    --vessel-x: 86%;
 }
 
 .vessel-talks {
     --vessel-width: 11.4rem;
     --vessel-angle: 5deg;
-    top: 73%;
-    left: 17%;
+    --vessel-y: 73%;
+    --vessel-x: 17%;
 }
 
 .vessel-notes {
     --vessel-width: 9.4rem;
     --vessel-angle: -4deg;
-    top: 82%;
-    left: 69%;
+    --vessel-y: 86%;
+    --vessel-x: 62%;
 }
 
 .vessel-cv { --vessel-flag: #76a9c2; }
@@ -797,9 +800,9 @@ html[data-theme="light"] .voyage-stage::before {
 }
 
 html[data-theme="light"] .sea-horizon {
-    opacity: 0.74;
-    background: linear-gradient(90deg, transparent 3%, rgba(255, 255, 255, 0.46) 26%, rgba(255, 255, 255, 0.92) 50%, rgba(255, 255, 255, 0.4) 74%, transparent 97%);
-    box-shadow: 0 5px 16px rgba(255, 255, 255, 0.24);
+    opacity: 0.28;
+    background: linear-gradient(90deg, transparent, rgba(213, 235, 243, 0.2) 30%, rgba(225, 243, 248, 0.32) 50%, rgba(213, 235, 243, 0.18) 72%, transparent);
+    box-shadow: none;
 }
 
 html[data-theme="light"] .moon-path {
@@ -1032,10 +1035,9 @@ html[data-theme="light"] .voyage-transition .voyage-foam {
 }
 
 @media (max-width: 1179px) {
-    .vessel-cv { left: 13%; }
-    .vessel-research { left: 85%; }
-    .vessel-teaching { left: 90%; }
-    .vessel-talks { left: 13%; }
+    .vessel-cv { --vessel-x: 13%; }
+    .vessel-research { --vessel-x: 85%; }
+    .vessel-talks { --vessel-x: 13%; }
 }
 
 /* The same sea and vessels remain on tablets and phones; only their chart positions change. */
@@ -1082,6 +1084,8 @@ html[data-theme="light"] .voyage-transition .voyage-foam {
     .js .vessel,
     .js .site-ready .vessel {
         position: absolute;
+        top: var(--vessel-y);
+        left: var(--vessel-x);
         width: 13rem;
         min-height: 9.5rem;
         padding: 0;
@@ -1097,11 +1101,11 @@ html[data-theme="light"] .voyage-transition .voyage-foam {
         animation: none;
     }
 
-    .vessel-cv { --vessel-width: 8.5rem; top: 49%; left: 22%; grid-column: auto; grid-row: auto; }
-    .vessel-research { --vessel-width: 10.5rem; top: 47%; left: 76%; grid-column: auto; grid-row: auto; }
-    .vessel-teaching { --vessel-width: 9rem; top: 68%; left: 76%; grid-column: auto; grid-row: auto; }
-    .vessel-talks { --vessel-width: 9.5rem; top: 70%; left: 23%; grid-column: auto; grid-row: auto; }
-    .vessel-notes { --vessel-width: 8.5rem; top: 87%; left: 50%; grid-column: auto; grid-row: auto; }
+    .vessel-cv { --vessel-width: 8.5rem; --vessel-y: 49%; --vessel-x: 22%; grid-column: auto; grid-row: auto; }
+    .vessel-research { --vessel-width: 10.5rem; --vessel-y: 47%; --vessel-x: 76%; grid-column: auto; grid-row: auto; }
+    .vessel-teaching { --vessel-width: 9rem; --vessel-y: 68%; --vessel-x: 76%; grid-column: auto; grid-row: auto; }
+    .vessel-talks { --vessel-width: 9.5rem; --vessel-y: 70%; --vessel-x: 23%; grid-column: auto; grid-row: auto; }
+    .vessel-notes { --vessel-width: 8.5rem; --vessel-y: 87%; --vessel-x: 50%; grid-column: auto; grid-row: auto; }
 
     .vessel-graphic {
         width: var(--vessel-width);
@@ -1152,16 +1156,18 @@ html[data-theme="light"] .voyage-transition .voyage-foam {
         font-size: clamp(2.55rem, 12vw, 3.5rem);
     }
 
-    .vessel {
+    .vessel,
+    .js .vessel,
+    .js .site-ready .vessel {
         width: 10.5rem;
         min-height: 8.4rem;
     }
 
-    .vessel-cv { --vessel-width: 7.2rem; top: 48%; left: 24%; }
-    .vessel-research { --vessel-width: 8.8rem; top: 46%; left: 74%; }
-    .vessel-teaching { --vessel-width: 7.7rem; top: 66%; left: 74%; }
-    .vessel-talks { --vessel-width: 8.1rem; top: 68%; left: 24%; }
-    .vessel-notes { --vessel-width: 7.4rem; top: 86%; left: 50%; }
+    .vessel-cv { --vessel-width: 7.2rem; --vessel-y: 48%; --vessel-x: 24%; }
+    .vessel-research { --vessel-width: 8.8rem; --vessel-y: 46%; --vessel-x: 74%; }
+    .vessel-teaching { --vessel-width: 7.7rem; --vessel-y: 66%; --vessel-x: 74%; }
+    .vessel-talks { --vessel-width: 8.1rem; --vessel-y: 68%; --vessel-x: 24%; }
+    .vessel-notes { --vessel-width: 7.4rem; --vessel-y: 86%; --vessel-x: 50%; }
 
     .vessel-copy strong { font-size: 0.76rem; }
     .vessel-copy span { font-size: 0.72rem; }
@@ -1177,11 +1183,11 @@ html[data-theme="light"] .voyage-transition .voyage-foam {
         min-height: 1280px;
     }
 
-    .vessel-cv { top: 43%; left: 31%; }
-    .vessel-research { top: 55%; left: 68%; }
-    .vessel-teaching { top: 67%; left: 31%; }
-    .vessel-talks { top: 79%; left: 68%; }
-    .vessel-notes { top: 91%; left: 34%; }
+    .vessel-cv { --vessel-y: 43%; --vessel-x: 31%; }
+    .vessel-research { --vessel-y: 55%; --vessel-x: 68%; }
+    .vessel-teaching { --vessel-y: 67%; --vessel-x: 31%; }
+    .vessel-talks { --vessel-y: 79%; --vessel-x: 68%; }
+    .vessel-notes { --vessel-y: 91%; --vessel-x: 34%; }
 }
 
 @media (hover: none), (pointer: coarse) {
