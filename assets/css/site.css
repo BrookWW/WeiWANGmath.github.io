@@ -2445,6 +2445,23 @@ html[data-theme="light"] .button-link.primary:hover {
     padding: 0.28rem 0.43rem;
 }
 
+.paper-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.45rem;
+}
+
+.paper-meta .paper-links a {
+    margin: 0;
+}
+
+.paper-meta > .paper-note {
+    display: block;
+    margin-top: 0.35rem;
+}
+
 .cv-entry {
     position: relative;
     padding: 1.25rem 0 1.25rem 1.25rem;
