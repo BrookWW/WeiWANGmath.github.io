@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mathematical targets, shared witnesses and two forms of verification | Wei Wang</title><link rel="stylesheet" href="../../vendor/katex/katex.min.css"><link rel="stylesheet" href="../../css/blog.css?v=20261023-math2"></head>
+<body class="diagram-page"><main><a class="diagram-return" href="../../../blog/harmonic-maps-in-lean/">← Back to article</a><svg id="diagram-proof-contract" class="diagram-canvas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 960" role="img" aria-labelledby="contract-title contract-desc">
+  <title id="contract-title">Mathematical targets, shared witnesses and two forms of verification</title>
+  <desc id="contract-desc">The regularity argument retains one representative across all derivative orders; the Luckhaus construction retains one connector whose traces, energy and distance estimates hold together. Formal proofs need both statement review, which checks that the type expresses the intended mathematics, and proof checking under declared axioms. These are separate obligations.</desc>
+  <defs>
+    <pattern id="contract-grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#c9dce9" stroke-opacity=".2"/></pattern>
+    <marker id="contract-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#407992" stroke-width="1.6" stroke-linejoin="round"/></marker>
+    <style>#diagram-proof-contract text { font-family: Inter, Arial, sans-serif; fill: #173b55; }#diagram-proof-contract .eyebrow { font-size: 20px; font-weight: 700; letter-spacing: 2px; fill: #3a718d; }#diagram-proof-contract .title { font-size: 32px; font-weight: 700; letter-spacing: -.5px; }#diagram-proof-contract .label { font-size: 22px; font-weight: 700; }#diagram-proof-contract .detail { font-size: 20px; fill: #496a7c; }#diagram-proof-contract .node { fill: #ffffff; stroke: #b9d2e0; stroke-width: 1.6; }#diagram-proof-contract .edge { fill: none; stroke: #407992; stroke-width: 2.2; marker-end: url(#contract-arrow); stroke-linecap: round; }
+    </style>
+  </defs>
+  <rect width="1040" height="960" rx="24" fill="#f7fbfd"/>
+  <rect x="1" y="1" width="1038" height="958" rx="23" fill="url(#contract-grid)" stroke="#d8e6ee"/>
+  <path d="M56 47H103" stroke="#237b88" stroke-width="4"/>
+  <text x="120" y="54" class="eyebrow">02 / THE PROOF CONTRACT</text>
+  <text x="56" y="105" class="title">Keep the conclusions attached to one witness.</text>
+  <text x="56" y="143" class="detail">The object being constructed is part of the mathematical interface.</text>
+
+  <rect x="56" y="190" width="288" height="52" rx="8" fill="#e9f2f7"/>
+  <rect x="376" y="190" width="288" height="52" rx="8" fill="#e5f3f2"/>
+  <rect x="696" y="190" width="288" height="52" rx="8" fill="#e9f2f7"/>
+  <text x="200" y="224" class="label" text-anchor="middle">Mathematical target</text>
+  <text x="520" y="224" class="label" text-anchor="middle" style="fill:#155961">Shared witness</text>
+  <text x="840" y="224" class="label" text-anchor="middle">Joint conclusions</text>
+
+  <text x="56" y="284" class="eyebrow">REGULARITY</text>
+  <path class="edge" d="M344 365H376"/>
+  <path class="edge" d="M664 365H696"/>
+  <rect class="node" x="56" y="306" width="288" height="120" rx="12"/>
+  <text x="80" y="346" class="label">Small scaled energy</text>
+  <text x="80" y="380" class="detail">An interior ball</text>
+  <text x="80" y="407" class="detail">A minimizing Sobolev map</text>
+  <rect x="376" y="306" width="288" height="120" rx="12" fill="#f0f8f7" stroke="#8ebdbd" stroke-width="1.6"/>
+  <foreignObject x="400" y="319" width="240" height="44"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#173b55;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:flex-start;text-align:left;width:100%;height:100%;line-height:1.35;white-space:nowrap;">One representative <span class="math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0269em;">w</span></span></span></span></span></div></foreignObject>
+  <foreignObject x="400" y="353" width="240" height="44"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:flex-start;text-align:left;width:100%;height:100%;line-height:1.35;white-space:nowrap;">Agrees with <span class="math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi></mrow><annotation encoding="application/x-tex">u</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal">u</span></span></span></span></span> a.e.</div></foreignObject>
+  <text x="400" y="407" class="detail">Same map, every order</text>
+  <rect class="node" x="696" y="306" width="288" height="120" rx="12"/>
+  <text x="720" y="346" class="label">Smoothness &amp; bounds</text>
+  <foreignObject x="720" y="353" width="240" height="44"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:flex-start;text-align:left;width:100%;height:100%;line-height:1.35;white-space:nowrap;">One threshold <span class="math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ε</mi><mo>∗</mo></msub></mrow><annotation encoding="application/x-tex">\varepsilon_*</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ε</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1757em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></div></foreignObject>
+  <text x="720" y="407" class="detail">All derivative orders</text>
+
+  <text x="56" y="478" class="eyebrow">LUCKHAUS INTERPOLATION</text>
+  <path class="edge" d="M344 560H376"/>
+  <path class="edge" d="M664 560H696"/>
+  <rect class="node" x="56" y="502" width="288" height="120" rx="12"/>
+  <text x="80" y="542" class="label">Two Sobolev traces</text>
+  <text x="80" y="576" class="detail">Thin-cylinder data</text>
+  <foreignObject x="80" y="576" width="240" height="44"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:flex-start;text-align:left;width:100%;height:100%;line-height:1.35;white-space:nowrap;"><span class="math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>ϵ</mi><mo>&lt;</mo><mn>1</mn><mi mathvariant="normal">/</mi><mn>8</mn></mrow><annotation encoding="application/x-tex">0&lt;\epsilon&lt;1/8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6835em;vertical-align:-0.0391em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">ϵ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1/8</span></span></span></span></span></div></foreignObject>
+  <rect x="376" y="502" width="288" height="120" rx="12" fill="#f0f8f7" stroke="#8ebdbd" stroke-width="1.6"/>
+  <foreignObject x="400" y="515" width="240" height="44"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#173b55;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:flex-start;text-align:left;width:100%;height:100%;line-height:1.35;white-space:nowrap;">One connector <span class="math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0269em;">w</span></span></span></span></span></div></foreignObject>
+  <text x="400" y="576" class="detail">Shared gluing data</text>
+  <text x="400" y="603" class="detail">Coherent weak gradients</text>
+  <rect class="node" x="696" y="502" width="288" height="120" rx="12"/>
+  <text x="720" y="542" class="label">Joint guarantees</text>
+  <text x="720" y="576" class="detail">Traces + energy control</text>
+  <text x="720" y="603" class="detail">Distance-to-target control</text>
+
+  <path d="M56 666H984" stroke="#cfdee7" stroke-width="1.4"/>
+  <text x="56" y="708" class="label">Two checks, two questions</text>
+  <rect x="56" y="738" width="448" height="150" rx="12" fill="#ffffff" stroke="#b9d2e0" stroke-width="1.6"/>
+  <path d="M56 761V865" stroke="#4c8ca8" stroke-width="4"/>
+  <text x="82" y="779" class="label">Statement review</text>
+  <text x="82" y="817" class="detail">Does the type express the intended</text>
+  <text x="82" y="846" class="detail">mathematical statement?</text>
+  <rect x="536" y="738" width="448" height="150" rx="12" fill="#ffffff" stroke="#b9d2e0" stroke-width="1.6"/>
+  <path d="M536 761V865" stroke="#237b88" stroke-width="4"/>
+  <text x="562" y="779" class="label">Proof checking</text>
+  <text x="562" y="817" class="detail">Does the proof justify that type</text>
+  <text x="562" y="846" class="detail">under the declared axioms?</text>
+  <text x="56" y="931" class="detail">Semantic fidelity and proof-term validity are separate obligations.</text>
+</svg>
+</main></body></html>

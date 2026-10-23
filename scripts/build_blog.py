@@ -1,11 +1,14 @@
-"""Build static blog pages, native MathML, feeds, and search data."""
+"""Build static blog pages, LaTeX HTML, diagram pages, feeds, and search data."""
 
 from __future__ import annotations
 
 import html
 import json
 import math
+import os
 import re
+import shutil
+import subprocess
 from datetime import date, datetime, time, timedelta, timezone
 from email.utils import format_datetime
 from html.parser import HTMLParser
@@ -15,7 +18,6 @@ from xml.sax.saxutils import escape as xml_escape
 
 try:
     import markdown
-    from latex2mathml.converter import convert as latex_to_mathml
 except ImportError as error:
     raise SystemExit(
         "Blog dependencies are missing. Install requirements-blog.txt before building."
@@ -25,7 +27,7 @@ except ImportError as error:
 ROOT = Path(__file__).resolve().parents[1]
 BLOG = ROOT / "blog"
 BASE_URL = "https://brookww.github.io/WeiWANGmath.github.io/"
-ASSET_VERSION = "20261023"
+ASSET_VERSION = "20261023-math2"
 
 
 class TextContent(HTMLParser):
@@ -33,17 +35,23 @@ class TextContent(HTMLParser):
         super().__init__()
         self.parts: list[str] = []
         self.skip = 0
+        self.hidden_math_depth = 0
 
     def handle_starttag(self, tag, attrs):
+        if tag == "span":
+            if self.hidden_math_depth or "katex-html" in dict(attrs).get("class", "").split():
+                self.hidden_math_depth += 1
         if tag in {"annotation", "script", "style"}:
             self.skip += 1
 
     def handle_endtag(self, tag):
+        if tag == "span" and self.hidden_math_depth:
+            self.hidden_math_depth -= 1
         if tag in {"annotation", "script", "style"}:
             self.skip = max(0, self.skip - 1)
 
     def handle_data(self, data):
-        if not self.skip:
+        if not self.skip and not self.hidden_math_depth:
             self.parts.append(data)
 
 
@@ -97,27 +105,46 @@ MATH_OR_CODE = re.compile(
 )
 
 
-def render_article(source: str) -> tuple[str, str]:
-    equations: list[tuple[str, str, bool]] = []
+def protect_math(source: str) -> tuple[str, list[tuple[str, str, bool]]]:
+    equations = []
 
     def replace_math(match):
         if match.group("code"):
             return match.group(0)
         block = bool(match.group("display"))
         delimiter = 2 if block else 1
-        latex = match.group(0)[delimiter:-delimiter].strip()
+        latex = html.unescape(match.group(0)[delimiter:-delimiter].strip())
         token = f"BLOGMATHPLACEHOLDER{len(equations):05d}END"
-        mathml = latex_to_mathml(latex, display="block" if block else "inline")
-        if "<merror" in mathml:
-            raise ValueError(f"Cannot render equation: {latex}")
-        if block:
-            rendered = f'<div class="math-display" tabindex="0" aria-label="Mathematical expression">{mathml}</div>'
-        else:
-            rendered = f'<span class="math-inline">{mathml}</span>'
-        equations.append((token, rendered, block))
+        equations.append((token, latex, block))
         return token
 
     protected = MATH_OR_CODE.sub(replace_math, source)
+    if not equations:
+        return protected, []
+    node = os.environ.get("BLOG_NODE") or shutil.which("node")
+    if not node:
+        raise SystemExit("Node.js is required to build LaTeX HTML. Set BLOG_NODE if node is not on PATH.")
+    result = subprocess.run(
+        [node, str(ROOT / "scripts/render_math.cjs")],
+        input=json.dumps([{"latex": latex, "display": block} for _, latex, block in equations]),
+        text=True, capture_output=True, check=True,
+    )
+    rendered_equations = []
+    markup_list = json.loads(result.stdout)
+    if len(markup_list) != len(equations):
+        raise ValueError("Mathematical renderer returned an unexpected equation count")
+    for (token, _, block), markup in zip(equations, markup_list):
+        if block:
+            rendered = f'<div class="math-display" tabindex="0" aria-label="Mathematical expression">{markup}</div>'
+        else:
+            rendered = f'<span class="math-inline">{markup}</span>'
+        rendered_equations.append((token, rendered, block))
+    return protected, rendered_equations
+
+
+def render_article(source: str) -> tuple[str, str]:
+    source = inline_diagrams(source)
+    protected, equations = protect_math(source)
     parser = markdown.Markdown(
         extensions=["extra", "sane_lists", "toc"],
         extension_configs={"toc": {"toc_depth": "2-3", "permalink": False}},
@@ -133,6 +160,40 @@ def render_article(source: str) -> tuple[str, str]:
     if "BLOGMATHPLACEHOLDER" in body or "BLOGMATHPLACEHOLDER" in toc:
         raise ValueError("Unresolved mathematical expression")
     return body, toc
+
+
+def inline_diagrams(source: str) -> str:
+    pattern = re.compile(r'<a class="figure-link" href="(?P<href>[^"]+\.svg)"[^>]*><img[^>]*></a>')
+
+    def replace(match):
+        resource = (BLOG / "content" / match["href"]).resolve()
+        asset_root = (ROOT / "assets/blog").resolve()
+        if not resource.is_relative_to(asset_root):
+            raise ValueError(f"Invalid diagram path: {match['href']}")
+        diagram_source = BLOG / "diagrams" / resource.parent.name / resource.name
+        svg = diagram_source.read_text(encoding="utf-8")
+        title = re.search(r'<title[^>]*>(.*?)</title>', svg).group(1)
+        identifier = "diagram-" + resource.stem
+        svg = svg.replace('<svg ', f'<svg id="{identifier}" class="diagram-canvas" ', 1)
+        svg = re.sub(r'<style>(.*?)</style>', lambda style: '<style>' + re.sub(
+            r'([^{}]+)\{', lambda rule: ', '.join(f'#{identifier} {selector.strip()}' for selector in rule[1].split(',')) + ' {',
+            style[1],
+        ) + '</style>', svg, flags=re.DOTALL)
+        protected, equations = protect_math(svg)
+        for token, markup, _ in equations:
+            protected = protected.replace(token, markup)
+        svg_assets = '<style>@import url("../../vendor/katex/katex.min.css"); .math-inline > .katex { font-size:1.05em; } foreignObject > div { column-gap:0.22em; }</style>'
+        # Place document styles at the outer SVG level, after any nested math SVGs.
+        exported_svg = protected.rsplit('</svg>', 1)[0] + svg_assets + '</svg>'
+        resource.write_text(exported_svg, encoding="utf-8")
+        original = resource.with_suffix(".html")
+        original.write_text(f'''<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title} | Wei Wang</title><link rel="stylesheet" href="../../vendor/katex/katex.min.css"><link rel="stylesheet" href="../../css/blog.css?v={ASSET_VERSION}"></head>
+<body class="diagram-page"><main><a class="diagram-return" href="../../../blog/{resource.parent.name}/">← Back to article</a>{protected}</main></body></html>''', encoding="utf-8")
+        return f'<a class="figure-link" href="{match["href"][:-4]}.html" target="_blank" rel="noopener" aria-label="Enlarge diagram: {text(html.unescape(title))}">{protected}</a>'
+
+    return pattern.sub(replace, source)
 
 
 def long_date(value: str) -> str:
@@ -188,6 +249,7 @@ def page(title: str, description: str, canonical: str, root: str, blog_home: str
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{root}assets/vendor/katex/katex.min.css">
   <link rel="stylesheet" href="{root}assets/css/blog.css?v={ASSET_VERSION}">
   {structured_script}
 </head>
@@ -210,7 +272,6 @@ def render_listing(posts: list[dict]) -> str:
     for number, post in enumerate(posts, start=1):
         search = " ".join([post["title"], post["summary"], post["body_text"], *post["tags"]])
         tag_markup = "".join(f"<span>{text(tag)}</span>" for tag in post["tags"])
-        visual = f'<div class="post-visual" aria-hidden="true"><img src="../{text(post["image"])}" alt="" width="600" height="420" loading="lazy"></div>' if post.get("image") else ""
         cards.append(f'''<article class="post-card" data-search="{text(search)}" data-tags="{text(json.dumps(post['tags']))}">
   <a class="post-card-link" href="{post['slug']}/">
     <div class="post-content">
@@ -219,7 +280,7 @@ def render_listing(posts: list[dict]) -> str:
       <p class="post-summary">{text(post['summary'])}</p>
       <div class="post-tags">{tag_markup}</div>
       <div class="post-footer"><span>About {post['reading_minutes']} min read</span><span class="post-arrow">Read article <span aria-hidden="true">↗</span></span></div>
-    </div>{visual}
+    </div>
   </a>
 </article>''')
     filters = '<button type="button" data-blog-tag="" aria-pressed="true">All articles</button>' + "".join(

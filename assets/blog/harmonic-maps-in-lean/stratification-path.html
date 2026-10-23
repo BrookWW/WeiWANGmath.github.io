@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How regularity and interpolation lead to stratification | Wei Wang</title><link rel="stylesheet" href="../../vendor/katex/katex.min.css"><link rel="stylesheet" href="../../css/blog.css?v=20261023-math2"></head>
+<body class="diagram-page"><main><a class="diagram-return" href="../../../blog/harmonic-maps-in-lean/">← Back to article</a><svg id="diagram-stratification-path" class="diagram-canvas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 1210" role="img" aria-labelledby="stratification-title stratification-desc">
+  <title id="stratification-title">How regularity and interpolation lead to stratification</title>
+  <desc id="stratification-desc">Two complementary inputs support interior stratification for minimizing harmonic maps. Small-energy regularity gives a singular density gap and preliminary Hausdorff nullity. Joint Luckhaus interpolation gives limit minimality and strong compactness. Actual tangent maps, their spines and moving-center density upper semicontinuity lead to plane concentration and Hausdorff covering bounds for strata defined using every actual tangent. In dimension three singularities have no interior accumulation; the separate dimension-two endpoint has no singularities.</desc>
+  <defs>
+    <pattern id="stratification-grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#c9dce9" stroke-opacity=".22"/></pattern>
+    <marker id="stratification-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#407992" stroke-width="1.6" stroke-linejoin="round"/></marker>
+    <style>#diagram-stratification-path text { font-family: Inter, Arial, sans-serif; fill: #173b55; }#diagram-stratification-path .eyebrow { font-size: 20px; font-weight: 700; letter-spacing: 2px; fill: #3a718d; }#diagram-stratification-path .title { font-size: 32px; font-weight: 700; letter-spacing: -.5px; }#diagram-stratification-path .label { font-size: 24px; font-weight: 700; }#diagram-stratification-path .detail { font-size: 20px; fill: #496a7c; }#diagram-stratification-path .node { fill: #ffffff; stroke: #b9d2e0; stroke-width: 1.6; }#diagram-stratification-path .edge { fill: none; stroke: #407992; stroke-width: 2.2; marker-end: url(#stratification-arrow); stroke-linecap: round; stroke-linejoin: round; }#diagram-stratification-path .shared { fill: none; stroke: #789fb3; stroke-width: 2; stroke-dasharray: 6 7; marker-end: url(#stratification-arrow); stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect width="1040" height="1210" rx="24" fill="#f7fbfd"/>
+  <rect x="1" y="1" width="1038" height="1208" rx="23" fill="url(#stratification-grid)" stroke="#d8e6ee"/>
+  <path d="M56 47H103" stroke="#237b88" stroke-width="4"/>
+  <text x="120" y="54" class="eyebrow">03 / STRATIFICATION</text>
+  <text x="56" y="105" class="title">Regularity becomes geometric control.</text>
+  <text x="56" y="143" class="detail">Interior minimizing maps · strata use every actual tangent</text>
+
+  <path class="edge" d="M271 288V340"/>
+  <path class="edge" d="M769 288V340"/>
+  <path class="edge" d="M554 396H520V560H486"/>
+  <path class="edge" d="M769 452V504"/>
+  <path class="edge" d="M271 616V668"/>
+  <path class="edge" d="M769 616V668"/>
+  <path class="edge" d="M486 724H554"/>
+  <path class="shared" d="M56 396H28V724H56"/>
+  <path class="shared" d="M28 724V914H188"/>
+  <path class="edge" d="M271 780V814H408V850"/>
+  <path class="edge" d="M769 780V814H632V850"/>
+
+  <rect x="56" y="176" width="430" height="112" rx="12" fill="#eaf4f8" stroke="#aacbdc" stroke-width="1.6"/>
+  <text x="84" y="218" class="label">Small-energy regularity</text>
+  <text x="84" y="255" class="detail">A proved input from the first project</text>
+  <rect x="554" y="176" width="430" height="112" rx="12" fill="#eaf4f8" stroke="#aacbdc" stroke-width="1.6"/>
+  <text x="582" y="218" class="label">Joint Luckhaus interpolation</text>
+  <text x="582" y="255" class="detail">One connector: traces, energy, distance</text>
+
+  <rect class="node" x="56" y="340" width="430" height="112" rx="12"/>
+  <text x="84" y="379" class="label">Singular density gap</text>
+  <text x="84" y="413" class="detail">Regularity ↔ zero density</text>
+  <text x="84" y="439" class="detail">Preliminary Hausdorff nullity</text>
+  <rect class="node" x="554" y="340" width="430" height="112" rx="12"/>
+  <text x="582" y="382" class="label">Strong local compactness</text>
+  <text x="582" y="419" class="detail">Limit minimality + energy convergence</text>
+
+  <rect class="node" x="56" y="504" width="430" height="112" rx="12"/>
+  <text x="84" y="543" class="label">Actual tangent maps</text>
+  <text x="84" y="577" class="detail">Prescribed shrinking scales</text>
+  <text x="84" y="603" class="detail">Strong limits · proved homogeneity</text>
+  <rect class="node" x="554" y="504" width="430" height="112" rx="12"/>
+  <text x="582" y="543" class="label">Density upper semicontinuity</text>
+  <text x="582" y="577" class="detail">Includes moving centers</text>
+  <text x="582" y="603" class="detail">Uses the prescribed weak limit</text>
+
+  <rect class="node" x="56" y="668" width="430" height="112" rx="12"/>
+  <text x="84" y="707" class="label">Linear spines</text>
+  <text x="84" y="741" class="detail">Maximal-density set</text>
+  <text x="84" y="767" class="detail">Translation invariance · dimension bound</text>
+  <rect class="node" x="554" y="668" width="430" height="112" rx="12"/>
+  <text x="582" y="707" class="label">Concentration near a plane</text>
+  <text x="582" y="741" class="detail">High-density points at small scales</text>
+  <text x="582" y="767" class="detail">Density pieces + affine coverings</text>
+
+  <rect x="188" y="850" width="664" height="128" rx="14" fill="#e5f3f2" stroke="#428c91" stroke-width="2"/>
+  <path d="M216 850H824" stroke="#237b88" stroke-width="4"/>
+  <text x="520" y="890" class="label" text-anchor="middle" style="fill:#155961">Hausdorff bounds for universal strata</text>
+  <foreignObject x="188" y="896" width="664" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#173b55;font-size:26px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;"><span class="math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi>dim</mi><mo>⁡</mo></mrow><mi mathvariant="normal">H</mi></msub><msub><mi>S</mi><mi>j</mi></msub><mo stretchy="false">(</mo><mi>u</mi><mo stretchy="false">)</mo><mo>≤</mo><mi>j</mi><mo separator="true">,</mo><mspace width="1em"/><mn>0</mn><mo>≤</mo><mi>j</mi><mo>≤</mo><mi>n</mi><mo>−</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\dim_{\mathrm H}S_j(u)\leq j,\quad 0\leq j\leq n-3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mop"><span class="mop">dim</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathrm mtight">H</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0576em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0576em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0572em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0572em;">j</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0572em;">j</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span></div></foreignObject>
+  <foreignObject x="188" y="932" width="664" height="44"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">Consequently, <span class="math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi>dim</mi><mo>⁡</mo></mrow><mi mathvariant="normal">H</mi></msub><mi mathvariant="normal">Σ</mi><mo stretchy="false">(</mo><mi>u</mi><mo stretchy="false">)</mo><mo>≤</mo><mi>n</mi><mo>−</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\dim_{\mathrm H}\Sigma(u)\leq n-3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mop">dim</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathrm mtight">H</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">Σ</span><span class="mopen">(</span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span></div></foreignObject>
+
+  <path d="M56 1010H984" stroke="#cfdee7" stroke-width="1.4"/>
+  <rect x="56" y="1034" width="430" height="104" rx="12" fill="#eef5f9"/>
+  <foreignObject x="80" y="1046" width="382" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#173b55;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:flex-start;text-align:left;width:100%;height:100%;line-height:1.35;white-space:nowrap;"><span class="math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span></span>: <span class="math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Σ</mi><mo stretchy="false">(</mo><mi>u</mi><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="normal">∅</mi></mrow><annotation encoding="application/x-tex">\Sigma(u)=\varnothing</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Σ</span><span class="mopen">(</span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6633em;vertical-align:-0.0817em;"></span><span class="mord amsrm">∅</span></span></span></span></span></div></foreignObject>
+  <text x="80" y="1111" class="detail">Local energy + small-energy regularity</text>
+  <rect x="554" y="1034" width="430" height="104" rx="12" fill="#eef5f9"/>
+  <foreignObject x="578" y="1046" width="382" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#173b55;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:flex-start;text-align:left;width:100%;height:100%;line-height:1.35;white-space:nowrap;"><span class="math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">n=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span></span>: interior isolation</div></foreignObject>
+  <text x="578" y="1111" class="detail">No accumulation inside the domain</text>
+  <text x="56" y="1181" class="detail">Interior results only · no claim of global finiteness or rectifiability</text>
+</svg>
+</main></body></html>

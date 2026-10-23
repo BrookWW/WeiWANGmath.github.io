@@ -1,6 +1,7 @@
 """Check generated pages, local destinations, article assets, and feed metadata."""
 
 import json
+import re
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -38,6 +39,7 @@ def main():
     posts = json.loads((ROOT / "blog/posts.json").read_text())
     pages = [ROOT / "index.html", ROOT / "blog/index.html"]
     pages += [ROOT / "blog" / post["slug"] / "index.html" for post in posts]
+    pages += list((ROOT / "assets/blog").glob("*/*.html"))
     documents = {path.resolve(): Document(path) for path in pages}
     errors = []
     checked = 0
@@ -45,7 +47,7 @@ def main():
         label = path.relative_to(ROOT)
         errors.extend(f"{label}: duplicate id {value}" for value in document.duplicates)
         source = path.read_text(encoding="utf-8")
-        if "BLOGMATHPLACEHOLDER" in source or "<merror" in source:
+        if "BLOGMATHPLACEHOLDER" in source or "<merror" in source or 'class="katex-error"' in source:
             errors.append(f"{label}: unresolved mathematical expression")
         for link in document.links:
             url = urlsplit(link)
@@ -78,6 +80,10 @@ def main():
     search = json.loads((ROOT / "blog/search-index.json").read_text())
     if len(search) != len(posts):
         errors.append("Search article count does not match blog/posts.json")
+    katex_css = ROOT / "assets/vendor/katex/katex.min.css"
+    for resource in re.findall(r"url\(([^)]+)\)", katex_css.read_text()):
+        if not (katex_css.parent / resource.strip('"\'')).is_file():
+            errors.append(f"Missing KaTeX font: {resource}")
     for post in posts:
         if post.get("source_pdf"):
             pdf = ROOT / post["source_pdf"]

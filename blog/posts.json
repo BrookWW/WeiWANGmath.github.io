@@ -10,7 +10,6 @@
     "source": "harmonic-maps-in-lean.md",
     "source_date": "2026-10-17",
     "source_pdf": "assets/blog/harmonic-maps-in-lean/original-article.pdf",
-    "image": "assets/blog/harmonic-maps-in-lean/cover.svg",
     "repositories": [
       {
         "label": "Regularity code",

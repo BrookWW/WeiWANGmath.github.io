@@ -256,13 +256,43 @@
             scroller.tabIndex = 0;
             scroller.setAttribute('role', 'region');
             scroller.setAttribute('aria-label', 'Scrollable full-size diagram');
-            const image = document.createElement('img');
-            image.className = 'diagram-image';
-            image.draggable = false;
-            scroller.append(image);
             dialog.append(toolbar, scroller);
             body.append(dialog);
             let opener = null;
+            let detailNumber = 0;
+
+            const cloneDiagram = source => {
+                const clone = source.cloneNode(true);
+                const suffix = `-detail-${++detailNumber}`;
+                const identifiers = new Map();
+                const elements = [clone, ...clone.querySelectorAll('*')];
+                elements.forEach(element => {
+                    if (element.id) identifiers.set(element.id, element.id + suffix);
+                });
+                const replaceReferences = value => value.replace(/url\(\s*(['"]?)#([^)'"\s]+)\1\s*\)/g,
+                    (match, quote, id) => identifiers.has(id) ? `url(#${identifiers.get(id)})` : match);
+                elements.forEach(element => {
+                    if (element.id) element.id = identifiers.get(element.id);
+                    Array.from(element.attributes).forEach(attribute => {
+                        if (attribute.name === 'id') return;
+                        let value = replaceReferences(attribute.value);
+                        if (attribute.name === 'aria-labelledby' || attribute.name === 'aria-describedby') {
+                            value = value.split(/\s+/).map(id => identifiers.get(id) || id).join(' ');
+                        } else if ((attribute.name === 'href' || attribute.name === 'xlink:href') && value.startsWith('#')) {
+                            value = '#' + (identifiers.get(value.slice(1)) || value.slice(1));
+                        }
+                        if (value !== attribute.value) element.setAttribute(attribute.name, value);
+                    });
+                    if (element.localName === 'style') {
+                        element.textContent = replaceReferences(element.textContent).replace(/([^{}]+)\{/g,
+                            (match, selectors) => selectors.replace(/#([A-Za-z_][\w-]*)/g,
+                                (selector, id) => identifiers.has(id) ? `#${identifiers.get(id)}` : selector) + '{');
+                    }
+                });
+                clone.classList.add('diagram-image');
+                if (clone.localName === 'img') clone.draggable = false;
+                return clone;
+            };
 
             const resetScale = () => {
                 dialog.classList.remove('diagram-fit');
@@ -282,13 +312,16 @@
             dialog.addEventListener('close', () => {
                 body.classList.remove('diagram-open');
                 opener?.focus({ preventScroll: true });
-                image.removeAttribute('src');
+                scroller.replaceChildren();
             });
             figureLinks.forEach(link => {
-                const thumbnail = link.querySelector('img');
+                const thumbnail = link.querySelector('svg.diagram-canvas, img');
                 if (!thumbnail) return;
+                const description = thumbnail.getAttribute('aria-label')
+                    || thumbnail.querySelector('title')?.textContent
+                    || thumbnail.getAttribute('alt') || 'proof diagram';
                 link.setAttribute('aria-haspopup', 'dialog');
-                link.setAttribute('aria-label', `Enlarge diagram: ${thumbnail.alt || 'proof diagram'}`);
+                link.setAttribute('aria-label', `Enlarge diagram: ${description}`);
                 const caption = link.closest('figure')?.querySelector('figcaption');
                 if (caption && !caption.querySelector('.figure-enlarge-hint')) {
                     const hint = document.createElement('span');
@@ -301,9 +334,9 @@
                     event.preventDefault();
                     opener = link;
                     resetScale();
-                    image.alt = thumbnail.alt;
-                    image.src = link.href;
-                    const fullWidth = Math.max(1040, thumbnail.naturalWidth || 0);
+                    scroller.replaceChildren(cloneDiagram(thumbnail));
+                    const sourceWidth = thumbnail.viewBox?.baseVal.width || thumbnail.naturalWidth || 0;
+                    const fullWidth = Math.max(1040, sourceWidth);
                     dialog.style.setProperty('--diagram-width', `${fullWidth}px`);
                     originalLink.href = link.href;
                     dialog.showModal();

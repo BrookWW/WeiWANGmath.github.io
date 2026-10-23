@@ -323,16 +323,14 @@ html[data-theme="dark"] [data-blog-tag][aria-pressed="true"] { color: #06121e; }
 }
 .post-card-link {
     position: relative;
-    display: flex;
-    align-items: stretch;
-    gap: 2.25rem;
+    display: block;
     padding: clamp(1.4rem, 3vw, 2.5rem);
     color: inherit;
     text-decoration: none;
 }
 .post-card-link:hover { color: inherit; }
 .post-card-link:focus-visible { outline-offset: -6px; border-radius: 10px; }
-.post-content { flex: 1; min-width: 0; }
+.post-content { min-width: 0; }
 .post-kicker {
     display: flex;
     flex-wrap: wrap;
@@ -347,7 +345,7 @@ html[data-theme="dark"] [data-blog-tag][aria-pressed="true"] { color: #06121e; }
 }
 .post-kicker .post-type { color: var(--blog-accent); }
 .post-title {
-    max-width: 32ch;
+    max-width: 44ch;
     margin: 0 0 0.9rem;
     color: var(--blog-ink);
     font-family: var(--blog-serif);
@@ -358,7 +356,7 @@ html[data-theme="dark"] [data-blog-tag][aria-pressed="true"] { color: #06121e; }
     text-wrap: balance;
 }
 .post-summary {
-    max-width: 64ch;
+    max-width: 86ch;
     margin: 0 0 1.35rem;
     color: var(--blog-body);
     font-size: 0.93rem;
@@ -398,21 +396,6 @@ html[data-theme="dark"] [data-blog-tag][aria-pressed="true"] { color: #06121e; }
 }
 .post-arrow span:last-child { display: inline-block; transition: transform 180ms ease; }
 .post-card-link:hover .post-arrow span:last-child { transform: translateX(3px); }
-.post-visual {
-    position: relative;
-    display: grid;
-    place-items: center;
-    flex: 0 0 220px;
-    align-self: stretch;
-    min-width: 0;
-    min-height: 220px;
-    padding: 1rem;
-    border-radius: 7px;
-    border: 1px solid var(--blog-line-soft);
-    background: linear-gradient(145deg, var(--blog-tint), var(--blog-bg));
-    overflow: hidden;
-}
-.post-visual img, .post-visual svg { width: 100%; height: auto; display: block; }
 #blog-empty, .blog-notice {
     padding: 1.5rem 1.75rem;
     border: 1px solid var(--blog-line);
@@ -616,19 +599,30 @@ html[data-theme="dark"] .article-body .download-link { color: #06121e; }
 .callout h3, .theorem-box h3 { margin-top: 0; color: var(--blog-accent); }
 .callout > :last-child, .theorem-box > :last-child { margin-bottom: 0; }
 .callout-label, .theorem-label { display: block; margin-bottom: 0.6rem; color: var(--blog-accent); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; }
-.math-inline { font-size: 1.03em; }
+.math-inline { font-size: inherit; }
+.math-inline > .katex { font-size: 1.05em; }
 .math-display {
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     margin: 1.65rem 0;
     padding: 0.65rem 0.2rem;
-    font-size: 1.1em;
+    font-size: inherit;
     line-height: 1.8;
     scrollbar-width: thin;
 }
-.math-display math { display: block; width: max-content; min-width: 100%; padding-inline: 0.3rem; }
+.math-display > .katex-display {
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
+    text-align: center;
+}
+.math-display > .katex-display > .katex { font-size: 1.12em; text-align: center; }
 math { color: inherit; }
+.diagram-canvas foreignObject > div { column-gap: 0.22em; }
+.diagram-page main { width: 1040px; max-width: 100%; margin: 1.5rem auto; padding: 0 0.75rem; }
+.diagram-page .diagram-canvas { display: block; width: 100%; height: auto; }
+.diagram-return { display: inline-block; margin-bottom: 1.2rem; }
 .article-body code {
     padding: 0.13rem 0.3rem;
     border-radius: 3px;
@@ -678,7 +672,7 @@ math { color: inherit; }
 .article-body .table-scroll { max-width: 100%; overflow-x: auto; }
 .article-figure { margin: 2.3rem 0; }
 .article-figure > a { display: block; cursor: zoom-in; }
-.article-figure img, .article-figure svg {
+.article-figure img, .article-figure .diagram-canvas {
     display: block;
     width: 100%;
     height: auto;
@@ -694,6 +688,7 @@ math { color: inherit; }
 }
 .article-figure figcaption strong { color: var(--blog-body); }
 .article-figure .figure-link { font-family: var(--blog-sans); font-size: 0.72rem; }
+.diagram-canvas foreignObject .katex { font-size: 1.05em; }
 .article-figure > a:focus-visible { outline-offset: 5px; }
 .figure-enlarge-hint { display: block; margin-top: 0.5rem; color: var(--blog-accent); font-family: var(--blog-sans); font-size: 0.71rem; font-weight: 500; }
 .diagram-open { overflow: hidden; }
@@ -837,8 +832,6 @@ math { color: inherit; }
     .blog-hero { padding-top: 3.6rem; padding-bottom: 2.3rem; }
     .blog-toolbar { grid-template-columns: minmax(0, 1fr); }
     .blog-filters { justify-content: flex-start; }
-    .post-card-link { gap: 1.5rem; }
-    .post-visual { flex-basis: 165px; padding: 0.6rem; }
     .article-back { margin-top: 1.8rem; margin-bottom: 2rem; }
     .article-header { margin-bottom: 2rem; }
     .article-header h1 { max-width: 24ch; }
@@ -865,9 +858,7 @@ math { color: inherit; }
     .blog-eyebrow, .article-kicker { font-size: 0.62rem; letter-spacing: 0.12em; }
     .blog-hero { padding-top: 3rem; }
     .blog-intro { font-size: 1rem; }
-    .post-card-link { flex-direction: column-reverse; padding: 1.45rem; gap: 1.35rem; }
-    .post-visual { flex: auto; min-height: 0; height: 150px; padding: 0.75rem 1.5rem; }
-    .post-visual img, .post-visual svg { width: auto; height: 100%; max-width: 100%; object-fit: contain; }
+    .post-card-link { padding: 1.45rem; }
     .post-title { font-size: 1.7rem; max-width: none; }
     .post-summary { font-size: 0.88rem; }
     .post-footer { margin-top: 1.4rem; }
