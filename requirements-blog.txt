@@ -1,0 +1,2 @@
+Markdown==3.11.2
+latex2mathml==3.81.1

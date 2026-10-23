@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How a classical regularity proof becomes a reusable formal interface—and how that interface supports compactness, tangent maps, and singular-set stratification.">
+  <meta name="theme-color" content="#f5f9fc">
+  <title>From small energy to singular sets: formalizing harmonic maps in Lean | Wei Wang</title>
+  <link rel="canonical" href="https://brookww.github.io/WeiWANGmath.github.io/blog/harmonic-maps-in-lean/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="From small energy to singular sets: formalizing harmonic maps in Lean">
+  <meta property="og:description" content="How a classical regularity proof becomes a reusable formal interface—and how that interface supports compactness, tangent maps, and singular-set stratification.">
+  <meta property="og:url" content="https://brookww.github.io/WeiWANGmath.github.io/blog/harmonic-maps-in-lean/">
+  <meta property="og:site_name" content="Wei Wang · AI &amp; Mathematics">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" type="application/rss+xml" title="Wei Wang — Blog" href="../feed.xml">
+  <script>(()=>{let theme='light';try{theme=localStorage.getItem('theme')==='dark'?'dark':'light';}catch(error){}document.documentElement.dataset.theme=theme;document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#06121e':'#f5f9fc';})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/blog.css?v=20261023">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "From small energy to singular sets: formalizing harmonic maps in Lean", "description": "How a classical regularity proof becomes a reusable formal interface—and how that interface supports compactness, tangent maps, and singular-set stratification.", "author": {"@type": "Person", "name": "Wei Wang", "url": "https://brookww.github.io/WeiWANGmath.github.io/"}, "datePublished": "2026-10-23", "dateModified": "2026-10-23", "inLanguage": "en", "mainEntityOfPage": "https://brookww.github.io/WeiWANGmath.github.io/blog/harmonic-maps-in-lean/", "keywords": "AI4Math, Lean, Geometric analysis"}</script>
+</head>
+<body class="blog-article">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<div id="reading-progress" aria-hidden="true"></div>
+<header class="blog-header">
+  <div class="blog-shell header-inner">
+    <a class="brand" href="../../#home" aria-label="Wei Wang, academic homepage"><span class="brand-mark" aria-hidden="true">W</span><span>Wei Wang</span></a>
+    <nav class="blog-nav" id="blog-nav" aria-label="Main navigation"><a href="../../#home">Home</a>
+<a href="../../#cv">CV</a>
+<a href="../../#research">Research</a>
+<a href="../" class="active" aria-current="page">Blog</a>
+<a href="../../#teaching">Teaching</a>
+<a href="../../#talks">Talks</a>
+<a href="../../#notes">Notes</a></nav>
+    <div class="header-actions">
+      <button id="blog-theme-toggle" class="icon-button" type="button" aria-label="Switch color theme"><span data-theme-icon aria-hidden="true">☾</span></button>
+      <button id="blog-menu-toggle" class="icon-button" type="button" aria-label="Open navigation" aria-controls="blog-nav" aria-expanded="false"><span aria-hidden="true">☰</span></button>
+    </div>
+  </div>
+</header>
+<main class="blog-shell" id="main-content">
+  <a class="article-back" href="../"><span aria-hidden="true">←</span> Back to blog</a>
+  <header class="article-header">
+    <p class="article-kicker">Research notes <span>/ AI &amp; Mathematics</span></p>
+    <h1>From small energy to singular sets: formalizing harmonic maps in Lean</h1>
+    <p class="article-deck">How a classical regularity proof becomes a reusable formal interface—and how that interface supports compactness, tangent maps, and singular-set stratification.</p>
+    <div class="article-meta"><span>Wei Wang</span><time datetime="2026-10-23">October 23, 2026</time><span>About 15 min read</span></div>
+    <div class="article-tags"><a href="../?tag=AI4Math">AI4Math</a><a href="../?tag=Lean">Lean</a><a href="../?tag=Geometric%20analysis">Geometric analysis</a></div>
+    <div class="article-links"><a href="https://github.com/BrookWW/SchoenUhlenbeckSmallEnergyRegularityFormalization/tree/f3a3097025ab9ddd956859600211d1d4edf0654e">Regularity code <span aria-hidden="true">↗</span></a><a href="https://github.com/BrookWW/StratificationTheoryMinimizingHarmonicMapsFormalization/tree/ec9a869bad0457e931523ef5ef6d096d30602b75">Stratification code <span aria-hidden="true">↗</span></a><a href="#original-article">Original article <span aria-hidden="true">↓</span></a></div>
+  </header>
+  <div class="reading-layout">
+    <aside class="article-toc" aria-label="Article contents"><details open><summary>On this page</summary><nav><div class="toc">
+<ul>
+<li><a href="#small-energy">What small energy actually gives</a></li>
+<li><a href="#proof-selection">Choosing the proof before generating code</a></li>
+<li><a href="#analytic-upgrade">From a Hölder map to a smooth map</a></li>
+<li><a href="#shared-witnesses">The same witness must survive every step</a></li>
+<li><a href="#stratification">From regularity to the shape of singularities</a></li>
+<li><a href="#supervision">Where mathematical supervision mattered</a></li>
+<li><a href="#constants">Can an existential constant become a number?</a></li>
+<li><a href="#verification">What was checked</a></li>
+<li><a href="#lessons">What I would carry into the next project</a></li>
+<li><a href="#sources">Code and mathematical sources</a></li>
+<li><a href="#original-article">Original article</a></li>
+</ul>
+</div>
+</nav></details></aside>
+    <article class="article-body"><p class="lead">“Compare with a suitable competitor.” In an analysis proof, that phrase can fit on one line. In Lean, it opens a substantial list of obligations: construct the map, identify its weak derivatives, match its traces, preserve its target constraint, and prove that it belongs to the comparison class.</p>
+<p>Those obligations shaped my formalization of two classical results for energy-minimizing harmonic maps: small-energy regularity and singular-set stratification. The second development imports the first. Together, they connect a local estimate on a ball with a geometric description of where smoothness can fail.</p>
+<p>This post follows that connection. The central question is how to organize a proof so that its mathematical choices remain visible while an AI coding agent handles much of the formal implementation. The most useful decisions concerned the proof route, the objects shared between lemmas, and the induction needed to work in every dimension.</p>
+<div class="callout">
+<p><span class="callout-label">The two results, at a glance</span></p>
+<ul>
+<li><strong>Small energy:</strong> one smooth representative, with a single threshold that works for every derivative order.</li>
+<li><strong>Singular sets:</strong> that regularity theorem becomes an input to compactness, tangent maps, and classical Hausdorff-dimension bounds.</li>
+</ul>
+<p>The bridge is built from mathematical interfaces: the same map, the same connector, and precisely the assumptions the next argument needs.</p>
+</div>
+<h2 id="small-energy">What small energy actually gives</h2>
+<p>Fix <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>n</mi><mo>&#x02265;</mo><mn>2</mn></mrow></math></span> and a nonempty compact smooth embedded submanifold <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi><mo>&#x02282;</mo><msup><mi>&#x0211D;</mi><mi>q</mi></msup></mrow></math></span>, without boundary, with its induced metric. Let <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003A9;</mi><mo>&#x02282;</mo><msup><mi>&#x0211D;</mi><mi>n</mi></msup></mrow></math></span> be open. Here a minimizing map is an <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi></mrow></math></span>-valued <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>u</mi><mo>&#x02208;</mo><msubsup><mi>W</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">c</mi></mrow></mrow><mrow><mn>1</mn><mo>&#x0002C;</mo><mn>2</mn></mrow></msubsup><mo stretchy="false">&#x00028;</mo><mi>&#x003A9;</mi><mo>&#x0002C;</mo><msup><mi>&#x0211D;</mi><mi>q</mi></msup><mo stretchy="false">&#x00029;</mo></mrow></math></span> that minimizes energy on every ball compactly contained in <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003A9;</mi></mrow></math></span>, against <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi></mrow></math></span>-valued Sobolev competitors whose difference from <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>u</mi></mrow></math></span> lies in <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>W</mi><mn>0</mn><mrow><mn>1</mn><mo>&#x0002C;</mo><mn>2</mn></mrow></msubsup></mrow></math></span> on that ball.</p>
+<p>The normalization is</p>
+<div class="math-display" tabindex="0" aria-label="Mathematical expression"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>&#x00398;</mi><mi>u</mi></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo>&#x0002C;</mo><mi>r</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msup><mi>r</mi><mrow><mn>2</mn><mo>&#x02212;</mo><mi>n</mi></mrow></msup><msub><mo>&#x0222B;</mo><mrow><msub><mi>B</mi><mi>r</mi></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><mo stretchy="false">&#x0007C;</mo><mi>D</mi><mi>u</mi><msubsup><mo stretchy="false">&#x0007C;</mo><mrow><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">S</mi></mrow></mrow><mn>2</mn></msubsup><mspace width="0.167em" /><mi>d</mi><mi>x</mi><mo>&#x0002E;</mo></mrow></math></div>
+<p>There is no factor of one half. Scaling is built into this quantity: it measures the energy relevant to regularity at the scale of the ball.</p>
+<p>For each <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>n</mi><mo>&#x0002C;</mo><mi>N</mi></mrow></math></span>, the formalized theorem supplies <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B5;</mi><mo>&#x0002A;</mo></msub><mo>&#x0003E;</mo><mn>0</mn></mrow></math></span>, <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mo>&#x0003C;</mo><mi>&#x003B3;</mi><mo>&#x0003C;</mo><mn>1</mn></mrow></math></span>, and finite nonnegative constants <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mi>k</mi></msub></mrow></math></span>. If <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mrow><msub><mi>B</mi><mi>R</mi></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo stretchy="false">&#x00029;</mo></mrow><mo accent="true">&#x02015;</mo></mover><mo>&#x02282;</mo><mi>&#x003A9;</mi></mrow></math></span> and <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x00398;</mi><mi>u</mi></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo>&#x0002C;</mo><mi>R</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02264;</mo><msub><mi>&#x003B5;</mi><mo>&#x0002A;</mo></msub></mrow></math></span>, then <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>u</mi></mrow></math></span> has a unique continuous representative <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>w</mi></mrow></math></span> on <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>B</mi><mrow><mi>R</mi><mo>&#x0002F;</mo><mn>2</mn></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>. This representative is smooth, takes values in <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi></mrow></math></span>, and satisfies</p>
+<div class="math-display" tabindex="0" aria-label="Mathematical expression"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mo>sup</mo><mrow><msub><mi>B</mi><mrow><mi>R</mi><mo>&#x0002F;</mo><mn>2</mn></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><mo stretchy="false">&#x0007C;</mo><mi>w</mi><mo>&#x02212;</mo><mi>w</mi><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x0007C;</mo><mo>&#x02264;</mo><msub><mi>C</mi><mn>0</mn></msub><msqrt><mrow><msub><mi>&#x00398;</mi><mi>u</mi></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo>&#x0002C;</mo><mi>R</mi><mo stretchy="false">&#x00029;</mo></mrow></msqrt><mo>&#x0002E;</mo></mrow></math></div>
+<p>For every <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x02265;</mo><mn>1</mn></mrow></math></span>, it also satisfies</p>
+<div class="math-display" tabindex="0" aria-label="Mathematical expression"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>R</mi><mi>k</mi></msup><msub><mo>sup</mo><mrow><msub><mi>B</mi><mrow><mi>R</mi><mo>&#x0002F;</mo><mn>2</mn></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><mo fence="false" stretchy="false">&#x02016;</mo><msup><mi>D</mi><mi>k</mi></msup><mi>w</mi><mo fence="false" stretchy="false">&#x02016;</mo><mo>&#x02264;</mo><msub><mi>C</mi><mi>k</mi></msub><msqrt><mrow><msub><mi>&#x00398;</mi><mi>u</mi></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo>&#x0002C;</mo><mi>R</mi><mo stretchy="false">&#x00029;</mo></mrow></msqrt></mrow></math></div>
+<p>and</p>
+<div class="math-display" tabindex="0" aria-label="Mathematical expression"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>R</mi><mrow><mi>k</mi><mo>&#x0002B;</mo><mi>&#x003B3;</mi></mrow></msup><mo stretchy="false">[</mo><msup><mi>D</mi><mi>k</mi></msup><mi>w</mi><msub><mo stretchy="false">]</mo><mrow><mi>&#x003B3;</mi><mi>;</mi><msub><mi>B</mi><mrow><mi>R</mi><mo>&#x0002F;</mo><mn>2</mn></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><mo>&#x02264;</mo><msub><mi>C</mi><mi>k</mi></msub><msqrt><mrow><msub><mi>&#x00398;</mi><mi>u</mi></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo>&#x0002C;</mo><mi>R</mi><mo stretchy="false">&#x00029;</mo></mrow></msqrt><mo>&#x0002E;</mo></mrow></math></div>
+<p>The order of these choices matters. The threshold, exponent, and entire sequence of constants are chosen before the domain, map, displayed weak gradient, ball, and derivative order. Every estimate concerns the <strong>same representative</strong>. The threshold does not become smaller each time another derivative is requested.</p>
+<p>The precise endpoint is <a href="https://github.com/BrookWW/SchoenUhlenbeckSmallEnergyRegularityFormalization/blob/f3a3097025ab9ddd956859600211d1d4edf0654e/HolderToCK/Frozen/SmallEnergySmoothRegularity.lean"><code>HolderToCK.smallEnergySmoothRegularity</code></a>. It includes dimension two and zero energy. Its uniqueness assertion is local to the half ball; it does not prescribe an ambient extension outside it.</p>
+<h2 id="proof-selection">Choosing the proof before generating code</h2>
+<p>Classical regularity theory offers several routes to this conclusion. A compactness argument can be short on paper, but its formal dependencies may include a substantial interpolation theorem. A more direct comparison argument can expose its scales and smallness conditions, while demanding detailed work on smoothing and admissibility.</p>
+<p>I followed the Schoen–Uhlenbeck route presented in Section 10.3.1 of <a href="https://doi.org/10.1007/978-88-7642-443-4">Giaquinta–Martinazzi</a>: uniform smoothing, harmonic replacement, tubular projection, and energy comparison. This made it possible to obtain regularity before constructing the full Luckhaus interpolation machinery needed later for compactness.</p>
+<p>The sequence is concrete. Minimality gives stationarity and monotonicity. Smoothing produces a smooth ambient map near <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi></mrow></math></span>. Harmonic replacement improves the interior energy. Projection returns the replacement to the target, and variable smoothing joins it to the original map across a shell. Only after the boundary and Sobolev obligations are proved can minimality be applied.</p>
+<p>The result is one-step energy decay. Rescaling and iteration produce decay at smaller scales, and a Morrey estimate yields a Hölder representative. In the variable-smoothing calculation, even the full derivative matrix and Jacobian must survive the translation into Lean. These details determine whether the competitor is admissible.</p>
+<p>This is a choice of dependency order. Harmonic replacement remains part of the argument, compactness of the target still supplies geometric bounds, and some constants are selected existentially. The chosen route gives a chain of estimates that can be inspected and reused.</p>
+<figure class="article-figure">
+  <a class="figure-link" href="../../assets/blog/harmonic-maps-in-lean/regularity-path.svg" target="_blank" rel="noopener" aria-label="Enlarge the regularity proof diagram"><img src="../../assets/blog/harmonic-maps-in-lean/regularity-path.svg" alt="Mathematical dependencies from target geometry and monotonicity through energy decay, Hölder continuity, the C1 estimate and a Schauder bootstrap to smooth small-energy regularity." width="1040" height="1120" loading="lazy" decoding="async"></a>
+  <figcaption>Figure 1. The regularity proof separates the construction of a Hölder representative from its analytic upgrade. Geometry and the weak equation also enter the upgrade; the Schauder estimate is an independent input to higher derivatives. The arrows summarize mathematical dependencies, not every source-file import.</figcaption>
+</figure>
+
+<h2 id="analytic-upgrade">From a Hölder map to a smooth map</h2>
+<p>The second part of regularity begins with a map that is continuous but still has only a weak gradient. A smooth coefficient <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>A</mi></mrow></math></span> obtained from the target geometry gives a quadratic Poisson equation:</p>
+<div class="math-display" tabindex="0" aria-label="Mathematical expression"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>&#x00394;</mi><mi>w</mi><mo>&#x0003D;</mo><mi>F</mi><mo>&#x0002C;</mo><mspace width="2em" /><mi>F</mi><mo>&#x0003D;</mo><munderover><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>n</mi></mrow></munderover><mi>A</mi><mo stretchy="false">&#x00028;</mo><mi>w</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">[</mo><msub><mi>D</mi><mi>i</mi></msub><mi>w</mi><mo>&#x0002C;</mo><msub><mi>D</mi><mi>i</mi></msub><mi>w</mi><mo stretchy="false">]</mo><mo>&#x0002E;</mo></mrow></math></div>
+<p>The upgrade library first treats this as a general analytic problem. Its interfaces retain the actual map, its displayed weak gradient, and the signed weak equation. Harmonic maps are then an application of that analysis.</p>
+<p>The first derivative is the difficult bridge. Comparison with a harmonic replacement gives improved energy growth and gradient-excess decay. A Campanato argument produces a Hölder representative of the weak gradient; mollification then identifies it as the classical derivative of the same <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>w</mi></mrow></math></span>. The exponent at this step is <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B3;</mi><mo>&#x0003D;</mo><mi>&#x003B1;</mi><mo>&#x0002F;</mo><mn>8</mn></mrow></math></span>, where <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi></mrow></math></span> is the initial Hölder exponent.</p>
+<p>Once this bridge is established, a weak Poisson Schauder estimate and differentiated equations support the higher-order induction. The Schauder proof includes the point contribution in the distributional Hessian of the fundamental solution. Omitting that term would change the equation being proved.</p>
+<p>Separating the two parts has a useful mathematical consequence: one can use the Hölder theorem without importing the entire higher-order analysis, and the quadratic-Poisson theorem can be applied to coefficients that do not come from harmonic maps. Connecting the parts requires the continuous and smooth representatives to agree almost everywhere and hence, by continuity, throughout their common domain.</p>
+<h2 id="shared-witnesses">The same witness must survive every step</h2>
+<p>A recurring challenge is easy to express logically. A theorem that supplies one map with a good energy bound and another map close to the target does not supply a map with both properties. Yet a geometric comparison may require precisely that conjunction.</p>
+<p>This becomes central in Luckhaus interpolation. Two Sobolev maps on a sphere are joined by one ambient-valued connector on a thin cylinder, with thickness <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mo>&#x0003C;</mo><mi>&#x003F5;</mi><mo>&#x0003C;</mo><mn>1</mn><mo>&#x0002F;</mo><mn>8</mn></mrow></math></span>. The connector must simultaneously have the prescribed endpoint traces, an energy bound, and a distance-to-target bound. The distance estimate permits projection into a tubular neighborhood; the energy estimate controls the resulting competitor.</p>
+<p>The connector is not required to take values in <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi></mrow></math></span> before projection. It also carries compatible weak-gradient data and an annular extension. These are properties of the same construction, rather than independent existential outputs.</p>
+<p>The thickness restriction has mathematical content. Extending the stated distance estimate to arbitrary large thicknesses would be false even for a compact target consisting of two points. Formalization therefore makes it important to preserve the version needed by the proof, including its quantifiers and geometric restrictions.</p>
+<figure class="article-figure">
+  <a class="figure-link" href="../../assets/blog/harmonic-maps-in-lean/proof-contract.svg" target="_blank" rel="noopener" aria-label="Enlarge the shared-witness diagram"><img src="../../assets/blog/harmonic-maps-in-lean/proof-contract.svg" alt="A shared mathematical witness connects the input assumptions to simultaneous conclusions about traces, gradients, energy and distance to the target." width="1040" height="960" loading="lazy" decoding="async"></a>
+  <figcaption>Figure 2. A useful interface preserves a common witness across all conclusions. For the Luckhaus construction, traces, weak gradients, energy and distance estimates must describe one connector. For regularity, the continuity and derivative estimates must describe one representative.</figcaption>
+</figure>
+
+<h2 id="stratification">From regularity to the shape of singularities</h2>
+<p>The stratification project imports the regularity library at a fixed revision. It shares its Sobolev spaces, energy normalization, target geometry, and comparison class. Small-energy regularity enters as a proved theorem.</p>
+<p>Luckhaus interpolation supplies admissible competitors for the compactness argument. The proof establishes that a weak limit remains minimizing and that local energies converge. Combined with weak convergence of the gradients, convergence of their squared Hilbert norms gives strong local convergence. Limit minimality and energy convergence are conclusions of this argument, not extra assumptions.</p>
+<p>Strong compactness then produces tangent maps along subsequences of any prescribed sequence of shrinking positive scales. Monotonicity shows that these limits are homogeneous. The tangent relation is defined by actual strong local map-and-gradient convergence; target values, minimality, homogeneity, and the energy identity are subsequently proved for its limits.</p>
+<p>Let <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003A3;</mi><mo stretchy="false">&#x00028;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> denote the interior singular set, and let <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x00398;</mi><mi>u</mi></msub><mo stretchy="false">&#x00028;</mo><mi>a</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> be the limiting density as the radius tends to zero. For a homogeneous tangent <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C6;</mi></mrow></math></span>, its spine <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003C6;</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> is the linear subspace characterized by</p>
+<div class="math-display" tabindex="0" aria-label="Mathematical expression"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>S</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003C6;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo stretchy="false">&#x0007B;</mo><mi>z</mi><mi>:</mi><msub><mi>&#x00398;</mi><mi>&#x003C6;</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>&#x00398;</mi><mi>&#x003C6;</mi></msub><mo stretchy="false">&#x00028;</mo><mn>0</mn><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x0007D;</mo><mo>&#x0002E;</mo></mrow></math></div>
+<p>Translation along this subspace leaves the tangent map unchanged almost everywhere. The <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>j</mi></mrow></math></span>-th stratum consists of points in <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003A3;</mi><mo stretchy="false">&#x00028;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> at which <strong>every actual tangent map</strong> has spine dimension at most <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>j</mi></mrow></math></span>. Tangent maps need not be unique.</p>
+<p>Under the same minimizing-map assumptions, for <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>n</mi><mo>&#x02265;</mo><mn>3</mn></mrow></math></span> and <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mo>&#x02264;</mo><mi>j</mi><mo>&#x02264;</mo><mi>n</mi><mo>&#x02212;</mo><mn>3</mn></mrow></math></span>, the formalized result gives</p>
+<div class="math-display" tabindex="0" aria-label="Mathematical expression"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>dim</mi><mrow><mi mathvariant="normal">H</mi></mrow></msub><msub><mi>S</mi><mi>j</mi></msub><mo stretchy="false">&#x00028;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02264;</mo><mi>j</mi><mo>&#x0002C;</mo><mspace width="2em" /><msup><mi mathvariant="script">H</mi><mi>s</mi></msup><mo stretchy="false">&#x00028;</mo><msub><mi>S</mi><mi>j</mi></msub><mo stretchy="false">&#x00028;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>0</mn><mspace width="1em" /><mtext>for&#x000A0;every&#x000A0;</mtext><mi>s</mi><mo>&#x0003E;</mo><mi>j</mi><mo>&#x0002E;</mo></mrow></math></div>
+<p>The top three strata agree with the singular set, so <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>dim</mi><mrow><mi mathvariant="normal">H</mi></mrow></msub><mi>&#x003A3;</mi><mo stretchy="false">&#x00028;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02264;</mo><mi>n</mi><mo>&#x02212;</mo><mn>3</mn></mrow></math></span>. In dimension three there is no accumulation of singular points anywhere inside <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003A9;</mi></mrow></math></span>. In dimension two the singular set is empty.</p>
+<p>Interior isolation allows accumulation at the boundary and does not imply that the entire singular set is finite. The results here concern interior minimizing maps; boundary regularity, rectifiability, and quantitative stratification are outside their scope.</p>
+<p>The route to the dimension bound passes through moving-center density upper semicontinuity, concentration of high-density points near planes, and affine covering estimates. The exact final statement is <a href="https://github.com/BrookWW/StratificationTheoryMinimizingHarmonicMapsFormalization/blob/ec9a869bad0457e931523ef5ef6d096d30602b75/StratificationTheory/Frozen/Stratification.lean"><code>StratificationTheory.stratification</code></a>.</p>
+<figure class="article-figure">
+  <a class="figure-link" href="../../assets/blog/harmonic-maps-in-lean/stratification-path.svg" target="_blank" rel="noopener" aria-label="Enlarge the stratification proof diagram"><img src="../../assets/blog/harmonic-maps-in-lean/stratification-path.svg" alt="Regularity yields a density gap; Luckhaus interpolation gives strong compactness; tangent maps, their spines and density concentration lead to Hausdorff bounds and three-dimensional interior isolation." width="1040" height="1210" loading="lazy" decoding="async"></a>
+  <figcaption>Figure 3. Regularity and Luckhaus interpolation feed different parts of the singular-set argument. The density gap and preliminary Hausdorff nullity are needed alongside tangent-map compactness and covering estimates. The two-dimensional endpoint is proved separately using small-energy regularity.</figcaption>
+</figure>
+
+<h2 id="supervision">Where mathematical supervision mattered</h2>
+<p>The implementation used Codex with <a href="https://github.com/scottnarmstrong/LeanAutoformalizationSkills/tree/05a07311f16bc581729e52f3e73647b95fa9bef1">Scott Armstrong’s LeanAutoformalizationSkills</a>. I supplied the mathematical goals and detailed natural-language proofs, separated small energy to Hölder continuity from Hölder continuity to smoothness, and specified the interfaces through which the results would be combined.</p>
+<p>The workflow involved continued interaction, statement review, dependency planning, and integration. It was not a one-prompt experiment, and it involved no project-specific model training. The important review question was whether the formal assumptions and conclusion still expressed the intended theorem.</p>
+<p>One intervention concerned dimension. During the Luckhaus construction, the development was heading toward further dimension-specific cases. I redirected it toward a general induction whose state preserved the traces, gradients, energy budgets, and distance bounds needed by the successor step.</p>
+<p>The resulting <a href="https://github.com/BrookWW/StratificationTheoryMinimizingHarmonicMapsFormalization/blob/ec9a869bad0457e931523ef5ef6d096d30602b75/StratificationTheory/Foundation/CoherentTwoStepRecursion.lean">coherent recursion</a> supports a dimension-independent construction. Fixed-dimensional components remain, but the general result is obtained by an inductive successor, not by checking a list of dimensions.</p>
+<p>At the inspected revision, the stratification project contains 712 modules. The project-level import closure of the joint Luckhaus declaration contains 373 modules, including shared infrastructure. These figures indicate the size of the construction and gluing obligations; they are not an exclusive code count for one lemma, or a measure of mathematical difficulty.</p>
+<h2 id="constants">Can an existential constant become a number?</h2>
+<p>A regularity theorem often finishes with “there exists <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi></mrow></math></span>.” Inspecting the formal proof can reveal more. In this development, the derivative bootstrap selects constants through <code>Classical.choose</code> and iterates them by recursion. Following the existence proofs exposes explicit arithmetic witnesses.</p>
+<p>The source report extracts an admissible recurrence of the form</p>
+<div class="math-display" tabindex="0" aria-label="Mathematical expression"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>M</mi><mrow><mi>m</mi><mo>&#x0002B;</mo><mn>1</mn></mrow></msub><mo>&#x0003D;</mo><msub><mi>M</mi><mi>m</mi></msub><mo>&#x0002B;</mo><msup><mi>n</mi><mrow><mi>m</mi><mo>&#x0002B;</mo><mn>1</mn></mrow></msup><msub><mi>S</mi><mi>m</mi></msub><mo stretchy="true" fence="true" minsize="1.2em" maxsize="1.2em">(</mo><msub><mi>M</mi><mi>m</mi></msub><mo>&#x0002B;</mo><msub><mi>P</mi><mrow><mi>m</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msub><mo>&#x0002B;</mo><msub><mi>Q</mi><mrow><mi>m</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msub><mo stretchy="true" fence="true" minsize="1.2em" maxsize="1.2em">)</mo><mo>&#x0002E;</mo></mrow></math></div>
+<p>Here <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>S</mi><mi>m</mi></msub></mrow></math></span> is a nested-ball Schauder coefficient, and <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mi>m</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msub><mo>&#x0002C;</mo><msub><mi>Q</mi><mrow><mi>m</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msub></mrow></math></span> bound the differentiated quadratic forcing and its Hölder seminorm. The initial bound <span class="math-inline"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>M</mi><mn>1</mn></msub></mrow></math></span> and quantitative coefficient data must already be supplied. The report specifies their dependencies and the arguments of each recurrence.</p>
+<p>Three levels need to remain distinct. The Lean development proves existential estimates and local witness inequalities. Additional mathematical calculations recombine those witnesses and replace some limit-selected scales by explicit expressions. Finally, scalar scripts numerically evaluate those expressions. The extracted recurrence need not be definitionally equal to the opaque witness chosen by the public theorem.</p>
+<p>The sphere example illustrates the gap between explicitness and sharpness. For a three-dimensional domain and a unit-sphere target, the report’s deliberately conservative specialization gives</p>
+<div class="math-display" tabindex="0" aria-label="Mathematical expression"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>log</mi><mrow><mn>10</mn></mrow></msub><msub><mi>&#x003B5;</mi><mo>&#x0002A;</mo></msub><mo>&#x02248;</mo><mo>&#x02212;</mo><mn>2757.66039</mn><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>log</mi><mrow><mn>10</mn></mrow></msub><msub><mi>C</mi><mn>2</mn></msub><mo>&#x02248;</mo><mn>2147.89570</mn><mo>&#x0002E;</mo></mrow></math></div>
+<p>These are approximate evaluations of exact expressions, not interval-certified rounded bounds. The sphere specialization and the extra scalar replacements have not been exported as a new explicit-constant Lean theorem. An abstract compact smooth target also does not supply numerical projection radii or curvature bounds; those geometric inputs must be quantified separately.</p>
+<h2 id="verification">What was checked</h2>
+<p>This account refers to the source report’s <strong>17 October 2026 verification snapshot</strong>. Both projects pin Lean 4.32.2 and the same Mathlib revision. The links below identify fixed source revisions so that the statements remain inspectable.</p>
+<table>
+<thead>
+<tr>
+<th>Development</th>
+<th>Checks rerun for the source report</th>
+<th>Additional verification evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Small-energy regularity</td>
+<td>Full <code>lake build</code>, source checks, statement checks, registered proof-closure axiom checks</td>
+<td>Repository verification records also report kernel replay</td>
+</tr>
+<tr>
+<td>Stratification</td>
+<td>Source checks, statement checks, registered proof-closure axiom checks</td>
+<td>Full build and kernel replay are reported by repository records; neither was freshly rerun for that report</td>
+</tr>
+</tbody>
+</table>
+<p>The permitted registered proof-closure axioms are <code>propext</code>, <code>Classical.choice</code>, and <code>Quot.sound</code>. The regularity project protects 15 complete theorem interfaces; the stratification project protects 42 interfaces and registers 493 public exports. Verification claims in this post are limited to that dated snapshot.</p>
+<p>Axiom checks and statement review answer different questions. A proof can pass kernel checking while its declared type is weaker than the intended mathematical claim. Review must therefore inspect the definitions, hypotheses, quantifiers, and shared witnesses, including whether a desired conclusion has accidentally become an assumption.</p>
+<p>The source report describes a sub-week formalization campaign as my calendar-time account. The retained records do not independently measure all earlier development, mathematical preparation, human hours, or compute usage. It should not be read as a controlled speed or efficiency benchmark.</p>
+<h2 id="lessons">What I would carry into the next project</h2>
+<p>The first lesson is to choose a complete proof with its dependencies in view. A short argument can have a large formal prerequisite cost. The second is to design joint interfaces around the same mathematical objects: the same map, connector, gradient, or subsequence must survive every result that uses it. The third is to make the general induction explicit before repeated low-dimensional work becomes the default.</p>
+<p>These choices also affect what the resulting library can offer beyond its headline theorem. The quadratic-Poisson upgrade is a reusable analytic component. The joint connector packages geometric construction together with the estimates that make it useful. The constants analysis reveals where numerical information is available and where it still requires additional mathematics.</p>
+<p>Lean checking does not by itself guarantee readable code, a convenient API, small dependency closures, or fast builds. Those remain practical questions for subsequent use. The value of this formalization is both a checkable account of classical regularity and a clearer specification of the objects and estimates needed to connect it to singular-set geometry.</p>
+<h2 id="sources">Code and mathematical sources</h2>
+<p>Within the pinned regularity project, the public endpoints can be inspected with:</p>
+<pre><code class="language-lean">module
+public import HarmonicMaps.Regularity
+#check HarmonicMaps.smallEnergyRegularity
+#check HolderToCK.smallEnergySmoothRegularity
+</code></pre>
+<p>The stratification project exposes the next layer of results:</p>
+<pre><code class="language-lean">module
+public import StratificationTheory
+#check StratificationTheory.luckhaus_joint
+#check StratificationTheory.stratification
+#check StratificationTheory.exists_tangent_along_prescribed_scales
+</code></pre>
+<p>These commands inspect declarations. The repository guides below specify the build, source, statement, axiom, and kernel-replay checks and their coverage.</p>
+<ul>
+<li><a href="https://github.com/BrookWW/SchoenUhlenbeckSmallEnergyRegularityFormalization/tree/f3a3097025ab9ddd956859600211d1d4edf0654e">Regularity repository and verification instructions</a>.</li>
+<li><a href="https://github.com/BrookWW/StratificationTheoryMinimizingHarmonicMapsFormalization/blob/ec9a869bad0457e931523ef5ef6d096d30602b75/docs/verification.md">Stratification repository and verification guide</a>.</li>
+<li>Schoen and Uhlenbeck, <a href="https://doi.org/10.4310/jdg/1214436923">A regularity theory for harmonic maps</a>, 1982.</li>
+<li>Giaquinta and Martinazzi, <a href="https://doi.org/10.1007/978-88-7642-443-4">An Introduction to the Regularity Theory for Elliptic Systems, Harmonic Maps and Minimal Graphs</a>, second edition, 2012.</li>
+<li>Luckhaus, <a href="https://doi.org/10.1512/iumj.1988.37.37017">Partial Hölder continuity for minima of certain energies among maps into a Riemannian manifold</a>, 1988.</li>
+</ul>
+<p>I thank Scott Armstrong for the Lean skills used in this work, and the Lean and Mathlib communities for the underlying proof infrastructure. The projects also reuse stationarity infrastructure from <a href="https://github.com/BrookWW/LeanStationaryHarmonicMaps/tree/bde641f98085e5a0443c10779a6fe519190b6adc">LeanStationaryHarmonicMaps</a>. Codex assisted with the formal implementation and preparation of the source manuscript; mathematical responsibility and authorship remain mine.</p>
+<h2 id="original-article">Original article</h2>
+<p>The original article, <em>Formalizing Small-Energy Regularity and Stratification of Minimizing Harmonic Maps in Lean</em> (17 October 2026), contains the full mathematical statements, linked declarations, proof-route comparisons, and quantitative appendices behind this post.</p>
+<p><a class="download-link" href="../../assets/blog/harmonic-maps-in-lean/original-article.pdf">Read the original article (PDF, 20 pages)</a></p></article>
+  </div>
+  <nav class="article-bottom-nav" aria-label="Article navigation"><a href="../">← All articles</a><a href="#main-content">Back to top ↑</a></nav>
+</main>
+<footer class="blog-footer">
+  <div class="blog-shell"><p>© 2026 Wei Wang <span>Mathematics &amp; formalization</span></p>
+  <nav aria-label="Footer"><a href="../../#home">Academic homepage</a><a href="../feed.xml">RSS</a><a href="https://github.com/BrookWW">GitHub</a><a href="mailto:wwmath166@outlook.com">Contact</a></nav></div>
+</footer>
+<script src="../../assets/js/blog.js?v=20261023" defer></script>
+</body>
+</html>

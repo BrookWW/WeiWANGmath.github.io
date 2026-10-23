@@ -1,0 +1,25 @@
+[
+  {
+    "slug": "harmonic-maps-in-lean",
+    "title": "From small energy to singular sets: formalizing harmonic maps in Lean",
+    "summary": "How a classical regularity proof becomes a reusable formal interface—and how that interface supports compactness, tangent maps, and singular-set stratification.",
+    "date": "2026-10-23",
+    "author": "Wei Wang",
+    "category": "Research notes",
+    "tags": ["AI4Math", "Lean", "Geometric analysis"],
+    "source": "harmonic-maps-in-lean.md",
+    "source_date": "2026-10-17",
+    "source_pdf": "assets/blog/harmonic-maps-in-lean/original-article.pdf",
+    "image": "assets/blog/harmonic-maps-in-lean/cover.svg",
+    "repositories": [
+      {
+        "label": "Regularity code",
+        "url": "https://github.com/BrookWW/SchoenUhlenbeckSmallEnergyRegularityFormalization/tree/f3a3097025ab9ddd956859600211d1d4edf0654e"
+      },
+      {
+        "label": "Stratification code",
+        "url": "https://github.com/BrookWW/StratificationTheoryMinimizingHarmonicMapsFormalization/tree/ec9a869bad0457e931523ef5ef6d096d30602b75"
+      }
+    ]
+  }
+]

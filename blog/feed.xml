@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>
+<title>Wei Wang — AI &amp; Mathematics</title><link>https://brookww.github.io/WeiWANGmath.github.io/blog/</link>
+<description>Research notes on mathematics, formalization, and working with AI.</description><language>en</language>
+<atom:link href="https://brookww.github.io/WeiWANGmath.github.io/blog/feed.xml" rel="self" type="application/rss+xml"/>
+<item><title>From small energy to singular sets: formalizing harmonic maps in Lean</title><link>https://brookww.github.io/WeiWANGmath.github.io/blog/harmonic-maps-in-lean/</link><guid isPermaLink="true">https://brookww.github.io/WeiWANGmath.github.io/blog/harmonic-maps-in-lean/</guid><pubDate>Fri, 23 Oct 2026 00:00:00 +0800</pubDate><description>How a classical regularity proof becomes a reusable formal interface—and how that interface supports compactness, tangent maps, and singular-set stratification.</description><category>AI4Math</category><category>Lean</category><category>Geometric analysis</category></item>
+</channel></rss>

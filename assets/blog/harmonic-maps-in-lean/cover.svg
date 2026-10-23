@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" role="img" aria-labelledby="cover-title cover-desc">
+  <title id="cover-title">From small energy to a smooth map</title>
+  <desc id="cover-desc">Concentric energy scales lead through Hölder continuity to smoothness, illustrated by a clean blue mathematical diagram.</desc>
+  <defs>
+    <linearGradient id="sea" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eaf5fa"/><stop offset="1" stop-color="#d8eaf1"/></linearGradient>
+    <radialGradient id="energy"><stop stop-color="#7baabf" stop-opacity=".3"/><stop offset="1" stop-color="#7baabf" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0H0V30" fill="none" stroke="#608fa8" stroke-opacity=".12"/></pattern>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="m1 1 4.5 2.5L1 6" fill="none" stroke="#32718e" stroke-width="1.2"/></marker>
+  </defs>
+  <rect width="600" height="420" rx="24" fill="url(#sea)"/>
+  <rect width="600" height="420" rx="24" fill="url(#grid)"/>
+  <circle cx="300" cy="182" r="156" fill="url(#energy)"/>
+  <g fill="none" stroke="#5488a0"><circle cx="300" cy="182" r="116" stroke-opacity=".2"/><circle cx="300" cy="182" r="83" stroke-opacity=".35"/><circle cx="300" cy="182" r="49" stroke-opacity=".65" stroke-dasharray="4 5"/></g>
+  <path d="M184 182H416M300 66V298" stroke="#588ca3" stroke-opacity=".25" stroke-dasharray="2 7"/>
+  <circle cx="300" cy="182" r="5" fill="#205773"/>
+  <path d="M305 186L342 214" stroke="#32718e" marker-end="url(#arrow)"/>
+  <text x="300" y="39" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="3" fill="#46768e">A PROOF ACROSS SCALES</text>
+  <text x="354" y="220" font-family="Georgia,serif" font-size="21" fill="#205773">r</text>
+  <g font-family="Georgia,serif" font-size="24" text-anchor="middle" fill="#173f56">
+    <rect x="64" y="326" width="118" height="54" rx="10" fill="#f8fcfd" stroke="#9abccb"/>
+    <text x="123" y="360">Θ ≤ ε</text>
+    <path d="M190 353H236" fill="none" stroke="#32718e" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="243" y="326" width="114" height="54" rx="10" fill="#f8fcfd" stroke="#9abccb"/>
+    <text x="300" y="360">C<tspan baseline-shift="super" font-size="16">α</tspan></text>
+    <path d="M365 353H411" fill="none" stroke="#32718e" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="418" y="326" width="118" height="54" rx="10" fill="#194d69"/>
+    <text x="477" y="360" fill="#f6fcff">C<tspan baseline-shift="super" font-size="16">∞</tspan></text>
+  </g>
+</svg>

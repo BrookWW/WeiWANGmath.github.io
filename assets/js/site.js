@@ -39,6 +39,7 @@ const elements = {
 const pages = Array.from(document.querySelectorAll('.page'));
 const pageLinks = Array.from(document.querySelectorAll('[data-page]'));
 const navLinks = Array.from(document.querySelectorAll('.nav-link'));
+const blogDocuments = JSON.parse(document.getElementById('blog-search-data')?.textContent || '[]');
 
 let searchMatches = [];
 let searchResultButtons = [];
@@ -282,7 +283,10 @@ function renderSearchResults(matches) {
         item.className = 'search-result';
         item.setAttribute('role', 'option');
         item.setAttribute('aria-selected', 'false');
-        item.addEventListener('click', () => navigateToPage(match.pageId, match.id, item));
+        item.addEventListener('click', () => {
+            if (match.url) window.location.assign(match.url);
+            else navigateToPage(match.pageId, match.id, item);
+        });
 
         const label = document.createElement('div');
         label.className = 'search-result-label';
@@ -323,7 +327,15 @@ function handleSearchInput(event) {
             };
         });
 
-    renderSearchResults(matches);
+    const blogMatches = blogDocuments
+        .filter(post => `${post.title} ${post.summary} ${post.tags.join(' ')} ${post.text}`.toLowerCase().includes(query))
+        .map(post => ({
+            label: 'Blog',
+            text: `${post.title} — ${post.summary}`,
+            url: post.url
+        }));
+
+    renderSearchResults([...matches, ...blogMatches]);
 }
 
 function handleSearchKeydown(event) {

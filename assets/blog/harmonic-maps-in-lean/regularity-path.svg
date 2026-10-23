@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 1120" role="img" aria-labelledby="regularity-title regularity-desc">
+  <title id="regularity-title">From small energy to one smooth representative</title>
+  <desc id="regularity-desc">A mathematical dependency diagram for interior regularity of energy-minimizing harmonic maps. Target geometry and stationarity lead to one-step energy decay, then a Hölder representative. The weak equation also enters the same-map C1 gamma estimate. A separate Poisson Schauder estimate feeds the higher-order bootstrap. The conclusion uses one energy threshold and the same representative at every derivative order.</desc>
+  <defs>
+    <pattern id="regularity-grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#c9dce9" stroke-opacity=".24"/></pattern>
+    <marker id="regularity-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#407992" stroke-width="1.6" stroke-linejoin="round"/></marker>
+    <style>
+      text { font-family: Inter, Arial, sans-serif; fill: #173b55; }
+      .eyebrow { font-size: 20px; font-weight: 700; letter-spacing: 2px; fill: #3a718d; }
+      .title { font-size: 32px; font-weight: 700; letter-spacing: -.5px; }
+      .label { font-size: 24px; font-weight: 700; }
+      .detail { font-size: 20px; fill: #496a7c; }
+      .math { font-size: 24px; font-family: Georgia, 'Times New Roman', serif; }
+      .node { fill: #ffffff; stroke: #b9d2e0; stroke-width: 1.6; }
+      .edge { fill: none; stroke: #407992; stroke-width: 2.2; marker-end: url(#regularity-arrow); stroke-linecap: round; stroke-linejoin: round; }
+      .bypass { fill: none; stroke: #789fb3; stroke-width: 2; stroke-dasharray: 6 7; marker-end: url(#regularity-arrow); stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect width="1040" height="1120" rx="24" fill="#f7fbfd"/>
+  <rect x="1" y="1" width="1038" height="1118" rx="23" fill="url(#regularity-grid)" stroke="#d8e6ee"/>
+  <path d="M56 47H103" stroke="#237b88" stroke-width="4"/>
+  <text x="120" y="54" class="eyebrow">01 / REGULARITY</text>
+  <text x="56" y="105" class="title">One threshold. One representative.</text>
+  <text x="56" y="143" class="detail">n ≥ 2 · smooth compact target · interior minimizing maps</text>
+  <g fill="none" stroke="#91b7cc" stroke-opacity=".5"><circle cx="944" cy="87" r="24"/><circle cx="944" cy="87" r="38"/><path d="M893 87H995M944 36V138"/></g>
+
+  <path class="edge" d="M271 300V327Q271 339 283 339H452V360"/>
+  <path class="edge" d="M769 300V327Q769 339 757 339H588V360"/>
+  <path class="bypass" d="M56 244H29V672H280"/>
+  <path class="edge" d="M520 456V492"/>
+  <path class="edge" d="M520 588V624"/>
+  <path class="edge" d="M520 720V776"/>
+  <path class="edge" d="M236 824H280"/>
+  <path class="edge" d="M520 872V942"/>
+
+  <rect class="node" x="56" y="188" width="430" height="112" rx="12"/>
+  <rect x="56" y="188" width="6" height="112" rx="3" fill="#559ab2"/>
+  <text x="84" y="230" class="label">Target geometry</text>
+  <text x="84" y="267" class="detail">Projection · weak Euler equation</text>
+  <rect class="node" x="554" y="188" width="430" height="112" rx="12"/>
+  <rect x="554" y="188" width="6" height="112" rx="3" fill="#559ab2"/>
+  <text x="582" y="230" class="label">Stationarity &amp; monotonicity</text>
+  <text x="582" y="267" class="detail">Control of scaled energy</text>
+
+  <rect class="node" x="280" y="360" width="480" height="96" rx="12"/>
+  <text x="520" y="398" class="label" text-anchor="middle">One-step energy decay</text>
+  <text x="520" y="431" class="math" text-anchor="middle">Θᵤ(0, τ) ≤ ½ E(u; B₁)</text>
+  <rect class="node" x="280" y="492" width="480" height="96" rx="12"/>
+  <text x="520" y="530" class="label" text-anchor="middle">Hölder representative</text>
+  <text x="520" y="563" class="detail" text-anchor="middle">Iteration · Morrey estimate · map w</text>
+  <rect class="node" x="280" y="624" width="480" height="96" rx="12"/>
+  <text x="520" y="662" class="label" text-anchor="middle">Same-map C¹,γ estimate</text>
+  <text x="520" y="695" class="detail" text-anchor="middle">Identify the classical and weak gradients</text>
+  <text x="69" y="648" class="detail">Weak equation</text>
+
+  <rect x="42" y="776" width="194" height="96" rx="12" fill="#eaf4f8" stroke="#aacbdc" stroke-width="1.6"/>
+  <text x="139" y="804" class="detail" text-anchor="middle" font-weight="700">Poisson</text>
+  <text x="139" y="830" class="detail" text-anchor="middle" font-weight="700">Schauder</text>
+  <text x="139" y="856" class="detail" text-anchor="middle" font-weight="700">estimate</text>
+  <rect class="node" x="280" y="776" width="480" height="96" rx="12"/>
+  <text x="520" y="814" class="label" text-anchor="middle">Higher-order bootstrap</text>
+  <text x="520" y="847" class="detail" text-anchor="middle">Differentiate · estimate · iterate</text>
+
+  <rect x="252" y="942" width="536" height="112" rx="14" fill="#e5f3f2" stroke="#428c91" stroke-width="2"/>
+  <path d="M280 942H760" stroke="#237b88" stroke-width="4"/>
+  <text x="520" y="985" class="label" text-anchor="middle" style="fill:#155961">Unique smooth representative w</text>
+  <text x="520" y="1022" class="detail" text-anchor="middle" style="fill:#245f68">One ε* · one sequence Cₖ · every derivative order</text>
+  <path d="M56 1090H90" fill="none" stroke="#789fb3" stroke-width="2" stroke-dasharray="6 7"/>
+  <text x="103" y="1096" class="detail">Shared analytic input</text>
+  <text x="984" y="1096" class="detail" text-anchor="end">Mathematical dependencies, not an import graph</text>
+</svg>
