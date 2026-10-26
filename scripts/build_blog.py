@@ -103,6 +103,27 @@ MATH_OR_CODE = re.compile(
     r"|(?P<inline>(?<![\\$])\$(?!\$)(?:\\.|[^$\n])+?(?<!\\)\$(?!\$))",
     re.MULTILINE | re.DOTALL,
 )
+DIAGRAM_LINK = re.compile(r'<a class="figure-link" href="(?P<href>[^"]+\.svg)"[^>]*><img[^>]*></a>')
+
+
+def diagram_resource(href: str) -> Path:
+    resource = (BLOG / "content" / href).resolve()
+    if not resource.is_relative_to((ROOT / "assets/blog").resolve()):
+        raise ValueError(f"Invalid diagram path: {href}")
+    return resource
+
+
+def generated_files() -> list[Path]:
+    """Return the outputs written by the site builder for the published posts."""
+    paths = {ROOT / "index.html", BLOG / "index.html", BLOG / "feed.xml",
+             BLOG / "search-index.json", ROOT / "sitemap.xml"}
+    for post in read_posts():
+        paths.add(BLOG / post["slug"] / "index.html")
+        source = (BLOG / "content" / post["source"]).read_text(encoding="utf-8")
+        for match in DIAGRAM_LINK.finditer(source):
+            resource = diagram_resource(match["href"])
+            paths.update((resource, resource.with_suffix(".html")))
+    return sorted(paths)
 
 
 def protect_math(source: str) -> tuple[str, list[tuple[str, str, bool]]]:
@@ -163,13 +184,8 @@ def render_article(source: str) -> tuple[str, str]:
 
 
 def inline_diagrams(source: str) -> str:
-    pattern = re.compile(r'<a class="figure-link" href="(?P<href>[^"]+\.svg)"[^>]*><img[^>]*></a>')
-
     def replace(match):
-        resource = (BLOG / "content" / match["href"]).resolve()
-        asset_root = (ROOT / "assets/blog").resolve()
-        if not resource.is_relative_to(asset_root):
-            raise ValueError(f"Invalid diagram path: {match['href']}")
+        resource = diagram_resource(match["href"])
         diagram_source = BLOG / "diagrams" / resource.parent.name / resource.name
         svg = diagram_source.read_text(encoding="utf-8")
         title = re.search(r'<title[^>]*>(.*?)</title>', svg).group(1)
@@ -193,7 +209,7 @@ def inline_diagrams(source: str) -> str:
 <body class="diagram-page"><main><a class="diagram-return" href="../../../blog/{resource.parent.name}/">← Back to article</a>{protected}</main></body></html>''', encoding="utf-8")
         return f'<a class="figure-link" href="{match["href"][:-4]}.html" target="_blank" rel="noopener" aria-label="Enlarge diagram: {text(html.unescape(title))}">{protected}</a>'
 
-    return pattern.sub(replace, source)
+    return DIAGRAM_LINK.sub(replace, source)
 
 
 def long_date(value: str) -> str:
