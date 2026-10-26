@@ -34,6 +34,9 @@ This repository contains Wei Wang's academic homepage and blog. The website entr
 - `scripts/build_blog.py`: converts Markdown and LaTeX mathematics into static article HTML and generates diagram pages, the blog listing, feed, search data, and sitemap.
 - `scripts/render_math.cjs`: renders LaTeX into KaTeX HTML with accessible MathML during the build.
 - `scripts/check_site.py`: checks the generated static site before publication.
+- `scripts/check_generated.py`: checks the builder's output files against the Git checkout and fails on missing, changed, or untracked generated output.
+- `tests/`: regression tests for the content checks and generated-file consistency check.
+- `.github/workflows/site-content-ci.yml`: GitHub Actions build and content validation, separate from deployment.
 - `sitemap.xml` and `robots.txt`: search-engine hints for the public GitHub Pages URL.
 
 ### Local Preview
@@ -62,10 +65,22 @@ Use Node.js 18 or newer and install the Python build dependency, then rebuild an
 ```bash
 python3 -m pip install -r requirements-blog.txt
 python3 scripts/build_site.py
+python3 -m unittest discover -s tests -v
 python3 scripts/check_site.py
+python3 scripts/check_generated.py
 ```
 
 Commit the content sources, generated pages, feed and search data, sitemap, and any required assets together. The generated pages can be served directly by GitHub Pages, including under the repository's URL prefix.
+
+`check_generated.py` compares generated files with the committed Git checkout after the build. It is expected to fail while intentional generated-file changes remain uncommitted; commit the sources and matching generated files, then rerun the build and consistency check. CI runs this check against the submitted commit.
+
+### Continuous Integration
+
+The **Site content CI** workflow runs on every push and Pull Request, without path filters, so new source or configuration paths receive the same checks. After it is merged into the default branch, it can also be started manually from GitHub Actions. It uses Python 3.12 and Node.js 22, installs the pinned Python dependencies from `requirements-blog.txt`, and runs the commands above. KaTeX and its fonts are already bundled in the repository; no npm installation is required.
+
+The workflow reuses the existing build and validation scripts to check rendered mathematics, internal links and assets, RSS, the blog listing and search index, sitemap, KaTeX font files, and the source PDF signature. Regression tests exercise failure cases, and the final consistency check rejects generated output that differs from the submitted files, including newly generated files missing from Git. A failed run should be fixed by updating the sources and committing their matching build output.
+
+This workflow has read-only repository permissions and does not deploy or change submitted files. GitHub Pages deployment is a separate process: a successful deployment does not imply that content validation passed. Content checks detect structural and rendering errors; they do not establish the truth of mathematical claims or check the current availability of external websites.
 
 Change `assets/css/site.css`, `assets/css/ocean.css`, or `assets/js/site.js` for main-site layout and behavior; change `assets/css/blog.css` or `assets/js/blog.js` for blog presentation and interactions. The main site and blog share the saved light/dark theme. Blog content and links remain available without JavaScript.
 
@@ -109,6 +124,9 @@ https://brookww.github.io/WeiWANGmath.github.io/
 - `scripts/build_blog.py`：将 Markdown 与 LaTeX 公式转换为静态文章 HTML，并生成独立图示页、博客列表、订阅源、搜索数据及站点地图。
 - `scripts/render_math.cjs`：构建时将 LaTeX 渲染为 KaTeX HTML，并保留供辅助技术读取的 MathML。
 - `scripts/check_site.py`：发布前检查生成后的静态站点。
+- `scripts/check_generated.py`：检查构建器的输出文件与 Git 检出内容是否一致；缺失、改动或未跟踪的生成文件会使检查失败。
+- `tests/`：内容校验及生成文件一致性检查的回归测试。
+- `.github/workflows/site-content-ci.yml`：独立于部署的 GitHub Actions 构建与内容校验。
 - `sitemap.xml` 和 `robots.txt`：给搜索引擎使用的公开 GitHub Pages 地址提示。
 
 ### 本地预览
@@ -137,10 +155,22 @@ http://localhost:8000/blog/
 ```bash
 python3 -m pip install -r requirements-blog.txt
 python3 scripts/build_site.py
+python3 -m unittest discover -s tests -v
 python3 scripts/check_site.py
+python3 scripts/check_generated.py
 ```
 
 将内容源文件、生成后的页面、订阅源与搜索数据、站点地图和所需资源一起提交。生成结果可以直接由 GitHub Pages 托管，并兼容仓库名称作为 URL 前缀的部署方式。
+
+`check_generated.py` 在构建后将生成文件与 Git 已提交的检出内容比较。本地有意修改生成文件而尚未提交时，检查失败是预期行为；将源文件及对应生成结果一起提交后，重新构建并运行一致性检查。CI 则对提交中的文件进行检查。
+
+### 持续集成
+
+**Site content CI** 工作流会在每次推送及 Pull Request 时自动运行，不使用路径筛选，因此新增的源码或配置路径也会接受相同检查。工作流合并到默认分支后，也可以从 GitHub Actions 手动启动。工作流使用 Python 3.12 和 Node.js 22，安装 `requirements-blog.txt` 中固定版本的 Python 依赖，然后执行上述命令。仓库已经包含 KaTeX 及其字体，无需额外安装 npm 包。
+
+工作流复用现有构建与校验脚本，检查公式渲染、内部链接与资源、RSS、博客列表与搜索索引、站点地图、KaTeX 字体文件以及原始 PDF 签名。回归测试覆盖错误输入；最后的一致性检查拒绝与提交内容不一致的生成结果，也会发现新生成但未加入 Git 的文件。检查失败时，应修改源文件并一并提交对应构建结果。
+
+该工作流只有仓库读取权限，不执行部署，也不修改提交。GitHub Pages 部署是独立流程；部署成功不能替代内容校验通过。内容检查能够发现结构与渲染错误，不验证数学结论的正确性，也不检查外部网站当前是否可用。
 
 主站布局与交互由 `assets/css/site.css`、`assets/css/ocean.css` 和 `assets/js/site.js` 维护；博客样式与交互由 `assets/css/blog.css` 和 `assets/js/blog.js` 维护。主站与博客共用已保存的明暗主题设置。即使禁用 JavaScript，博客正文及链接仍然可用。
 
