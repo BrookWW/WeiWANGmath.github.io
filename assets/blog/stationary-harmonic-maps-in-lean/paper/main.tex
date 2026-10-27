@@ -1,0 +1,1875 @@
+% !TeX program = pdflatex
+\documentclass[reqno,11pt]{amsart}
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,mathtools,booktabs,longtable,array,enumitem}
+\usepackage{xcolor,xurl,listings}
+\lstset{basicstyle=\ttfamily\scriptsize,columns=fullflexible,keepspaces=true,
+  breaklines=true,breakatwhitespace=false,showstringspaces=false,
+  frame=single,framerule=0.2pt,xleftmargin=3pt,xrightmargin=3pt}
+\usepackage[colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black]{hyperref}
+\hypersetup{pdftitle={Small-energy regularity for stationary harmonic maps: A complete proof for compact embedded C2 targets},pdfauthor={Wei Wang}}
+\setcounter{tocdepth}{1}
+\setlist{topsep=4pt,itemsep=2pt}
+\numberwithin{equation}{section}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\R}{\mathbb R}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\dx}{\dd x}
+\newcommand{\loc}{\mathrm{loc}}
+\newcommand{\SO}{\mathrm{SO}}
+\newcommand{\BMO}{\mathrm{BMO}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\diver}{\operatorname{div}}
+\newcommand{\fint}{\mathop{\int\!\!\!\!-}}
+\newcommand{\M}{\mathcal M}
+\newcommand{\Th}{\Theta}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\pair}[2]{\left\langle#1,#2\right\rangle}
+\newcommand{\cl}[1]{\overline{#1}}
+\urlstyle{tt}
+\ExplSyntaxOn
+\NewDocumentCommand{\lean}{m}
+ {\int_compare:nNnTF {\str_count:n {#1}} < {31}
+   {\texttt{\detokenize{#1}}}{\nolinkurl{#1}}}
+\ExplSyntaxOff
+\setlength{\emergencystretch}{2em}
+\title[Stationary harmonic maps in Lean]{Small-energy regularity for stationary harmonic maps\texorpdfstring{\\}{} A complete proof for compact embedded $C^2$ targets}
+\author{Wei Wang}
+\address{School of Mathematical Sciences, Peking University, Beijing 100871, China}
+\email{wwmath166@outlook.com}
+\date{October 27, 2026}
+\subjclass[2020]{Primary 58E20; Secondary 35B65, 49N60, 68V15}
+\keywords{Stationary harmonic maps, small-energy regularity, Coulomb frames, compensated compactness, Lean, computable constants}
+\begin{document}
+\begin{abstract}
+Let $N$ be a nonempty compact embedded $C^2$ submanifold without boundary
+in Euclidean space. In every domain dimension $n\geq2$, a stationary weakly
+harmonic map whose normalized energy is sufficiently small on a ball has a
+unique continuous $N$-valued representative on the concentric half ball.
+We prove the scale-correct estimate with H\"older exponent $1/2$ and the
+square root of the original normalized energy. The proof uses the normal
+projection antisymmetric system, a natural Coulomb frame with critical
+Morrey control, compensation for the actual bounded cutoff of the
+compact-target map, and an all-center decay iteration. The frame is
+constructed by stronger Morrey perturbations, boundary absorption, and a
+joint critical limit. The Hodge fields are selected once and retained
+through the estimates. No minimizing property and no separately assumed
+gauge, decay estimate, or regular representative enter the theorem.
+For a certified ambient normal-projection extension with rational derivative
+bound $\ell$, explicit rational functions of $n,q,\ell$ provide an
+admissible energy threshold and H\"older coefficient. A complete arithmetic
+ledger and executable exact-arithmetic algorithm specify these conservative
+constants; a final correspondence table identifies their formal proofs.
+\end{abstract}
+\maketitle
+
+\tableofcontents
+
+\section{The exact statement and weak conventions}\label{sec:statement}
+Fix integers $n\geq2$, $q\geq0$, and a nonempty compact embedded $C^2$
+submanifold $N\subset\R^q$ without boundary. No orientation, global normal
+frame, or smoothness beyond $C^2$ is required. Gradient energies and matrix-valued one-form energies use Hilbert--Schmidt
+norms. Norms of linear and bilinear maps are induced operator norms.
+In particular, $\norm{DG(y)}$ is the operator norm from Euclidean
+$\R^q$ to the operator-norm space $\mathcal L(\R^q,\R^q)$. A weak gradient is the distributional
+gradient of the original map, and is kept fixed throughout. Set
+\[
+ E(u;V)=\int_V|Du|^2\dx,\qquad
+ \Th_u(a,r)=r^{2-n}E(u;B_r(a)).
+\]
+There is no factor $1/2$ in the energy.
+For $y\in N$, let $Q(y)$ be the orthogonal projection onto $(T_yN)^\perp$
+and $\Pi(y)=I-Q(y)$. The map $Q$ is $C^1$ along $N$ and admits a compactly
+supported $C^1$ ambient extension $\widehat Q$ with bounded derivative.
+Fix any such extension $G=\widehat Q$ and a rational $\ell\geq0$ such that
+$\sup_{y\in\R^q}\norm{DG(y)}\leq\ell$. Compactness guarantees the
+existence of this pair; numerical evaluation below uses a certified pair.
+Use the sign convention
+$\mathcal A_y(v,w)=DQ(y)[v]w$ for tangent vectors $v,w$.
+
+\begin{definition}\label{def:weak}
+A map $u\in W^{1,2}_{\loc}(U,\R^q)$, with $u\in N$ almost everywhere, is
+weakly harmonic if the following holds for every
+$V\in C_c^1(\R^n\times\R^q,\R^q)$ whose support is contained in
+$U\times\R^q$ and for which $V(x,y)\in T_yN$ for every $x\in\R^n$,
+$y\in N$: the integrand below is integrable and
+\begin{equation}\label{eq:map-variation}
+ \int_U\sum_i\pair{\partial_i u(x)}
+ {DV(x,u(x))[e_i,\partial_i u(x)]}\dx=0.
+\end{equation}
+This is the complete ambient map-variation condition. In particular,
+after a compact ambient cutoff equal to one near $N$, it includes the
+variation $V(x,y)=\Pi(y)\varphi(x)$ for every compactly supported
+ambient $C^1$ field $\varphi$. The resulting weak equation is derived
+in Lemma~\ref{lem:geometry}. The map is domain stationary if, in addition,
+\begin{equation}\label{eq:stress}
+ \int_U\left(|Du|^2\diver X
+ -2\sum_{i,j=1}^n\pair{\partial_i u}{\partial_j u}\partial_iX_j\right)\dx=0
+ \quad(X\in C_c^\infty(U,\R^n)).
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Small-energy regularity]\label{thm:main}
+Every fixed embedded target $N\subset\R^q$ above admits constants
+$\varepsilon_*>0$ and $C<\infty$, depending only on $n,N$, with the
+conclusion below.
+More precisely, given any certified compactly supported $C^1$ extension
+$G:\R^q\to\mathcal L(\R^q,\R^q)$ and rational $\ell\geq0$ satisfying
+\[
+ G(y)=Q(y)\quad(y\in N),\qquad
+ \norm{DG(y)}\leq\ell\quad(y\in\R^q),
+\]
+take the positive rational gauge constants $\kappa,C_g$ defined exactly
+in \eqref{eq:kappa-ledger} and \eqref{eq:Cg-ledger}, and the positive
+rational given-frame constants $\theta,C_r$ defined exactly in
+\eqref{eq:theta-Cr-ledger}. Their complete arithmetic definitions are in
+Appendix~\ref{app:algorithm}; all four depend only on $n,q$, and
+$\theta\leq1$. Explicit admissible constants and exponent are
+\begin{align}
+ M&=(1+4q\ell^2)4^{n-2},& K&=(1+C_g)(1+M),\nonumber\\
+ \varepsilon_*&=\left(\frac{\min(\kappa,\theta)}K\right)^2,&
+ C&=2C_rK,& \alpha&=\frac12.\label{eq:main-explicit-constants}
+\end{align}
+These constants are fully computable from $n,q,\ell$ after the geometric
+certificate has been supplied. Existence of a certificate for each abstract
+$N$ gives the original target-only existence statement; numerical evaluation
+uses certified geometric data as input.
+
+Suppose $U\subset\R^n$ is open, $u\in W^{1,2}_{\loc}(U,\R^q)$ takes
+values in $N$ almost everywhere, and $u$ is weakly harmonic and domain
+stationary in the sense of Definition~\ref{def:weak}. If $R>0$,
+$\cl{B_R(a)}\subset U$, and
+\begin{equation}\label{eq:small-energy}
+ \Th_u(a,R)\leq\varepsilon_*,
+\end{equation}
+there is a continuous representative
+$\widetilde u:B_{R/2}(a)\longrightarrow N$ satisfying
+\begin{equation}\label{eq:holder-main}
+ |\widetilde u(x)-\widetilde u(y)|
+ \leq C R^{-1/2}\Th_u(a,R)^{1/2}|x-y|^{1/2}
+ \qquad(x,y\in B_{R/2}(a)).
+\end{equation}
+It is unique among all continuous $\R^q$-valued representatives of $u$
+on the half ball. The constants precede the domain, map, center, and radius.
+\end{theorem}
+
+The argument follows the antisymmetric-potential and Morrey-frame method
+of Riv\`iere and Struwe \cite{R,RS}. Its analytic application here is to the
+compact-target map itself. We do not assert the wider regularity theorem
+for arbitrary, possibly unbounded, Euclidean-valued solutions of
+antisymmetric systems. Compactness supplies a genuine bound for a cutoff
+used in the native compensation pairings; the estimates do not depend on
+the size of this bound.
+
+The accompanying Lean theorem has precisely the stated hypotheses, with
+the original explicit weak gradient. Its proof has no unformalized
+analytic assumption. The prose uses ordinary background real analysis
+(Lebesgue differentiation, weak Sobolev calculus, Hilbert projection, and
+the Banach inverse function theorem) and gives the analytic constructions
+needed here. Section~\ref{sec:formal} identifies their formal counterparts.
+
+\section{Geometry and stationarity}\label{sec:geometry}
+\begin{lemma}[Tangency and the original weak equation]\label{lem:geometry}
+One has $Q(u)\partial_i u=0$ almost everywhere and
+\begin{equation}\label{eq:harmonic-equation}
+ \int_U Du:D\varphi
+ =\int_U\sum_i\mathcal A_u(\partial_i u,\partial_i u)\cdot\varphi
+ \quad(\varphi\in C_c^\infty(U,\R^q)).
+\end{equation}
+The skew one-form
+\begin{equation}\label{eq:omega}
+ \Omega_i=Q(u)\partial_i(Q\circ u)-\partial_i(Q\circ u)Q(u)
+\end{equation}
+satisfies
+\begin{equation}\label{eq:antisym-system}
+ -\Delta u=\sum_i\Omega_i\partial_i u,
+ \qquad |\Omega|\leq2\sqrt q\,\ell|Du|.
+\end{equation}
+\end{lemma}
+\begin{proof}
+Local defining functions for the embedded manifold and the $C^1$ Sobolev
+chain rule show that $Du$ is tangent almost everywhere. The same rule gives
+$D(\widehat Q\circ u)=D\widehat Q(u)Du$. Use the tangent test
+$\Pi(u)\varphi$ in the first variation. Because $\Pi(u)Du=Du$,
+$D\Pi=-DQ$, and $DQ$ is bounded on the compact target, the product rule
+gives
+\[
+ 0=\int_U Du:D(\Pi(u)\varphi)
+  =\int_U Du:D\varphi
+     -\int_U\sum_i DQ(u)[\partial_i u]\partial_i u\cdot\varphi.
+\]
+These bounded native tests are legitimate: bounded smooth approximations
+of their weak graphs converge strongly in $W^{1,2}$, with a uniform value
+bound obtained by Lipschitz truncation. The derivative terms converge by
+Holder, and the $L^1$ forcing terms by dominated convergence. This proves
+the equation from the original variations.
+
+Both $Q(u)$ and its derivatives are symmetric; their commutator is skew.
+Differentiating $Q^2=Q$ shows that $DQ(y)[v]w$ is normal for tangent
+$v,w$. Therefore
+$\Omega_i\partial_i u=Q(u)\partial_i(Q\circ u)\partial_i u
+=\partial_i(Q\circ u)\partial_i u$.
+The bound for $D\widehat Q$ and the preceding weak equation complete
+the proof, with the sign displayed in \eqref{eq:antisym-system}.
+\end{proof}
+
+\begin{lemma}[Exact monotonicity]\label{lem:monotonicity}
+If $0<r<s$ and $\cl{B_s(a)}\subset U$, then
+\begin{equation}\label{eq:monotonicity}
+ \Th_u(a,s)-\Th_u(a,r)
+ =2\int_{B_s(a)\setminus B_r(a)}
+ |x-a|^{2-n}|\partial_{\mathrm{rad},a}u|^2\dx\geq0,
+\end{equation}
+where $\partial_{\mathrm{rad},a}u=Du(x)(x-a)/|x-a|$ away from $a$.
+\end{lemma}
+\begin{proof}
+Translate $a$ to zero and put $X(x)=\eta(|x|)x$ in \eqref{eq:stress},
+first with $\eta$ smooth and constant near zero. This gives
+\[
+ \int\left((n-2)\eta|Du|^2
+ +|x|\eta'\bigl(|Du|^2-2|\partial_{\rm rad}u|^2\bigr)\right)=0.
+\]
+For $F(t)=\int_{B_t}|Du|^2$, polar integration and radial approximation
+yield, for almost every $t>0$,
+\[
+ (n-2)F(t)=tF'(t)-2t\int_{\partial B_t}|\partial_{\rm rad}u|^2
+                                      \dd\mathcal H^{n-1}.
+\]
+$F$ is absolutely continuous on every compact positive radius interval.
+Differentiate $t^{2-n}F(t)$, integrate, and use polar coordinates again.
+This proves the equality for every positive pair of radii, also for
+$n=2$. No minimizing comparison has been used.
+\end{proof}
+
+For a field on a ball $D$, use the complete truncated critical quantity
+\begin{equation}\label{eq:morrey}
+ \M_2(F;D)^2=
+ \sup_{x\in D,\,t>0}t^{2-n}\int_{B_t(x)\cap D}|F|^2\dx.
+\end{equation}
+\begin{lemma}[All-center control from one energy]\label{lem:local-morrey}
+If $e=\Th_u(a,R)$ and $D=B_{3R/4}(a)$, then
+\begin{equation}\label{eq:joint-smallness}
+ \M_2(Du;D)^2+\M_2(\Omega;D)^2\leq M e,\qquad
+ M=(1+4q\ell^2)4^{n-2}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+For $x\in D$ and $t\leq R/4$, monotonicity at $x$ between $t$ and
+$R/4$, and $B_{R/4}(x)\subset B_R(a)$, give
+$t^{2-n}\int_{B_t(x)\cap D}|Du|^2\leq4^{n-2}e$.
+For $t>R/4$, bound $t^{2-n}$ by $(R/4)^{2-n}$ and use the full
+energy on $B_R(a)$. Finally $|\Omega|\leq C_N|Du|$.
+\end{proof}
+
+\section{Ball projections and native compensation}\label{sec:analysis}
+An interior divergence-free $L^2$ field $Z$ satisfies
+$\int Z:D\psi=0$ for compactly supported tests. A \emph{natural}
+divergence-free field satisfies this for every $\psi\in W^{1,2}(D)$,
+including its weak zero normal flux. The distinction matters below.
+
+\subsection{One Dirichlet and natural decomposition}\label{sec:projection}
+\begin{lemma}[Ball projections]\label{lem:projection}
+Let $D=B_r(a)$ and $F\in L^2(D,\R^q\otimes\Lambda^1)$. There are
+$f\in W^{1,2}_0(D,\R^q)$ and a mean-zero $w\in W^{1,2}(D,\R^q)$
+uniquely characterized by
+\begin{align}
+ \int_D Df:D\varphi&=\int_D F:D\varphi
+                &&(\varphi\in W^{1,2}_0(D)),\label{eq:dir-proj}\\
+ \int_D Dw:D\psi&=\int_D F:D\psi
+                &&(\psi\in W^{1,2}(D)).\label{eq:neu-proj}
+\end{align}
+Set $Q=F-Dw$, $h=Dw-Df$. Then
+\begin{equation}\label{eq:decomposition}
+ F=Df+Q+h,
+\end{equation}
+$Q$ is natural divergence-free, $h$ is closed and divergence-free with
+harmonic coefficients, and the three fields are mutually $L^2$ orthogonal.
+Each projection is bounded on every $L^s$, $1<s<\infty$, with constants
+depending only on $n,s$. If $p'=p/(p-1)$, then
+\begin{equation}\label{eq:dirichlet-duality}
+ \norm{Df}_{L^p(D)}\leq C_{n,p}
+ \sup_{\substack{\varphi\in W^{1,p'}_0(D)\\\norm{D\varphi}_{p'}\leq1}}
+       \left|\int_D F:D\varphi\right|.
+\end{equation}
+For $0<\theta\leq1/2$ one also has
+\begin{equation}\label{eq:projection-small-ball}
+ \int_{B_{\theta r}(a)}|F|^p
+ \leq C_{n,p}\left(\norm{Df}_p^p+\norm Q_p^p
+                    +\theta^n\norm F_p^p\right).
+\end{equation}
+\end{lemma}
+\begin{proof}
+Poincare makes the gradient norm coercive on the zero-boundary and
+mean-zero spaces. Hilbert projection gives \eqref{eq:dir-proj} and
+\eqref{eq:neu-proj}. Subtraction for compactly supported tests gives
+$\diver h=0$, and $dh=0$ since $h$ is a difference of gradients.
+Thus its coefficients are harmonic. The defining identities give all
+three orthogonalities.
+
+Here is the analytic mechanism for the all-power bounds. The gradient
+response kernels of the ball Dirichlet and mean-zero Neumann problems
+satisfy
+\[
+ |K(x,y)|\leq C|x-y|^{-n},\qquad
+ |K(x,y)-K(x',y)|\leq C|x-x'|\,|x-y|^{-n-1}
+\]
+when $2|x-x'|\leq|x-y|$. These follow from the Green response and
+harmonic gradient estimates, including the matching homogeneous boundary
+comparison on a spherical cap. One may obtain the latter by inversion
+in the sphere with the normal-flux transport for the natural problem.
+Split a source at twice the radius of a test ball. The near response is
+controlled by the $L^2$ projection norm; the far response is harmonic
+and satisfies the displayed difference bound. The disjoint-ball
+decomposition of a source above a height then gives weak $(1,1)$:
+its good part uses $L^2$, and the mean-zero bad parts use the difference
+bound outside the doubled balls. Interpolation gives $1<s\leq2$.
+Self-adjointness supplies $s>2$ by duality. This construction extends
+the same $L^2$ operators, rather than choosing new solutions for each $s$.
+
+Apply the Dirichlet projection to the power dual of $Df$, using
+truncation and then monotone convergence when necessary. Self-adjointness
+and the $L^{p'}$ bound give \eqref{eq:dirichlet-duality}.
+Finally harmonic mean-value estimates give
+$\norm h_{L^p(B_{\theta r})}\leq C\theta^{n/p}\norm h_{L^p(D)}$.
+The projection bound controls the last norm by $C\norm F_p$;
+\eqref{eq:decomposition} proves \eqref{eq:projection-small-ball}.
+\end{proof}
+
+The natural field $Q$ is equivalently the coexact part $*dg$ with its
+relative, co-closed potential on a ball. We use its native projection
+characterization, retaining the whole boundary test space.
+
+\subsection{The precise div--curl and moment estimates}\label{sec:compensation}
+For scalar $b$, put
+$[b]_{\BMO(\R^n)}=\sup_B\fint_B|b-b_B|$. Only BMO functions
+obtained from actual Sobolev graphs are required here.
+
+\begin{lemma}[Local native div--curl pairing]\label{lem:divcurl}
+Let $D=B_r(a)$, let $Z\in L^2(D,\R^k\otimes\Lambda^1)$ be
+interior divergence-free, and $T\in W^{1,2}_0(D,\R^k)$.
+If a bounded native $W^{1,2}$ scalar $b$ has a whole-space BMO extension
+$\widehat b$ agreeing on $D$, then the native pairing agrees with its
+ordinary integral and
+\begin{equation}\label{eq:clms}
+ \left|\int_D b\,Z:DT\right|
+ \leq C_n[\widehat b]_{\BMO(\R^n)}\norm Z_2\norm{DT}_2.
+\end{equation}
+The constant is independent of the bound for $b$.
+The same estimate holds when $Z$ is natural divergence-free and $T$
+is any native $W^{1,2}$ graph on $D$, with no zero-boundary condition.
+\end{lemma}
+\begin{proof}
+Extend $DT$ by zero. There is a solenoidal $L^2$ extension $E$ of $Z$
+to $\R^n$ with norm at most $C_n\norm Z_2$. To construct it,
+transport an extension across the sphere and correct its divergence on
+an annulus by solving the mean-zero weak divergence problem there;
+the compatibility condition is the original divergence identity.
+Equivalently the annular correction is defined by duality against
+gradients and Hilbert projection. The correction is outside $D$ and
+therefore preserves the original field there.
+
+For smooth approximations and a normalized kernel $\rho_t$ supported
+in a ball of radius $t$, cancellation gives
+\[
+ \rho_t*(E\cdot DT)(x)
+ =\int \nabla\rho_t(x-y)\cdot E(y)
+                    (T(y)-T_{B_{2t}(x)})\dd y.
+\]
+Choose $s=2n/(n+1)\in(1,2)$. Its Sobolev conjugate is
+$s^*=ns/(n-s)=s/(s-1)$, so Sobolev--Poincare and Holder bound the grand
+maximal function of $E\cdot DT$ by
+\[
+ C\bigl(\mathcal M(|E|^s)\bigr)^{1/s}
+   \bigl(\mathcal M(|DT|^s)\bigr)^{1/s}.
+\]
+The maximal operator is bounded on $L^{2/s}$, so the $H^1$ norm is at
+most $C\norm E_2\norm{DT}_2$. This is the div--curl cancellation of
+\cite{CLMS}, in the precise $L^2$ case needed here.
+
+Its BMO pairing can be seen directly from atoms: the level sets of
+the grand maximal function, decomposed into maximal disjoint balls,
+give a sum of mean-zero atoms, each bounded by its reciprocal ball
+volume, with the sum of coefficients controlled by the $H^1$ norm.
+Subtract the ball mean of $\widehat b$ on each atom to bound its pairing
+by $C[\widehat b]_{\BMO}$, and sum. Strong $L^2$ approximation of
+the weak graphs passes this estimate to the original fields. Bounded
+smooth truncations of the actual $b$ show that the limit is its ordinary
+integral. Thus its value bound is used for identification and
+integrability, and does not enter the estimate.
+For the natural version, extend $Z$ by zero: its full natural identity
+makes this extension divergence-free on all of $\R^n$. Extend the
+centered graph $T-T_D$ across the sphere and cut it off, with gradient
+norm at most $C\norm{DT}_2$ by Poincare. The same full-space proof
+then applies, while the integral remains exactly the one on $D$.
+\end{proof}
+
+\begin{lemma}[Graph BMO and value moments]\label{lem:moments}
+The following estimates hold for fixed finite-dimensional Euclidean values.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item If $u\in W^{1,2}(B_1)$ and $\M_2(Du;B_1)\leq\eta$, then
+\begin{equation}\label{eq:critical-moments}
+ \norm{u-u_{B_1}}_{L^k(B_1)}\leq C_{n,k}\eta\quad(0<k<\infty).
+\end{equation}
+The centered graph has scalar whole-space BMO extensions with seminorm
+at most $C_n\eta$ for unit scalar observables.
+\item For compactly supported $v\in W^{1,2}(\R^n)$ and $1<p<2$, let
+\begin{equation}\label{eq:envelope}
+ \Phi(x,r)=r^{p-n}\int_{B_r(x)}|Dv|^p,\qquad
+ \Psi(t)=\sup_{x\in\R^n,\,0<r\leq t}\Phi(x,r).
+\end{equation}
+On $D=B_{t/2}(a)$ every unit scalar observable of $v$, after a common
+centering, has a whole-space extension with BMO seminorm at most
+$C_{n,p}\Psi(8t)^{1/p}$. If $z=v_{B_{2t}(a)}$, then
+\begin{equation}\label{eq:local-moments}
+ \norm{v-z}_{L^k(B_t(a))}
+ \leq C_{n,p,k}\Psi(8t)^{1/p}t^{n/k}\quad(0<k<\infty).
+\end{equation}
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+Poincare and Holder bound the mean oscillation on each interior ball
+by $C\eta$. To include the boundary, extend the original weak graph
+evenly by inversion $x\mapsto x/|x|^2$ from the unit ball to the double
+ball. The derivative and Jacobian sizes are $|x|^{-2}$ and $|x|^{-2n}$;
+change of variables and recentering intersecting balls show that the
+complete truncated critical bound increases by a dimensional factor
+only. The two graphs have the same trace on the sphere, hence glue to
+a weak graph. Cut off its centered version on the double ball.
+Poincare controls the cutoff derivative and gives the global extension.
+
+For clarity, the value moment argument requires only this graph BMO
+instance. Decompose a ball into maximal subballs where the local
+oscillation exceeds $A[b]_{\BMO}$, for fixed sufficiently large $A$.
+Their combined volume is at most half the parent volume. Off these
+balls differentiation bounds the oscillation by $C A[b]_{\BMO}$;
+their means differ from the parent mean by the same bound. Repeating
+gives
+$|\{|b-b_B|>jC A[b]_{\BMO}\}\cap B|\leq2^{-j}|B|$.
+Integration of $k\lambda^{k-1}$ against this distribution function
+proves all finite moments. Centering by $u_{B_1}$ gives (i).
+
+For (ii), rescale $B_{4t}(a)$. Poincare and the actual envelope bound
+every subball oscillation by $C\Psi(8t)^{1/p}$. Apply the same graph
+extension and cutoff, or use the globally defined graph with a cutoff
+on $B_{4t}(a)$. The distribution estimate just proved gives the moments.
+Changing a comparable centering mean to $v_{B_{2t}(a)}$ costs only a
+fixed factor. These are Sobolev-graph instances; no extension theorem
+for an arbitrary abstract ball-BMO function is asserted.
+\end{proof}
+
+\section{Construction of the natural Coulomb frame}\label{sec:gauge}
+\begin{proposition}[Critical natural frame]\label{prop:gauge}
+For fixed $n\geq2,q$, there are $\kappa>0,C_g<\infty$ such that
+every skew one-form $A\in L^2(B_1)$ with $\M_2(A;B_1)\leq\kappa$
+admits $P\in W^{1,2}(B_1,\SO(q))$ for which
+\begin{equation}\label{eq:Z}
+ Z_i=P^T\partial_iP+P^TA_iP
+\end{equation}
+is natural divergence-free and
+\begin{equation}\label{eq:gauge-bound}
+ \M_2(DP;B_1)^2+\M_2(Z;B_1)^2\leq C_g\M_2(A;B_1)^2.
+\end{equation}
+Thus $Z$ is the literal transformed original connection, not an
+independently chosen field. The constants also work on every positive
+ball by affine transport.
+\end{proposition}
+
+For $0\leq\lambda<n$ write
+\[
+ \norm F_{2,\lambda}^2=
+ \sup_{x\in B_1,\,r>0}r^{-\lambda}
+                         \int_{B_r(x)\cap B_1}|F|^2.
+\]
+The critical exponent is $n-2$; a stronger exponent is
+$\nu=n-2+\gamma$, $0<\gamma<2$. The quantitative construction fixes
+$\gamma=1$, hence $\nu=n-1$, and then takes a critical limit.
+Its boundary estimates are uniform for every $0\leq\lambda\leq n-1$;
+in particular they apply separately at the original critical exponent
+$\lambda=n-2$.
+
+\begin{lemma}[Boundary estimates and the actual inverse]\label{lem:gauge-operators}
+The ball Dirichlet, natural-gradient, and relative coexact responses are
+bounded on $L^{2,\lambda}$ for $0\leq\lambda<n$.
+If a native orthogonal frame has the natural connection \eqref{eq:Z}
+and $\M_2(DP)\leq d_0$, then, for $\lambda=n-2,\nu$ for which
+the original quantities $\norm A_{2,\lambda}$ and
+$\norm{DP}_{2,\lambda}$ are finite,
+\begin{equation}\label{eq:absorption-before}
+ \norm{DP}_{2,\lambda}+\norm Z_{2,\lambda}
+ \leq C_{n,q,\lambda}\norm A_{2,\lambda}
+       +C_{n,q,\lambda}d_0\norm{DP}_{2,\lambda}.
+\end{equation}
+Let $\mathcal N$ denote the native mean-zero Neumann response, so
+$\int D\mathcal N(F):D\psi=\int F:D\psi$ for every $W^{1,2}$ test.
+For natural skew $Z$ and a mean-zero native $H$ in the stronger class,
+\begin{equation}\label{eq:linearized-neumann}
+ \norm{\mathcal N([Z,H])}_{W^{1,2,\nu}}
+ \leq C_{n,q,\gamma}\M_2(Z)\norm H_{W^{1,2,\nu}}.
+\end{equation}
+The norm includes the native gradient and the mean-zero value norm.
+\end{lemma}
+\begin{proof}
+For a linear response $TF$, split the source at twice the radius of a
+ball or spherical boundary cap. The near response has energy bounded
+by $C\int_{B_{2r}\cap B_1}|F|^2$. The far response is harmonic there
+with its matching homogeneous boundary condition. Gradient comparison
+on the cap gives the factor $C(r/s)^n$ between its energies at scales
+$r$ and $s$. Decomposing into annuli of radii $2^jr$ therefore bounds
+the Morrey norm by a geometric series with ratio
+$2^{-(n-\lambda)/2}<1$. Radii comparable to or larger than one use
+the global energy estimate. This proves the complete truncated-ball
+bound, including the boundary. Poincare controls values after the
+mean-zero or relative zero-kernel normalization.
+
+Here is a native construction of the nonlinear bound that retains
+the full boundary condition throughout. Let $\mathcal Q$ be the
+natural solenoidal projection from Lemma~\ref{lem:projection}. Define
+\[
+ B(X,Y)=\tfrac12(X^TY-Y^TX),\qquad S=P^TdP=B(P,dP).
+\]
+The last equality is the differentiated orthogonality identity and
+$B(X,X)=0$. Let $Q_b=\mathcal Q S$ and
+$Q_c=\mathcal Q(P^TAP)$. Since $Z$ is natural, $Z=Q_b+Q_c$.
+The linear response bound controls
+$\norm{Q_c}_{2,\lambda}\leq C\norm A_{2,\lambda}$.
+The notation $Q_b$ refers directly to a one-form; if a potential is
+desired, it is $*db$ for the unique relative co-closed $(n-2)$-form
+$b$ (a zero-boundary scalar when $n=2$).
+
+For any bounded original critical graph $P$ and any native graph $W$,
+let $Q_W=\mathcal Q(B(P,dW))$. Natural orthogonality and the natural
+version of Lemma~\ref{lem:divcurl} give
+\begin{equation}\label{eq:nonlinear-full-energy}
+ \norm{Q_W}_2^2=\int_{B_1}B(P,dW):Q_W
+ \leq C[P]_{\BMO}\norm{DW}_2\norm{Q_W}_2
+ \leq Cd_0\norm{DW}_2\norm{Q_W}_2.
+\end{equation}
+The scalar BMO coefficient here is the actual bounded graph $P$.
+The natural identity permits zero extension of $Q_W$, so the pairing
+uses every whole-ball test and has no residual normal boundary term.
+In particular,
+\begin{equation}\label{eq:nonlinear-global}
+ \int_{B_1}|Q_b|^2\leq Cd_0^2\int_{B_1}|DP|^2.
+\end{equation}
+
+To obtain power growth, fix $x\in B_1$, $0<r\leq1/8$, and put
+$K=\norm{DP}_{2,\lambda}^2<\infty$. Even inversion extends the
+original graph to $B_2$ with both its critical bound and its
+$r^\lambda$ energy growth multiplied by fixed constants. Choose
+$\chi=1$ on $B_r(x)$, supported in $B_{2r}(x)$, with
+$|D\chi|\leq C/r$, and let $c$ be the extended mean on $B_{4r}(x)$.
+The restricted native graph $W=\chi(P-c)$ has
+$\norm{DW}_{L^2(B_1)}^2\leq CKr^\lambda$ by Poincare on the extended
+ball. Alternation eliminates the quadratic cutoff term:
+\[
+ B(P-c,DW)=\chi B(P-c,DP),\qquad B(P-c,P-c)=0.
+\]
+Let $Q_{\rm near}=\mathcal Q(\chi B(P-c,DP))$. Applying
+\eqref{eq:nonlinear-full-energy} with $P-c$ and $W$ proves
+$\int|Q_{\rm near}|^2\leq Cd_0^2Kr^\lambda$.
+Subtracting $c$ changes the full forcing only by the actual gradient
+$B(c,DP)=D(B(c,P))$, which the same natural projection annihilates.
+Consequently $Q_{\rm far}=Q_b-Q_{\rm near}$ is the natural response to
+$(1-\chi)B(P-c,DP)$, a forcing that vanishes on $B_r(x)\cap B_1$.
+
+The native gradient complement of this far response is therefore
+weakly harmonic there, with homogeneous Neumann boundary data on the
+original sphere. Its full natural identity, rather than interior
+divergence alone, supplies that boundary condition. The boundary
+harmonic gradient estimate, or the native Neumann inversion extension,
+gives on $B_{r/256}(x)\cap B_1$
+\[
+ |Q_{\rm far}|^2\leq Cr^{-n}
+      \int_{B_r(x)\cap B_1}|Q_{\rm far}|^2
+ \quad\text{almost everywhere}.
+\]
+Put $E_b(r)=\int_{B_r(x)\cap B_1}|Q_b|^2$. Integrate this estimate
+on $B_{\theta r}(x)\cap B_1$, with $0<\theta\leq1/256$, and use
+the near-field energy to obtain
+\begin{equation}\label{eq:nonlinear-growth-step}
+ E_b(\theta r)\leq C\theta^nE_b(r)+Cd_0^2Kr^\lambda.
+\end{equation}
+Choose $\theta$ so that $C\theta^n\leq\theta^\lambda/2$.
+At $r_0=1/8$, \eqref{eq:nonlinear-global} and
+$\int_{B_1}|DP|^2\leq K$ give the initial bound
+$E_b(r_0)\leq Cd_0^2K$. Iterating
+\eqref{eq:nonlinear-growth-step}, and filling radii by monotonicity,
+gives $E_b(r)\leq Cd_0^2Kr^\lambda$ at every radius. For large radii
+use \eqref{eq:nonlinear-global}; recentering an intersecting ball
+controls any ambient center. Thus
+$\norm{Q_b}_{2,\lambda}\leq Cd_0\norm{DP}_{2,\lambda}$.
+Together with $Z=Q_b+Q_c$ and $DP=PZ-AP$, this proves
+\eqref{eq:absorption-before}. At the stronger exponent the assumed
+finite original growth is essential; no term with infinite norm is
+absorbed to manufacture stronger-class membership.
+
+For \eqref{eq:linearized-neumann}, the critical coefficient is paired
+with an oscillation of $H$, rather than its absolute value. Indeed
+$\mathcal N([Z,H_D])=0$ for every constant matrix $H_D$, precisely
+because $Z$ is natural. On a ball of radius $r$, the stronger graph
+has oscillation at most $C\norm H_{W^{1,2,\nu}}r^{\gamma/2}$ by
+the dyadic Poincare estimate. Multiplying by the critical energy of
+$Z$ gives growth $r^{n-2+\gamma}$. Near--far summation, using the
+same constant cancellation on each annulus, controls the mean-zero
+response in this stronger Morrey norm. Its value bound follows by
+Poincare. This proves \eqref{eq:linearized-neumann}. All graph
+identities are obtained by bounded smooth approximation and strong
+$L^2$ passage; the response remains the same unique native solution.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:gauge}]
+First suppose $A\in L^{2,\nu}$. Let $Y_\nu$ be the full native
+Morrey--Sobolev space of matrix-valued maps, with norm the sum of
+the size of the mean and $\norm{DH}_{2,\nu}$. It is complete and embeds
+into $C^{0,\gamma/2}$: the dyadic mean estimate follows from
+$\int_{B_r}|DH|^2\leq Cr^{n-2+\gamma}$. The product rule and the
+resulting supremum bound make $Y_\nu$ a unital Banach algebra for
+matrix multiplication. Let $X_\nu$ be its closed real linear subspace
+of mean-zero skew maps. This subspace is the parameter space, not an
+algebra. The matrix exponential is analytic in $Y_\nu$, agrees with
+the pointwise exponential, and has its actual differentiated weak graph.
+
+Suppose a stronger-class frame is known for $tA$, with connection $Z$.
+For a skew mean-zero $H\in X_\nu$ and a small real $s$, the frame
+$P\exp H$ for $(t+s)A$ has connection
+\[
+ \mathcal F(H,s)=e^{-H}d(e^H)+e^{-H}(Z+sP^TAP)e^H.
+\]
+The natural equation is $\mathcal N(\mathcal F(H,s))=0$. At $(0,0)$
+it vanishes and its derivative in $H$, on the skew mean-zero space, is
+$I+\mathcal N([Z,\cdot])$. By
+\eqref{eq:linearized-neumann}, the second term has norm less than
+$1/2$ if $\M_2(Z)$ is sufficiently small. Its inverse is the
+convergent Neumann series. The Banach inverse function theorem gives
+actual nearby stronger-class frames. Exponentiating a real skew matrix
+preserves special orthogonality and the literal transformed connection.
+
+Choose $d_0$ so the last term of \eqref{eq:absorption-before} can be
+absorbed at both exponents. The improved estimates are
+\begin{equation}\label{eq:two-exponent}
+ \norm{DP}_{2,\lambda}+\norm Z_{2,\lambda}
+ \leq C\norm{tA}_{2,\lambda}\qquad(\lambda=n-2,\nu).
+\end{equation}
+Make the critical size of $A$ sufficiently small that the improved
+critical bounds leave a strict margin below both the a priori critical
+budget and the Neumann-inverse threshold. Each fieldwise local
+inverse-function perturbation then preserves this margin. At $t=0$
+use $P=I$. The set of $t\in[0,1]$ with a frame and fixed critical
+and stronger bounds from \eqref{eq:two-exponent} is relatively open
+by the perturbation argument and the improved bounds. It is relatively
+closed by weak $W^{1,2}$ compactness, strong $L^2$ compactness of the
+bounded orthogonal frames, and lower semicontinuity on every truncated
+ball. Strong convergence of the frames and weak convergence of their
+derivatives identify the connection when tested against bounded smooth
+fields. The natural identity then passes to all $W^{1,2}$ tests by
+density. The stronger growth bounds pass as well. Connectedness of
+$[0,1]$ gives the frame at $t=1$.
+
+For critical $A$, extend it by zero and mollify, preserving skewness.
+The restrictions $A_j$ satisfy
+\[
+ A_j\longrightarrow A\text{ strongly in }L^2(B_1),\qquad
+ \M_2(A_j;B_1)\leq C_n\M_2(A;B_1).
+\]
+Jensen and Fubini give the bound. A convolution ball whose center falls
+outside the unit ball is recentered at a point of intersection, with
+at most twice its radius; the complete truncated definition controls
+it. Each mollification belongs to a stronger class, and one may fix
+$\gamma=1$. Its stronger norm need not be uniform. Reduce $\kappa$
+to allow the dimensional convolution constant and construct frames
+$P_j$ with uniform critical bounds. A joint subsequence satisfies
+\[
+ P_j\to P\text{ strongly in }L^2\text{ and almost everywhere},\qquad
+ DP_j\rightharpoonup DP\text{ in }L^2.
+\]
+The closed group $\SO(q)$ retains the values. Boundedness of $P_j$
+and strong convergence of $A_j$ identify $P_j^TA_jP_j$; the strong--weak
+limit identifies $P_j^TDP_j$. Thus the resulting field is precisely
+\eqref{eq:Z}. Its natural identity passes first for bounded smooth
+tests and then by density for all native tests. Lower semicontinuity
+on each truncated ball proves \eqref{eq:gauge-bound}.
+No critical embedding into continuous functions, or approximation in
+the critical Morrey norm, is used. Positive affine transport preserves
+the critical seminorm and full natural pairing, giving every ball.
+\end{proof}
+
+\section{The compact-target system and its actual cutoff}\label{sec:system}
+Work first on $B_1$. Fix
+\begin{equation}\label{eq:p}
+ p=1+\frac1{2n},\qquad p'=\frac p{p-1}=2n+1>n,\qquad\delta=\frac12.
+\end{equation}
+Suppose the original compact-target map satisfies
+$-\Delta u=A\cdot Du$ and $P$ is the constructed frame. Choose
+$\eta\in[0,1]$ so that
+\begin{equation}\label{eq:eta}
+ \M_2(Du;B_1),\quad\M_2(DP;B_1),\quad\M_2(Z;B_1)\leq\eta.
+\end{equation}
+Use the actual smooth cutoff
+$\chi(x)=S((9/16-|x|^2)/(17/144))$, where $S$ is the smooth
+transition from zero to one. It equals one on $B_{2/3}$, vanishes
+outside $B_{3/4}$ and satisfies
+\begin{equation}\label{eq:fixed-cutoff-numbers}
+ 0\leq\chi\leq1,\qquad |D\chi|\leq B=2^{24},\qquad
+ |\Delta\chi|\leq L_\chi=2^{48}+2^{25}n.
+\end{equation}
+These bounds follow from $|S'|\leq2^{20}$, $|S''|\leq2^{40}$
+and differentiation of the displayed quadratic argument. Let
+\begin{equation}\label{eq:cutoff}
+ c=u_{B_1},\qquad v=\chi(u-c),\qquad
+ Dv=\chi Du+(u-c)\otimes D\chi,
+\end{equation}
+extended by zero to $\R^n$. This is the original global weak graph of
+$v$. It is bounded because the target is compact.
+
+\begin{lemma}[The transformed equation and error]\label{lem:cutoff}
+On $B_1$ put $F_i=P^T\partial_i v$ and $W=\sum_iZ_iF_i$.
+Then $F\in L^2$ and
+\begin{equation}\label{eq:cutoff-eq}
+ -\diver F=W-e,
+\end{equation}
+where the locally integrable error is the four-term expression
+\begin{equation}\label{eq:error}
+ e=\sum_i(\partial_iP^T)(u-c)\partial_i\chi
+   +2\sum_iP^T\partial_i u\partial_i\chi
+   +P^T(u-c)\Delta\chi
+   +\sum_i Z_iP^T(u-c)\partial_i\chi.
+\end{equation}
+For $0<t\leq1/16$ and $B_t(a)\subset B_1$,
+\begin{equation}\label{eq:error-L1}
+ \norm e_{L^1(B_t(a))}\leq C\eta t^{n-1-\delta}.
+\end{equation}
+The actual envelope \eqref{eq:envelope} of $v$ is finite and
+\begin{equation}\label{eq:initial-envelope}
+ 0\leq\Psi(t)\leq C\eta^p\qquad(0<t\leq1/16).
+\end{equation}
+\end{lemma}
+\begin{proof}
+Orthogonality gives $\partial_iP^T=-P^T(\partial_iP)P^T$. Test the
+original system with the bounded native test $P\varphi$. Product
+differentiation yields $-\diver(P^TDu)=Z\cdot P^TDu$. Apply the
+product rule to \eqref{eq:cutoff} to obtain exactly
+\eqref{eq:cutoff-eq}--\eqref{eq:error}. Bounded smooth graph
+approximation justifies this for the original weak fields; all terms
+on the right are $L^1$.
+
+Choose $k>\max(2,n/\delta)$. The value moments and critical bounds give
+\[
+ \norm{u-c}_{L^2(B_t(a))}\leq C_k\eta t^{n/2-\delta},\qquad
+ \norm{Du}_{L^2(B_t(a))}+\norm{DP}_{L^2(B_t(a))}
+ +\norm Z_{L^2(B_t(a))}\leq C\eta t^{n/2-1}.
+\]
+The first and fourth error terms are at most
+$C\eta^2t^{n-1-\delta}$, the second at most $C\eta t^{n-1}$, and
+the third at most $C\eta t^{n-\delta}$. Use $\eta,t\leq1$.
+
+Holder gives $\int_{B_t}|Du|^p\leq C\eta^pt^{n-p}$. For the
+cutoff derivative take $k>\max(p,n)$; then
+$t^{p-n}\int_{B_t}|u-c|^p\leq C\eta^pt^{p-np/k}\leq C\eta^p$.
+Any ball of radius at most $1/16$ meeting the support lies in $B_{7/8}$;
+otherwise its weak gradient is zero almost everywhere. This proves the
+claim for every center in $\R^n$, and finiteness of the supremum.
+\end{proof}
+
+\subsection{Compensation for one and the same decomposition}\label{sec:same-fields}
+Fix $0<t\leq1/128$ and $D=B_{t/2}(a)\subset B_1$. Apply
+Lemma~\ref{lem:projection} once to $F=P^TDv$ on $D$, and retain its
+$f,w,Q,h$. Write $b=\Psi(8t)^{1/p}$.
+
+\begin{lemma}[The same two component estimates]\label{lem:field-bounds}
+These fields satisfy
+\begin{align}
+ \norm{Df}_{L^p(D)}&\leq C\eta t^{n/p-1}b+C\eta t^{n/p-\delta},
+                                                   \label{eq:f-bound}\\
+ \norm Q_{L^p(D)}&\leq C\eta t^{n/p-1}b.\label{eq:Q-bound}
+\end{align}
+\end{lemma}
+\begin{proof}
+Take $\varphi\in W^{1,p'}_0(D)$ with $\norm{D\varphi}_{p'}\leq1$.
+Since $p'>n$,
+\begin{equation}\label{eq:test-scaling}
+ \norm\varphi_\infty\leq Ct^{1-n/p'},\qquad
+ \norm{D\varphi}_2\leq Ct^{n/2-n/p'}.
+\end{equation}
+The same Dirichlet equation gives
+$\int_D Df:D\varphi=\int_D(W-e)\cdot\varphi$.
+Move the derivative of $v$ in $W$ onto the matrix test constructed
+from $P\varphi$. In coordinates its derivative has the two terms
+$DP\,\varphi+P\,D\varphi$. The resulting pairings are scalar
+observables of $v$ against $Z$ and this derivative. Centering constants
+vanish by the divergence identity and zero trace. The product test is
+native and zero-boundary since both $P$ and $\varphi$ are bounded.
+Lemmas~\ref{lem:divcurl} and \ref{lem:moments} give
+\[
+ \left|\int_D W\cdot\varphi\right|
+ \leq Cb\norm Z_2
+       (\norm{DP}_2\norm\varphi_\infty+\norm{D\varphi}_2)
+ \leq C\eta t^{n/p-1}b.
+\]
+The actual bounded cutoff identifies this pairing with the ordinary
+integral. The error is bounded by
+$C\eta t^{n-1-\delta}t^{1-n/p'}=C\eta t^{n/p-\delta}$.
+Dirichlet duality proves \eqref{eq:f-bound}.
+
+For $Q$, let $H\in L^{p'}(D)$ be a one-form of norm at most one and
+$T$ its natural solenoidal projection. Then
+$\norm T_{p'}\leq C$. Self-adjointness and the full natural identity
+give, with $z=v_{B_{2t}(a)}$,
+\begin{equation}\label{eq:Q-dual}
+ \int_D Q:H=\int_D P^TDv:T
+          =-\int_D (v-z)\cdot\sum_i\partial_iP\,T_i.
+\end{equation}
+For smooth bounded approximations this is integration by parts; the
+native product test is justified by boundedness of $P$ and $v$.
+The constant term vanishes because the natural identity can test the
+frame itself. For general duals use approximation and boundedness of
+the same natural projection.
+Let $s=2p/(2-p)$; then $1/2+1/p'+1/s=1$. Holder and
+\eqref{eq:local-moments} bound the last integral by
+\[
+ C\norm{DP}_2\norm T_{p'}\norm{v-z}_s
+ \leq C\eta t^{n/2-1}bt^{n/s}
+ =C\eta t^{n/p-1}b.
+\]
+All limiting products are integrable by this same three-factor bound.
+Duality proves \eqref{eq:Q-bound} for the original selected $Q$;
+no field is reselected for a dual test.
+\end{proof}
+
+\begin{lemma}[One-ball decay]\label{lem:one-ball}
+For $0<\theta\leq1/2$,
+\begin{equation}\label{eq:one-ball}
+ \int_{B_{\theta t/2}(a)}|Dv|^p
+ \leq C\left((\eta^p+\theta^n)\Psi(8t)t^{n-p}
+                    +\eta^pt^{n-p\delta}\right).
+\end{equation}
+\end{lemma}
+\begin{proof}
+Orthogonality gives $|F|=|Dv|$ almost everywhere. Insert the same
+component bounds into \eqref{eq:projection-small-ball}. Use
+$(a+b)^p\leq2^p(a^p+b^p)$ and
+$\norm F_{L^p(D)}^p\leq\Psi(8t)t^{n-p}$, with $n-p\geq0$.
+This proves the displayed inequality directly from the original data.
+\end{proof}
+
+\section{All-center iteration and the representative}\label{sec:iteration}
+\begin{lemma}[Envelope improvement]\label{lem:envelope}
+There are $\eta_*>0,C$ such that $\eta\leq\eta_*$ implies
+\begin{equation}\label{eq:power-growth}
+ \Psi(t)\leq C\eta^pt^\beta\quad(0<t\leq1/16),
+ \qquad\beta=p(1-\delta)=p/2.
+\end{equation}
+For every $a\in\R^n$ and $r>0$,
+\begin{equation}\label{eq:gradient-growth}
+ \int_{B_r(a)}|Dv|^p\leq C\eta^pr^{n-p+\beta}
+                         =C\eta^pr^{n-p/2}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+To pass from one ball to all centers, fix $r\leq\theta t/2$ and set
+$t'=2r/\theta\leq t$. If $B_r(a)$ misses the support of $Dv$, its
+integral is zero. Otherwise $a$ is within distance $r$ of $B_{3/4}$;
+since $t\leq1/128$, the closed ball of radius $t'/2$ at $a$ is contained
+in $B_1$. Apply \eqref{eq:one-ball} at $t'$, multiply by
+$r^{p-n}=(\theta t'/2)^{p-n}$, and use monotonicity of $\Psi$ and
+$(t')^\beta\leq t^\beta$. Taking the supremum over all such $a,r$
+gives
+\begin{equation}\label{eq:raw-recurrence}
+ \Psi(\theta t/2)\leq
+ D(\eta^p\theta^{p-n}+\theta^p)\Psi(8t)
+     +D\eta^p\theta^{p-n}t^\beta
+ \quad(0<t\leq1/128).
+\end{equation}
+Every supremum is finite by \eqref{eq:initial-envelope}; neither
+attainment nor continuity is needed. The constants in this argument can be
+chosen without any real root, logarithm, or search. Let $D>0$ be the rational
+coefficient in \eqref{eq:raw-recurrence}, let $M_0$ be the integer initial
+bound for $\Psi(1/16)/\eta^p$, and let $J$ be the integer global bound
+$r^{p-n}\int_{B_r(a)}|Dv|^p\leq J\eta^p$. These specific coefficients
+are given in Section~\ref{sec:constants} and Appendix~\ref{app:algorithm}.
+Put
+\begin{align}
+ H&=512D,& \vartheta&=(2+8H)^{-2},&
+ \eta_*&=\frac{\vartheta^n}{4(1+H)},& \sigma&=\vartheta/16,\label{eq:explicit-scale}\\
+ A_0&=D/\vartheta^n,& B_0&=16M_0,&
+ C_s&=\frac{B_0+2A_0/\sigma}{\sigma},&
+ C_{\rm pow}&=1+C_s+16J.\label{eq:explicit-power}
+\end{align}
+Here $0<\vartheta\leq1/2$, $0<\eta_*\leq1$, and $0<\beta=p/2<1$.
+The identity $\sqrt\vartheta=(2+8H)^{-1}$ gives, for $p\geq1$,
+\[
+ H\vartheta^p\leq\tfrac12\vartheta^{p/2},\qquad
+ H\eta^p\vartheta^{p-n}\leq\tfrac12\vartheta^{p/2}
+ \quad(0\leq\eta\leq\eta_*).
+\]
+For the second inequality use $\eta^p\leq\eta_*$ and
+$\vartheta^p\leq\vartheta^{p/2}$. Since $16^\beta\leq16$ and
+$2\cdot16^\beta D\leq H$, substituting $t=s/8$ in
+\eqref{eq:raw-recurrence} gives
+\begin{equation}\label{eq:recurrence}
+ \Psi(\sigma s)\leq\tfrac12\sigma^\beta\Psi(s)
+                 +A_0\eta^ps^\beta\quad(0<s\leq1/16).
+\end{equation}
+Indeed $D\vartheta^{p-n}\leq D\vartheta^{-n}=A_0$.
+Also $(1/16)^\beta\geq1/16$, so the initial bound is
+$\Psi(1/16)\leq B_0\eta^p(1/16)^\beta$.
+Iteration at $s_j=\sigma^j/16$ and monotonicity between successive
+radii give the coefficient
+\[
+ \frac{B_0+A_0/(\sigma^\beta-\sigma^\beta/2)}{\sigma^\beta}
+ \leq \frac{B_0+2A_0/\sigma}{\sigma}=C_s,
+\]
+where $\sigma^\beta\geq\sigma$ was used twice.
+Thus \eqref{eq:power-growth} holds with $C_{\rm pow}$.
+Multiplying by $r^{n-p}$ proves \eqref{eq:gradient-growth} for
+$r\leq1/16$. For $r\geq1/16$, the original global bound and
+$r^\beta\geq1/16$ imply $J\leq16Jr^\beta\leq C_{\rm pow}r^\beta$.
+This gives the same coefficient for every positive radius.
+\end{proof}
+
+\begin{lemma}[Direct mean-limit representative]\label{lem:representative}
+Suppose $v\in W^{1,2}(\R^n,\R^q)$, $1\leq p\leq2$, $0<\alpha<1$,
+and
+$\int_{B_r(a)}|Dv|^p\leq K^pr^{n-p+p\alpha}$ for all $a,r>0$.
+Then $v$ has a continuous representative with
+$[\widetilde v]_{C^{0,\alpha}}\leq C_{n,p,\alpha}K$.
+\end{lemma}
+\begin{proof}
+Poincare and Holder give
+$\fint_{B_r(a)}|v-v_{B_r(a)}|\leq CKr^\alpha$.
+Successive means at radii $r,r/2,r/4,\ldots$ differ by at most
+$CK(r/2^j)^\alpha$. Their limits define $\widetilde v(a)$ at every
+point, with tail at most $CKr^\alpha$. Lebesgue differentiation
+identifies the limit with $v$ almost everywhere. For distinct $a,b$,
+take $r=2|a-b|$ and compare their radius-$r$ means through a ball
+of comparable radius containing both. Poincare bounds the mean
+difference and the two tails by $CKr^\alpha$. This proves the
+pointwise H\"older estimate and continuity everywhere.
+\end{proof}
+
+\begin{proposition}[The compact-target representative]\label{prop:system-rep}
+The original system and its constructed frame satisfying
+\eqref{eq:eta} with $\eta\leq\eta_*$ have a unique continuous
+representative on $B_{2/3}$, with H\"older exponent $1/2$ and seminorm
+at most $C\eta$. On a ball $B_\rho(a)$ the corresponding conclusion
+is on $B_{2\rho/3}(a)$ with bound $C\eta\rho^{-1/2}$.
+\end{proposition}
+\begin{proof}
+Apply \eqref{eq:gradient-growth} and the preceding mean-limit lemma.
+On $B_{2/3}$ the cutoff is one, so $c+\widetilde v$ represents the
+original $u$. It lies in $N$ at every point: continuity and closedness
+of $N$ would otherwise give an open ball outside $N$, contradicting
+almost-everywhere target membership. Two continuous representatives
+agree everywhere because a nonzero difference persists on an open set
+of positive measure. Under $x=a+\rho y$, the weak gradient has the
+factor $\rho$, the critical quantities are invariant, and the H\"older
+seminorm has the factor $\rho^{-1/2}$.
+\end{proof}
+
+\section{A complete ledger of rational constants}\label{sec:constants}
+The estimates above admit the following particular witnesses. They are
+conservative admissible bounds; no optimality is asserted. Every coefficient
+entering the effective threshold and H\"older bound is specified by finite
+natural-number or rational arithmetic.
+Appendix~\ref{app:algorithm} expands the entire recursion, including its
+Hardy, projection, boundary and moment coefficients, into a self-contained
+algorithm. Its function names agree with the numerical definitions in the
+formal development.
+
+\subsection{The geometric certificate and the effective theorem}
+The geometric input consists of an actual function
+$G:\R^q\to\mathcal L(\R^q,\R^q)$ and a rational $\ell\geq0$ such that
+\begin{equation}\label{eq:geometric-certificate}
+ G\in C_c^1,\qquad G(y)=Q(y)\ (y\in N),\qquad
+ \norm{DG(y)}\leq\ell\quad(y\in\R^q).
+\end{equation}
+The last inequality covers every ambient point, including the extension
+and cutoff region. The extension theorem and compactness prove existence
+of such data for every compact embedded $C^2$ target; an integer larger
+than the finite derivative bound is a rational choice of $\ell$.
+This is an existence statement about an abstract embedded target.
+To evaluate numerical bounds for a specified embedding one supplies and
+certifies \eqref{eq:geometric-certificate}. The present theorem does not
+supply an algorithm extracting this certificate from an arbitrary abstract
+manifold structure. After certification, the analytic constants require
+only $n,q,\ell$ and no computation of $u$ or of its Coulomb frame.
+
+\begin{theorem}[Rational quantitative witnesses]\label{thm:effective}
+Under the hypotheses of Theorem~\ref{thm:main}, fix any certificate
+\eqref{eq:geometric-certificate}. Define $\kappa,C_g,\theta,C_r$ by the
+ledger below and $\varepsilon_*,C$ by
+\eqref{eq:final-rational-constants}. The conclusions of
+Theorem~\ref{thm:main} hold with exactly these values and exponent $1/2$.
+They are the functions
+\begin{quote}
+\lean{effectiveStationaryEnergyThreshold}\\
+\lean{effectiveStationaryHolderConstant}
+\end{quote}
+evaluated at $(n,q,\ell)$ in Appendix~\ref{app:algorithm}. If the target is smooth, the same values
+also give the H\"older estimate for the smooth representative.
+\end{theorem}
+The proof is the quantitative tracking below followed by the assembly in
+Section~\ref{sec:assembly}. This effective interface exposes certified
+geometric data. The existential target-only theorem obtains those data
+inside its proof, so its original hypotheses are unchanged.
+
+\subsection{Elementary and moment coefficients}
+Write $V_n=|B_1(0)\subset\R^n|$. This auxiliary real volume is eliminated
+from every numerical coefficient by the following integer bounds.
+The coordinate cube of side
+$1/(n+1)$ centered at zero lies in $B_1$, and $B_1\subset[-1,1]^n$.
+Consequently
+\begin{equation}\label{eq:volume-ledger}
+ (n+1)^{-n}\leq V_n\leq2^n,\qquad
+ V_n^{-s}\leq1+(n+1)^n\quad(0\leq s\leq1).
+\end{equation}
+Coordinate Sobolev integration gives coefficient $n$ at exponent
+$n/(n-1)$; the norm-power argument gives
+$n p(n-1)/(n-p)$ for $1\leq p<n$. At the CLMS lower exponent
+$2n/(n+1)$ this coefficient is exactly $2n$.
+All coordinate norm comparisons are bounded by $n$, so no norm of an
+unspecified basis occurs. The scalar transition bounds and radial
+cutoff bounds are those in \eqref{eq:fixed-cutoff-numbers}; the
+scaled unit-to-two cutoff has gradient bound $2^{22}$.
+
+For $k\in\mathbb N$ put
+\[
+ T_k=1+24\,2^k k!.
+\]
+This bounds the geometric tail moment for every $0<\varrho\leq1/2$:
+\[
+ 1+\sum_{m\geq0}(m+2)^k\varrho^m\leq T_k.
+\]
+Indeed $x^k/k!\leq e^x$ at $x=(m+2)/2$, $e<3$ and
+$e^{1/2}\leq7/4$ bound each summand by
+$3\,2^k k!(7/8)^m$, whose sum is $24\,2^k k!$.
+Apply this to the actual maximal-function distribution tails, of ratios
+$1/4$ or $2^{-p}\leq1/2$, after the dyadic mean estimates. For example,
+with $D_n=\text{\lean{effectivePointwiseConstant n}}$ the integer moment
+coefficient is exactly
+\begin{equation}\label{eq:moment-ledger}
+ I_{n,k}=T_kD_n^k(2^n+5^n).
+\end{equation}
+The lower-$p$ counterpart uses
+$\text{\lean{criticalLpPointwiseTailMajorant n}}$ in place of $D_n$.
+The coexact component needs only its fourth moment: for our fixed $p$,
+$2p/(2-p)\leq4$. The error term uses $k=2n+3$ and ordinary Holder
+reduction. Compact-target boundedness ensures admissibility of the
+ordinary pairings and does not enter these coefficients.
+
+Ball-average telescoping at every $1/2\leq\alpha\leq1$ has the
+uniform coefficient $512\,2^n$. Combining this with
+\eqref{eq:volume-ledger} and the actual Sobolev Poincare coefficient gives
+\begin{equation}\label{eq:S-ledger}
+ S_n=1+512\,2^n\bigl(2^{n+1}(n+1)(1+(n+1)^n)\bigr).
+\end{equation}
+It controls the local Morrey representative at $\alpha=1/2$ and the
+global representative at every exponent in $[1/2,1]$ used by the
+supercritical native tests. In particular, at $r=2n+1$ their essential
+value bound has integer coefficient
+\[
+ U_n=4S_n(1+2^n).
+\]
+This follows from the exterior zero anchor, $4^\alpha\leq4$, and
+$V_n^{1/2-1/r}\leq1+2^n$.
+
+\subsection{Actual pairing and projection coefficients}
+The local div--curl coefficient is
+\[
+ H_n=2\,D_{\rm at}(n)K_{\rm gr}(n),
+\]
+where $D_{\rm at}=\text{\lean{rationalHardyPairingConstant}}$ and
+$K_{\rm gr}=\text{\lean{divcurlGrandKernelMajorant}}$ are expanded in the
+appendix. The latter comes from the explicit coordinate Sobolev
+coefficient, scale normalization and maximal-function estimate.
+The former comes from the actual Whitney partition, normalized mass,
+compensation and atom coefficients. The mass normalization uses
+$V_n^{-1}\leq(n+1)^n$. Thus this is a bound for the actual ordinary
+pairing in Lemma~\ref{lem:divcurl}, rather than an assumed Hardy
+representation coefficient. Native boundary extension and its cutoff
+multiply it by the explicit integer extension and mean-oscillation
+factors displayed in the appendix.
+
+For clarity, the numerical good-lambda-to-moment step has the following
+literal form. Given the actual off-support coefficient $c$, set
+\begin{align*}
+ A(n,c)&=1+64^n+16c64^n,&
+ D(n)&=1+4\,5^n64^n1536^n,\\
+ d(N,A,D)&=4(1+D)(1+A)^N,\\
+ T(n,N,A,D)&=2(1+A)^Nd(N,A,D)^N2^N\,N\,5^n.
+\end{align*}
+Choosing the good-lambda parameter $1/d$ proves the actual density moment
+bound with coefficient $T$ for every $2\leq s\leq N$. The contraction
+factor is at most one half. Here $s=(2n+1)/2$ and $N=n+1$ lie in this
+window. The Neumann coefficient is
+\[
+ c_N=\max\{64^n,(1+2\,2^{2n}
+       +2(n-2)^22^{2(n-2)}4^n)16^n\}.
+\]
+The Dirichlet coefficient is
+\[
+ c_D=64^n+
+ \bigl(1+2^{2n}[2+8n(n+2)^2(1+4^n)2^{n+1}]\bigr)16^n.
+\]
+These are obtained from the genuine Kelvin boundary gradient estimates,
+including the natural boundary tests. Put
+$T_N=T(n,n+1,A(n,c_N),D(n))$ and
+$T_D=T(n,n+1,A(n,c_D),D(n))$.
+Self-adjoint duality acts on the same fixed projections. It supplies the
+coexact dual coefficient $2^{2n+1}(1+T_N)$, the Dirichlet gradient moment
+coefficient $T_D$, and the same Dirichlet test's essential value
+coefficient $U_n(1+T_D)$. All weak identities and ordinary pairing
+integrabilities refer to those same tests.
+
+\subsection{The critical gauge constants}
+The following rational recurrence function records the full-boundary
+power estimate. For nonnegative $f,d,e$, let
+\begin{align*}
+ t_f&=\frac1{256(1+4f)},& b_e&=e8^{n-1},\\
+ P_n(f,d,e)&=2^{n-1}\left(1+b_e+
+ \frac{b_e+d(2+2f)/(t_f^{n-1}-2ft_f^n)}{t_f^{n-1}}\right).
+\end{align*}
+Its denominators are positive since $2ft_f\leq1/2$.
+The comparison $t_f^{n-1}\leq t_f^\lambda$ for
+$0\leq\lambda\leq n-1$ makes the same number valid at all those
+exponents, including $n-2$. The natural and alternating near/far
+coefficients in its arguments are the specific integers and rationals
+listed in the appendix.
+
+Let $F_n=\text{\lean{effectiveNativeNeumannPowerConstant n}}$,
+$L_n=2(1+F_n)$, $A_n=2(4L_n+2)$ and $J_n=2A_n+2$.
+Set $C_2=2J_n$ and
+\begin{equation}\label{eq:Cg-ledger}
+ C_g=4C_2\,2^{n-2}.
+\end{equation}
+Here $A_n$ is the absorbed gradient coefficient, $J_n$ the joint
+frame/connection coefficient, and $C_2$ their common two-exponent
+majorant. Denote the alternating logarithmic-response coefficient by
+$L_{\log}(n,q)$ and the stronger mean-zero natural response norm bound
+by $L_{\rm nat}(n)$; their exact definitions use $P_n$ and are expanded
+in the appendix. Define
+\begin{align}
+ a&=\frac1{8(1+L_{\log}(n,q))},&
+ j&=\frac1{2L_{\rm nat}(n)(1+2(q+1))},\nonumber\\
+ k_s&=\min\left\{\frac j{1+C_2},
+                         \frac{a/4}{1+C_2}\right\},&
+ \kappa&=k_s/2^n.\label{eq:kappa-ledger}
+\end{align}
+The first threshold gives $4L_{\log}a^2\leq1/2$ in the finite original
+growth absorption. The second makes the actual linearized natural
+Neumann operator have norm at most $1/2$, with inverse norm at most $2$.
+The scalar-path threshold ensures both these inequalities throughout
+continuation. The local inverse-function neighborhood may depend on
+the field; it is used only for openness of the closed scalar path.
+It does not enter $k_s$. Finally the skew mollifications inflate the
+critical amplitude by $\sqrt{2^{n-2}}\leq2^n$, so $\kappa$ works
+uniformly before the critical limit. Adding the two limiting critical
+squares gives exactly \eqref{eq:Cg-ledger}.
+
+\subsection{Cutoff, Hodge and representative constants}
+Use $B=2^{24}$ and $L=L_\chi=2^{48}+2^{25}n$.
+For ease of reading the following symbols name fully expanded appendix
+functions; the arguments $n,q,B,L$ are displayed when needed:
+\begin{align*}
+ C_f&=1+F_{\rm sys}(n,q)(1+T_D)+U_n(1+T_D),\\
+ C_{f,\chi}&=1+C_f+C_fE_{1/2}(n,B,L),\\
+ C_Q&=1+(1+2^{2n+1}(1+T_N))(1+I_{\rm cap,4}(n)),\\
+ C_H&=1+C_{f,\chi}+C_Q,\\
+ C_{\rm one}&=1+(16+256\,2^n)(1+5(1+C_H)^2),\\
+ D&=2^n C_{\rm one}.
+\end{align*}
+Here $F_{\rm sys}$ is the matrix native forcing coefficient, defined by
+\lean{effectiveSystemForcingConstant}. The four-term error coefficient
+$E_{1/2}$ is \lean{effectiveHalfCutoffErrorConstant}; the actual cutoff
+fourth-moment coefficient $I_{\rm cap,4}$ is
+\lean{criticalLpCappedFourMomentMajorant}. Each formula is given literally
+in the appendix.
+These formulas bound the same Dirichlet and coexact fields in the same
+Hodge decomposition, and then its harmonic remainder. The bound
+$x^{1/p}\leq1+x$ for $x\geq0$, $p\geq1$ removes the nonrational roots
+from the coefficients; $x^p\leq(1+x)^2$ for $1\leq p\leq2$ removes
+variable exponents in the component combination.
+
+Let $K_\chi$ be the coefficient
+\lean{effectiveCutoffCriticalConstant} at $(n,1,B)$ and put
+\[
+ J=(1+2^n)(1+K_\chi),\qquad
+ M_0=1+J+2^{n+1}(n+1)(1+(n+1)^n).
+\]
+Insert these and the displayed $D$ into
+\eqref{eq:explicit-scale}--\eqref{eq:explicit-power}. The given-frame
+smallness and representative coefficient are exactly
+\begin{equation}\label{eq:theta-Cr-ledger}
+ \theta=\eta_*=\frac{\vartheta^n}{4(1+512D)},\qquad
+ C_r=S_n(1+C_{\rm pow}).
+\end{equation}
+They are positive rationals and $\theta\leq1$.
+The radius-two local representative with coefficient $S_n$ recovers
+$B_1$ for the cutoff graph; its plateau recovers the original map on
+$B_{2/3}$. The target bound, frame and local IFT witnesses have disappeared
+from the numerical values. The only target-specific parameter remaining
+in \eqref{eq:final-rational-constants} is the certified $\ell$, with $q$
+recording the ambient dimension.
+
+\begin{remark}[An arithmetic example]\label{rem:example}
+For the numerical inputs $n=2$, $q=3$, $\ell=1$, the exact functions give
+\[
+ \varepsilon_*\approx2.227969608538\times10^{-6428},\qquad
+ C\approx2.951399297746\times10^{5772}.
+\]
+Exact integer cross multiplication verifies
+$10^{-6428}\leq\varepsilon_*<10^{-6427}$ and
+$10^{5772}\leq C<10^{5773}$. This is a function evaluation at specified
+inputs, not a certification that any particular embedded target admits
+\eqref{eq:geometric-certificate} with $\ell=1$. The size of these bounds
+reflects repeated conservative majorants; it has no optimality meaning.
+\end{remark}
+
+\section{Proof of the small-energy theorem}\label{sec:assembly}
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Fix a certified $G,\ell$ as above and the rational constants
+$\kappa,C_g,\theta,C_r$ of Section~\ref{sec:constants}. Put
+\begin{equation}\label{eq:final-rational-constants}
+ M=(1+4q\ell^2)4^{n-2},\qquad K=(1+C_g)(1+M),\qquad
+ \varepsilon_*=(\min(\kappa,\theta)/K)^2,\qquad C=2C_rK.
+\end{equation}
+All quantities are positive rational numbers. Write $e=\Th_u(a,R)$,
+$\rho=3R/4$, $\zeta=\sqrt M\sqrt e$ and
+$\eta=(1+C_g)\zeta$. Since $\sqrt M\leq1+M$ and $C_g\geq0$,
+$e\leq\varepsilon_*$ implies
+\[
+ 0\leq\zeta\leq\kappa,\qquad
+ 0\leq\eta\leq\theta\leq1,\qquad \eta\leq K\sqrt e.
+\]
+Lemma~\ref{lem:local-morrey} bounds the joint original gradient and
+connection critical squares by $Me=\zeta^2$ on $B_\rho(a)$.
+Proposition~\ref{prop:gauge} constructs a native natural frame on this
+same ball, with the joint $DP,Z$ square bounded by $C_g\zeta^2$.
+Both the original gradient square and these two frame squares are
+bounded by $\eta^2$, because $C_g\leq(1+C_g)^2$.
+
+Proposition~\ref{prop:system-rep}, with its precise rational witnesses
+$\theta,C_r$, applies to the actual original map and this frame.
+The resulting ball is exactly $B_{2\rho/3}(a)=B_{R/2}(a)$, and
+\[
+ [\widetilde u]_{C^{0,1/2}(B_{R/2}(a))}
+ \leq C_r\eta(3R/4)^{-1/2}
+ \leq2C_rK\sqrt e\,R^{-1/2}.
+\]
+We used $(3/4)^{-1/2}\leq2$, so the last coefficient is precisely
+$C$ in \eqref{eq:final-rational-constants}. Target membership and
+uniqueness come from the same proposition. The argument includes
+$e=0$; the resulting representative is constant and the right side is
+zero. The chosen $G,\ell$ depend only on the embedded target, and all
+analytic coefficients depend only on $n,q$. Thus all constants precede
+$U,u,Du,a,R$, as required. The certified pair exists for every target
+in Theorem~\ref{thm:main}; no geometric certificate is an additional
+premise of that existential theorem.
+\end{proof}
+
+\section{The smooth-target corollary}\label{sec:smooth}
+\begin{corollary}\label{cor:smooth}
+If $N$ is a compact smooth embedded target, the representative of
+Theorem~\ref{thm:main} is smooth on the same half ball. It retains
+\eqref{eq:holder-main}, all-point target membership, and uniqueness
+among continuous representatives. No quantitative bound for all higher
+derivatives is asserted.
+\end{corollary}
+\begin{proof}
+We use the standard interior smooth bootstrap for locally H\"older
+weak solutions of a smooth quadratic-gradient Poisson equation:
+if $w\in W^{1,2}_{\loc}(V)$ is locally H\"older, $A$ is a smooth
+bilinear coefficient depending on $w$, and
+\[
+ \Delta w=\sum_i A(w)(\partial_iw,\partial_iw)
+\]
+in the actual weak sense, then $w$ is smooth locally. In this criterion
+the initial weak gradient and weak equation are retained. Analytically,
+one freezes the coefficient on a sufficiently small ball, uses the
+small oscillation of $w$ and harmonic comparison to obtain the first
+derivative regularity, and then applies interior elliptic estimates and
+Schauder bootstrap to the smooth quadratic coefficient. The statement
+is a regularity theorem about the weak equation, and is not the false
+claim that an arbitrary continuous quadratic system can be differentiated
+classically without this first regularity step. We use this proved
+bootstrap rather than reproving general interior elliptic theory here;
+its complete formal implementation is the theorem
+\lean{HolderToCK.holderQuadraticPoisson_smooth} in
+\lean{HolderToCK/Frozen/HolderQuadraticPoissonSmooth.lean}.
+
+For the present map, choose a smooth ambient normal-projection
+extension $G$. Lemma~\ref{lem:geometry} gives
+$\Delta u=-\sum_i DG(u)[\partial_i u]\partial_i u$.
+Almost-everywhere replacement by the H\"older representative preserves
+the original weak gradient and the equation on the half ball; the
+coefficient becomes $A(\widetilde u)=-DG(\widetilde u)$, which is
+smooth in its argument. All hypotheses of the stated bootstrap are
+therefore supplied internally by Theorem~\ref{thm:main}, the original
+variation condition, and smooth target geometry. The conclusion is
+smoothness of this same representative on every interior ball of the
+half ball. Continuous uniqueness identifies the local smooth versions.
+The original quantitative H\"older estimate is unchanged.
+\end{proof}
+
+\section{Correspondence with the formal proof}\label{sec:formal}
+The public theorem is
+\lean{StationaryHarmonicMaps.stationary_small_energy_regularity}.
+It chooses $\varepsilon,\alpha,C$ after the fixed dimension and target,
+and before the open domain, original map and weak gradient, center,
+and positive radius. The proof chooses $\alpha=1/2$. Its conclusion
+covers the entire half ball, all-point target membership, the original
+energy square-root factor, and uniqueness among all continuous
+almost-everywhere representatives.
+
+The weak-harmonicity premise is the original tangent-variation
+condition. The proof internally constructs the normal-projection
+system, complete Morrey bounds, and native frame, then supplies every
+premise of the compensated representative result. No Hodge component,
+compensation bound, recurrence, or regular representative is assumed.
+The following paths are under \lean{StationaryHarmonicMaps/}, except
+for explicitly prefixed \lean{HolderToCK/} paths relative to the repository
+root. Intermediate analytic lemmas may have
+inputs produced by preceding theorems; all such inputs are supplied
+inside the main proof.
+
+\small
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.27\textwidth}>{\raggedright\arraybackslash}p{0.67\textwidth}@{}}
+\toprule
+Mathematical step & Formal source\\\midrule\endhead
+Embedded target and original variations &
+\lean{Foundation/C2Target.lean};\newline
+\lean{Foundation/WeakHarmonicity.lean}\\
+Projection geometry and original equation &
+\lean{Frozen/NormalProjectionCharacterization.lean};\newline
+\lean{Frozen/VariationalWeakPoissonEquivalence.lean}\\
+Monotonicity and complete Morrey bound &
+\lean{Frozen/Monotonicity.lean};\newline
+\lean{Frozen/StationaryMorreyBound.lean};\newline
+\lean{Providers/SmallEnergyRegularity.lean}\\
+Ball projections and all powers &
+\lean{Analysis/NeumannGradientProjection.lean};\newline
+\lean{Analysis/NeumannOperatorAllLp.lean};\newline
+\lean{Analysis/HodgeLowPComparison.lean}\\
+Actual graph BMO and moments &
+\lean{Analysis/BoundaryCriticalBMOExtension.lean};\newline
+\lean{Analysis/CriticalLpMorreyRealMoments.lean};\newline
+\lean{Analysis/CappedEnvelopeValueMoments.lean}\\
+Solenoidal extension and native pairing &
+\lean{Analysis/SolenoidalBallExtension.lean};\newline
+\lean{Analysis/LocalDivCurlHardy.lean};\newline
+\lean{Analysis/LocalDivCurlContinuousPairing.lean}\\
+Boundary Morrey estimates and absorption &
+\lean{Analysis/CoulombBoundaryAbsorption.lean};\newline
+\lean{Analysis/CoulombTwoExponentAbsorption.lean}\\
+Actual stronger-class perturbation &
+\lean{Analysis/NativeCoulombPerturbations.lean};\newline
+\lean{Analysis/StrongerNativeCoulombExistence.lean}\\
+Joint critical limit and native frame &
+\lean{Analysis/CriticalNativeCoulombExistence.lean};\newline
+\lean{Analysis/CriticalNativeCoulombBallExistence.lean}\\
+Same cutoff and compensated fields &
+\lean{Analysis/SystemCutoffCompensation.lean};\newline
+\lean{Analysis/SystemCoexactCompensation.lean};\newline
+\lean{Analysis/SystemCompensatedHodgeFields.lean}\\
+One-ball decay and capped envelope &
+\lean{Analysis/OneBallCompensatedDecay.lean};\newline
+\lean{Analysis/CappedEnvelopeImprovement.lean};\newline
+\lean{Analysis/CompensatedCutoffPowerGrowth.lean}\\
+Mean-limit representative and scaling &
+\lean{Analysis/LocalLpMorreyRepresentative.lean};\newline
+\lean{Analysis/CompensatedSystemRepresentative.lean}\\
+Original theorem assembly &
+\lean{Providers/SmallEnergyRegularity.lean};\newline
+\lean{Frozen/SmallEnergyRegularity.lean}\\
+Certified geometric data &
+\lean{Geometry/EffectiveNormalProjectionData.lean}\\
+Rational threshold and coefficient &
+\lean{Analysis/EffectiveStationaryConstants.lean};\newline
+\lean{Analysis/EffectiveEnergyAmplitudes.lean}\\
+Effective stationary theorem and smooth corollary &
+\lean{Frozen/EffectiveSmallEnergyRegularity.lean};\newline
+\lean{Frozen/EffectiveSmallEnergySmoothRegularity.lean};\newline
+\lean{Providers/EffectiveSmallEnergyRegularity.lean};\newline
+\lean{EffectiveRegularity.lean}\\
+Smooth-target corollary &
+\lean{Analysis/SmoothHolderRepresentative.lean};\newline
+\lean{Providers/SmallEnergySmoothRegularity.lean};\newline
+\lean{Frozen/SmallEnergySmoothRegularity.lean}\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+Lean's kernel checks the proof. Its axiom closure contains only
+\lean{propext}, \lean{Classical.choice}, and \lean{Quot.sound}.
+There is no custom analytic axiom, \lean{sorryAx}, or native trust
+bypass. Imported library theorems and the pinned formal dependency
+are themselves formal proofs, rather than unformalized analytic
+assumptions. The repository README records the reproducible build
+and exact theorem verification.
+
+The effective exports, under \lean{StationaryHarmonicMaps}, are
+\begin{quote}
+\lean{stationary_small_energy_regularity_effective}\\
+\lean{stationary_small_energy_smooth_regularity_effective}.
+\end{quote} Their certified geometric inputs are
+exactly \eqref{eq:geometric-certificate}; their threshold and H\"older
+coefficient are the two literal rational functions in
+Appendix~\ref{app:algorithm}. The existential geometric-data theorem
+supplies such a pair for every target in the original C$^2$ theorem.
+
+The scope is this closed small-energy theorem and its actual formal
+dependencies. It does not certify a separate arbitrary ball-BMO
+extension theorem, an arbitrary unbounded-system theorem, or a
+$W^{1,p}_{\loc}$ representative theorem on all possible $p\geq1$.
+The actual Sobolev-graph and $W^{1,2}$ instances proved here are the
+ones consumed by the main theorem. Citations identify the method,
+and do not replace missing formal premises.
+
+\appendix
+\section{Complete exact-arithmetic evaluator}\label{app:algorithm}
+The following self-contained Lean 4 program defines all arithmetic used by
+Theorem~\ref{thm:effective}: 114 definitions, of which 59 return natural
+numbers and 55 return rational numbers. Dependencies precede their users.
+It imports only the basic rational and factorial libraries, and no
+stationary-map, gauge, or analytic estimate from this project. Namespace
+prefixes are omitted inside this single namespace; the function bodies are
+the literal formulas used by the certified coefficients above.
+
+Read \lean{Nat} as $\mathbb N$, \lean{Rat} as $\mathbb Q$,
+\lean{a ^ k} as an integer power, \lean{k.factorial} as $k!$,
+and \lean{Inv.inv a} as $a^{-1}$. Natural-number subtraction is truncated
+at zero. The theorem uses $n\geq2$, so $n-1,n-2$ in its formulas have
+ordinary nonnegative values. Rational operations are exact; the proof above
+establishes positivity of the denominators on the prescribed parameter
+range. No real root, transcendental evaluation, unspecified norm,
+or noncomputable choice occurs in these numerical functions.
+The runtime imports enable evaluation of the same exact integer and rational
+operations. The evaluator output is not used as a premise of an analytic
+proof.
+
+\begin{lstlisting}
+module
+
+public import Mathlib.Data.Rat.Cast.Order
+public import Mathlib.Data.Nat.Factorial.Basic
+meta import Mathlib.Data.Rat.Cast.Order
+meta import Mathlib.Data.Nat.Factorial.Basic
+
+@[expose] public section
+namespace SmallEnergyConstants
+
+def criticalBound (n : Nat) (strongerBound : Rat) : Rat :=
+  2 * strongerBound * 2 ^ (n - 2)
+
+def naturalPowerScale (farBound : Rat) : Rat :=
+  1 / (256 * (1 + 4 * farBound))
+
+def neumannBoundaryBound (n : Nat) : Nat :=
+  1 + 2 * 2 ^ (2 * n) + 2 * (n - 2) ^ 2 * 2 ^ (2 * (n - 2)) * 4 ^ n
+
+def effectiveNeumannOffSupportConstant (n : Nat) : Nat :=
+  max (64 ^ n) (neumannBoundaryBound n * 16 ^ n)
+
+def effectiveNativeNeumannPowerConstant (n : Nat) : Rat :=
+  let C : Rat := effectiveNeumannOffSupportConstant n
+  let theta := naturalPowerScale (2 * C)
+  1 + (1 + (2 + 4 * C) / (theta ^ (n - 1) - 4 * C * theta ^ n)) / theta ^ (n - 1)
+
+def effectiveCoexactPowerConstant (n : Nat) : Rat :=
+  2 * (1 + effectiveNativeNeumannPowerConstant n)
+
+def effectiveCoulombAbsorptionConstant (n : Nat) : Rat :=
+  2 * (4 * effectiveCoexactPowerConstant n + 2)
+
+def effectiveCoulombJointConstant (n : Nat) : Rat :=
+  2 * effectiveCoulombAbsorptionConstant n + 2
+
+def effectiveCoulombCriticalConstant (n : Nat) : Rat :=
+  2 * effectiveCoulombJointConstant n
+
+def effectiveCoulombTwoExponentConstant (n : Nat) : Rat :=
+  effectiveCoulombCriticalConstant n
+
+def effectiveStrongerCoulombGradientConstant (n : Nat) : Rat :=
+  2 * effectiveCoulombTwoExponentConstant n
+
+def effectiveCoulombFrameGradientConstant (n _q : Nat) : Rat :=
+  criticalBound n (effectiveStrongerCoulombGradientConstant n)
+
+def criticalAmplitude (n : Nat) (strongerAmplitude : Rat) : Rat :=
+  strongerAmplitude / 2 ^ n
+
+def scalarPathAmplitude (absorption inverse bound : Rat) : Rat :=
+  min (inverse / (1 + bound)) ((absorption / 4) / (1 + bound))
+
+def absorptionAmplitude (boundaryBound : Rat) : Rat :=
+  1 / (8 * (1 + boundaryBound))
+
+def naturalPowerBound (n : Nat) (farBound nearBound energyBound : Rat) : Rat :=
+  let theta := naturalPowerScale farBound
+  let beta := energyBound * 8 ^ (n - 1)
+  2 ^ (n - 1) * (1 + beta +
+    (beta + nearBound * (2 + 2 * farBound) /
+      (theta ^ (n - 1) - 2 * farBound * theta ^ n)) / theta ^ (n - 1))
+
+def effectiveAlternatingFarConstant (n : Nat) : Rat :=
+  2 * (effectiveNeumannOffSupportConstant n : Rat)
+
+def effectiveBoundaryLocalizedTestConstant (n : Nat) : Nat :=
+  2 + 2 * n * (2 ^ 22) ^ 2 * (2 ^ (n + 1) * 16)
+
+def alternatingNearBound (n : Nat) (compensatedBound : Rat) : Rat :=
+  compensatedBound * (effectiveBoundaryLocalizedTestConstant n : Rat) *
+    (2 ^ (n - 1) * (1 + 2 ^ (2 * n))) * 4 ^ (n - 1)
+
+def effectiveBoundaryReflectionFactor (n : Nat) : Nat :=
+  2^(n-2)*(1+2^(2*n))
+
+def effectiveGlobalCriticalMeanOscillationConstant (n : Nat) : Nat :=
+  1 + 2 ^ (n + 1) * (n + 1) * (1 + (n + 1) ^ n)
+
+def effectiveDyadicMeanConstant (n : Nat) : Nat :=
+  1 + 2 ^ n * effectiveGlobalCriticalMeanOscillationConstant n +
+    16 ^ n * effectiveGlobalCriticalMeanOscillationConstant n
+
+def effectivePointwiseConstant (n : Nat) : Nat :=
+  effectiveDyadicMeanConstant n + 2 ^ (2 * (n + 1)) * (n + 1) + 1
+
+def geometricMomentMajorant (k : Nat) : Nat := 1 + 24 * 2^k * k.factorial
+
+def effectiveIntegerMomentConstant (n k : Nat) : Nat :=
+  geometricMomentMajorant k * effectivePointwiseConstant n ^ k * (2 ^ n + 5 ^ n)
+
+def effectiveLocalValueConstant (n : Nat) : Nat :=
+  (1 + 2 ^ n) * (1 + effectiveIntegerMomentConstant n (2 * n + 1))
+
+def effectiveAllRadiusValueConstant (n : Nat) : Nat :=
+  effectiveLocalValueConstant n + effectiveIntegerMomentConstant n 2
+
+def effectiveCutoffCriticalConstant (n A B : Nat) : Nat :=
+  1 + 2 * A ^ 2 * 2 ^ (n - 2) + 2 * n * B ^ 2 * effectiveAllRadiusValueConstant n
+
+def effectiveCutoffGlobalMeanConstant (n A B : Nat) : Nat :=
+  effectiveGlobalCriticalMeanOscillationConstant n * (1 + effectiveCutoffCriticalConstant n A B)
+
+def effectiveBoundaryCriticalMeanConstant (n : Nat) : Nat :=
+  effectiveCutoffGlobalMeanConstant n 1 (2^23) *
+    (1+effectiveBoundaryReflectionFactor n)
+
+def divcurlLocalSobolevMajorant (n : Nat) : Nat :=
+  (1+2*n)*(n+2+4*n*2^22*(n+1)*2^n)
+
+def divcurlLowerKernelMajorant (n : Nat) : Nat :=
+  1+divcurlLocalSobolevMajorant n*(n+1)
+
+def divcurlScaledKernelMajorant (n : Nat) : Nat :=
+  divcurlLowerKernelMajorant n*2^n*(1+4^n)
+
+def divcurlDyadicKernelMajorant (n : Nat) : Nat :=
+  divcurlScaledKernelMajorant n*2^n*2^n
+
+def divcurlGrandKernelMajorant (n : Nat) : Nat :=
+  divcurlDyadicKernelMajorant n*(4*(n+1)*5^n)
+
+def rationalHardyPairingConstant (n : Nat) : Rat :=
+  let B : Rat := ((1 + 3 * (60 : Rat)^n) * (2 : Rat)^22) / 5
+  let mass : Rat -> Rat := fun b => 2*b*(40 : Rat)^(n+1)*(60 : Rat)^n*((n : Rat)+1)^n
+  let D := mass B
+  let A := max ((2 : Rat)^22*(10 : Rat)^(n+1)*((n : Rat)+1)^n) D
+  2 * ((4*D + 2*mass (4*B) + 2*A) * (2*(70 : Rat)^n))
+
+def effectiveLocalDivcurlPairingConstant (n : Nat) : Rat :=
+  2*rationalHardyPairingConstant n*(divcurlGrandKernelMajorant n:Rat)
+
+def effectiveNativeBoundaryTestConstant (n : Nat) : Nat :=
+  (2 + 2 * n * (2 ^ 22) ^ 2 * (2 ^ (n + 1) * 4)) * (1 + 2 ^ (2 * n))
+
+def effectiveBoundaryScalarConstant (n : Nat) : Rat :=
+  effectiveLocalDivcurlPairingConstant n * (effectiveBoundaryCriticalMeanConstant n : Rat) *
+    (1+(effectiveNativeBoundaryTestConstant n : Rat))
+
+def effectiveBoundaryBilinearConstant (n m : Nat) (b : Rat) : Rat :=
+  effectiveBoundaryScalarConstant n * (1+(m : Rat)*b)
+
+def effectiveCenteredCoexactConstant (n m : Nat) (coefficientBound : Rat) : Rat :=
+  effectiveBoundaryBilinearConstant n m coefficientBound ^ 2
+
+def effectiveAlternatingNearConstant (n m : Nat) (coefficientBound : Rat) : Rat :=
+  alternatingNearBound n (effectiveCenteredCoexactConstant n m coefficientBound)
+
+def effectiveAlternatingPowerConstant (n m : Nat) (coefficientBound : Rat) : Rat :=
+  naturalPowerBound n (effectiveAlternatingFarConstant n)
+    (effectiveAlternatingNearConstant n m coefficientBound)
+    (effectiveCenteredCoexactConstant n m coefficientBound)
+
+def effectiveCoulombLogarithmicPowerConstant (n q : Nat) : Rat :=
+  effectiveAlternatingPowerConstant n (q*q) ((q + 1 : Nat) : Rat)
+
+def effectiveCoulombAbsorptionAmplitude (n q : Nat) : Rat :=
+  absorptionAmplitude (effectiveCoulombLogarithmicPowerConstant n q)
+
+def inverseAmplitude (operatorBound bilinearBound : Rat) : Rat :=
+  1 / (2 * operatorBound * (1 + bilinearBound))
+
+def meanZeroBound (n : Nat) : Nat := 1 + 2 ^ (n + 1)
+
+def effectiveNaturalFarConstant (n : Nat) : Nat :=
+  2 * effectiveNeumannOffSupportConstant n
+
+def effectiveBoundaryStrongerConstant (n : Nat) : Nat :=
+  1 + (512 * 2 ^ n) * effectiveGlobalCriticalMeanOscillationConstant n *
+    (1 + 2 ^ (n - 1) * (1 + 2 ^ (2 * n)))
+
+def effectiveStrongerMeanConstant (n : Nat) : Nat :=
+  2 * effectiveBoundaryStrongerConstant n
+
+def effectiveNaturalInitialEnergyConstant (n : Nat) : Nat :=
+  effectiveStrongerMeanConstant n ^ 2
+
+def effectiveNaturalNearEnergyConstant (n : Nat) : Nat :=
+  effectiveBoundaryStrongerConstant n ^ 2
+
+def effectiveNaturalNeumannPowerConstant (n : Nat) : Rat :=
+  naturalPowerBound n (effectiveNaturalFarConstant n : Rat)
+    (effectiveNaturalNearEnergyConstant n : Rat) (effectiveNaturalInitialEnergyConstant n : Rat)
+
+def effectiveNaturalNeumannOperatorConstant (n : Nat) : Rat :=
+  (meanZeroBound n : Rat) * (1 + effectiveNaturalNeumannPowerConstant n)
+
+def effectiveNaturalNeumannInverseAmplitude (n : Nat) (bilinearBound : Rat) : Rat :=
+  inverseAmplitude (effectiveNaturalNeumannOperatorConstant n) bilinearBound
+
+def effectiveSkewNeumannAmplitude (n q : Nat) : Rat :=
+  effectiveNaturalNeumannInverseAmplitude n (2 * ((q + 1 : Nat) : Rat))
+
+def effectiveScalarCoulombSmallness (n q : Nat) : Rat :=
+  scalarPathAmplitude (effectiveCoulombAbsorptionAmplitude n q)
+    (effectiveSkewNeumannAmplitude n q) (effectiveCoulombTwoExponentConstant n)
+
+def effectiveCoulombFrameSmallness (n q : Nat) : Rat :=
+  criticalAmplitude n (effectiveScalarCoulombSmallness n q)
+
+def effectiveCompensationCutoffGradientBound : Nat := 2^24
+
+def effectiveCompensationCutoffLaplacianBound (n : Nat) : Nat := 2^48+2^25*n
+
+def effectiveHodgeLowPowerConstant (n : Nat) : Nat :=
+  16+256*2^n
+
+def criticalLpMeanOscillationMajorant (n : Nat) : Nat :=
+  2^(n+1) * (n+1) * (1 + (n+1)^n)
+
+def criticalLpDyadicMeanMajorant (n : Nat) : Nat :=
+  1 + (2^n + 16^n) * criticalLpMeanOscillationMajorant n
+
+def criticalLpPointwiseTailMajorant (n : Nat) : Nat :=
+  criticalLpDyadicMeanMajorant n + 2^(n+1) * 2^(n+1) * (n+1) + 1
+
+def criticalLpIntegerMomentMajorant (n k : Nat) : Nat :=
+  geometricMomentMajorant k * criticalLpPointwiseTailMajorant n^k * (2^n + 5^n)
+
+def criticalLpFourMomentMajorant (n : Nat) : Nat :=
+  (1 + criticalLpIntegerMomentMajorant n 4) * (1 + 2^n)
+
+def criticalLpCappedFourMomentMajorant (n : Nat) : Nat :=
+  criticalLpFourMomentMajorant n * 2^n
+
+def densityGoodLambdaTailFactor (n : Nat) : Nat :=
+  1 + 4*5^n*64^n*1536^n
+
+def densityGoodLambdaAmplitude (n c : Nat) : Nat :=
+  1 + 64^n + 16*c*64^n
+
+def effectiveNeumannGoodLambdaAmplitude (n : Nat) : Nat :=
+  densityGoodLambdaAmplitude n (effectiveNeumannOffSupportConstant n)
+
+def uniformGoodLambdaDenominator (N A D : Nat) : Nat :=
+  4*(1+D)*(1+A)^N
+
+def uniformGoodLambdaMomentMajorant (n N A D : Nat) : Nat :=
+  2*(1+A)^N*(uniformGoodLambdaDenominator N A D)^N*2^N*N*5^n
+
+def effectiveNeumannDimensionalMomentConstant (n : Nat) : Nat :=
+  uniformGoodLambdaMomentMajorant n (n+1) (effectiveNeumannGoodLambdaAmplitude n)
+    (densityGoodLambdaTailFactor n)
+
+def effectiveCoexactDimensionalDualConstant (n : Nat) : Nat :=
+  2^(2*n+1)*(1+effectiveNeumannDimensionalMomentConstant n)
+
+def effectiveCoexactCompensatedConstant (n : Nat) : Nat :=
+  1+effectiveCoexactDimensionalDualConstant n
+
+def effectiveSystemCoexactConstant (n : Nat) : Nat :=
+  1+effectiveCoexactCompensatedConstant n*(1+criticalLpCappedFourMomentMajorant n)
+
+def effectiveHalfLocalValueConstant (n : Nat) : Nat :=
+  (1+2^n)*(1+effectiveIntegerMomentConstant n (2*n+3))
+
+def effectiveHalfCutoffErrorConstant (n B K : Nat) : Nat :=
+  1+B*(n+1)*(2*(1+effectiveHalfLocalValueConstant n)+2*(1+2^n))+
+    K*((1+2^n)*(1+effectiveHalfLocalValueConstant n))
+
+def oddKelvinBoundaryEnergyMajorant (n : Nat) : Nat :=
+  1 + 2^(2*n) * (2 + (8*n*(n+2)^2) * ((1+4^n)*2^(n+1)))
+
+def sameDirichletOffSupportMajorant (n : Nat) : Nat :=
+  64^n + oddKelvinBoundaryEnergyMajorant n * 16^n
+
+def dirichletGoodLambdaAmplitude (n : Nat) : Nat :=
+  densityGoodLambdaAmplitude n (sameDirichletOffSupportMajorant n)
+
+def dirichletFixedHighMomentMajorant (n : Nat) : Nat :=
+  uniformGoodLambdaMomentMajorant n (n+1)
+    (dirichletGoodLambdaAmplitude n) (densityGoodLambdaTailFactor n)
+
+def explicitLpMorreyRepresentativeMajorant (n : Nat) : Nat :=
+  1 + 512 * 2 ^ n * (2 ^ (n + 1) * (n + 1) * (1 + (n + 1) ^ n))
+
+def nativeZeroBoundaryFixedSupercriticalMajorant (n : Nat) : Nat :=
+  4 * explicitLpMorreyRepresentativeMajorant n * (1 + 2^n)
+
+def boundedDirichletFixedTestMajorant (n : Nat) : Nat :=
+  nativeZeroBoundaryFixedSupercriticalMajorant n * (1+dirichletFixedHighMomentMajorant n)
+
+def effectiveLocalMeanOscillationCutoffConstant (n : Nat) : Nat :=
+  2*(32^n+1+2^23*(2*2^n+2*4^n))
+
+def effectiveLpMeanOscillationConstant (n : Nat) : Nat :=
+  2^(n+1)*(n+1)*(1+(n+1)^n)
+
+def effectiveLocalLpCriticalCutoffConstant (n : Nat) : Nat :=
+  1+effectiveLocalMeanOscillationCutoffConstant n*effectiveLpMeanOscillationConstant n
+
+def effectiveCompactTargetEnvelopePairingConstant (n : Nat) : Rat :=
+  effectiveLocalDivcurlPairingConstant n*(effectiveLocalLpCriticalCutoffConstant n:Rat)
+
+def effectiveSystemMatrixSupercriticalConstant (n q : Nat) : Nat :=
+  1+2*(q+1)*(nativeZeroBoundaryFixedSupercriticalMajorant n+1+2^n)
+
+def effectiveSystemForcingConstant (n q : Nat) : Rat :=
+  2*effectiveCompactTargetEnvelopePairingConstant n*
+    (effectiveSystemMatrixSupercriticalConstant n q:Rat)*(1+q)
+
+def effectiveSystemDirichletConstant (n q : Nat) : Rat :=
+  1+effectiveSystemForcingConstant n q*(1+(dirichletFixedHighMomentMajorant n : Rat))+
+    (boundedDirichletFixedTestMajorant n : Rat)
+
+def effectiveSystemCutoffDirichletConstant (n q B L : Nat) : Rat :=
+  1+effectiveSystemDirichletConstant n q+
+    effectiveSystemDirichletConstant n q*(effectiveHalfCutoffErrorConstant n B L : Rat)
+
+def effectiveSystemCompensatedHodgeConstant (n q B L : Nat) : Rat :=
+  1+effectiveSystemCutoffDirichletConstant n q B L+(effectiveSystemCoexactConstant n : Rat)
+
+def effectiveOneBallCompensatedConstant (n q B L : Nat) : Rat :=
+  1+(effectiveHodgeLowPowerConstant n : Rat)*
+    (1+5*(1+effectiveSystemCompensatedHodgeConstant n q B L)^2)
+
+def effectiveCappedEnvelopeImprovementConstant (n q B L : Nat) : Rat :=
+  effectiveOneBallCompensatedConstant n q B L*2^n
+
+def effectiveCutoffPowerAmplitude (n q B L : Nat) : Rat :=
+  512*effectiveCappedEnvelopeImprovementConstant n q B L
+
+def rationalEnvelopeScale (G : Rat) : Rat := Inv.inv (2 + 8 * G) ^ 2
+
+def rationalEnvelopeSmallness (n : Nat) (G : Rat) : Rat :=
+  rationalEnvelopeScale G ^ n / (4 * (1 + G))
+
+def effectiveCutoffPowerSmallness (n q B L : Nat) : Rat :=
+  rationalEnvelopeSmallness n (effectiveCutoffPowerAmplitude n q B L)
+
+def effectiveGivenFrameSmallness (n q : Nat) : Rat :=
+  effectiveCutoffPowerSmallness n q effectiveCompensationCutoffGradientBound
+    (effectiveCompensationCutoffLaplacianBound n)
+
+def rationalMorreyFactor (n q : Nat) (L : Rat) : Rat :=
+  (1+(q:Rat)*(2*L)^2)*(4:Rat)^(n-2)
+
+def rationalAmplitudeMajorant (n q : Nat) (L G : Rat) : Rat :=
+  (1+G)*(1+rationalMorreyFactor n q L)
+
+def rationalEnergyThreshold (n q : Nat) (L G kappa theta : Rat) : Rat :=
+  (min kappa theta/rationalAmplitudeMajorant n q L G)^2
+
+def effectiveStationaryEnergyThreshold (n q : Nat) (L : Rat) : Rat :=
+  rationalEnergyThreshold n q L (effectiveCoulombFrameGradientConstant n q)
+    (effectiveCoulombFrameSmallness n q) (effectiveGivenFrameSmallness n q)
+
+def effectiveCutoffLpEnvelopeConstant (n A B : Nat) : Nat :=
+  (1+2^n)*(1+effectiveCutoffCriticalConstant n A B)
+
+def effectiveCutoffCappedEnvelopeConstant (n A B : Nat) : Nat :=
+  1+effectiveCutoffLpEnvelopeConstant n A B+effectiveLpMeanOscillationConstant n
+
+def effectiveCutoffPowerScale (n q B L : Nat) : Rat :=
+  rationalEnvelopeScale (effectiveCutoffPowerAmplitude n q B L)
+
+def rationalRecurrenceMajorant (sigma A B : Rat) : Rat := (B + 2 * A / sigma) / sigma
+
+def effectiveCutoffPowerGrowthConstant (n q A B L : Nat) : Rat :=
+  1+rationalRecurrenceMajorant (effectiveCutoffPowerScale n q B L/16)
+    (effectiveCappedEnvelopeImprovementConstant n q B L/effectiveCutoffPowerScale n q B L^n)
+    (16*(effectiveCutoffCappedEnvelopeConstant n A B : Rat))+
+      16*(effectiveCutoffLpEnvelopeConstant n A B : Rat)
+
+def effectiveCutoffHolderConstant (n q A B L : Nat) : Rat :=
+  (explicitLpMorreyRepresentativeMajorant n : Rat)*(1+effectiveCutoffPowerGrowthConstant n q A B L)
+
+def effectiveGivenFrameHolderConstant (n q : Nat) : Rat :=
+  effectiveCutoffHolderConstant n q 1 effectiveCompensationCutoffGradientBound
+    (effectiveCompensationCutoffLaplacianBound n)
+
+def rationalHolderCoefficient (n q : Nat) (L G H : Rat) : Rat :=
+  2*H*rationalAmplitudeMajorant n q L G
+
+def effectiveStationaryHolderConstant (n q : Nat) (L : Rat) : Rat :=
+  rationalHolderCoefficient n q L (effectiveCoulombFrameGradientConstant n q)
+    (effectiveGivenFrameHolderConstant n q)
+
+end SmallEnergyConstants
+\end{lstlisting}
+For example, append the following commands to evaluate the two exact
+rational values in Remark~\ref{rem:example}:
+\begin{lstlisting}
+open SmallEnergyConstants
+#eval effectiveStationaryEnergyThreshold 2 3 1
+#eval effectiveStationaryHolderConstant 2 3 1
+\end{lstlisting}
+The first fraction has a 10-digit numerator and a 6438-digit denominator;
+the second has a 5778-digit numerator and denominator $67453$.
+The values coincide exactly with the public constant functions, including
+all four integers of these two fractions.
+
+\begin{thebibliography}{9}
+\bibitem{R} T.~Riv\`iere,
+\emph{Conservation laws for conformally invariant variational problems},
+Invent. Math. \textbf{168} (2007), 1--22.
+\href{https://doi.org/10.1007/s00222-006-0023-0}{doi:10.1007/s00222-006-0023-0}.
+\bibitem{RS} T.~Riv\`iere and M.~Struwe,
+\emph{Partial regularity for harmonic maps, and related problems},
+Comm. Pure Appl. Math. \textbf{61} (2008), 451--463.
+\href{https://doi.org/10.1002/cpa.20205}{doi:10.1002/cpa.20205}.
+\bibitem{CLMS} R.~Coifman, P.-L.~Lions, Y.~Meyer, and S.~Semmes,
+\emph{Compensated compactness and Hardy spaces},
+J. Math. Pures Appl. (9) \textbf{72} (1993), 247--286.
+\bibitem{U} K.~Uhlenbeck,
+\emph{Connections with $L^p$ bounds on curvature},
+Comm. Math. Phys. \textbf{83} (1982), 31--42.
+\bibitem{MR} Y.~Meyer and T.~Riv\`iere,
+\emph{A partial regularity result for a class of stationary Yang--Mills
+fields in high dimension}, Rev. Mat. Iberoamericana \textbf{19} (2003),
+195--219.
+\bibitem{IM} T.~Iwaniec and G.~Martin,
+\emph{Geometric Function Theory and Non-linear Analysis},
+Oxford Mathematical Monographs, Oxford University Press, 2001.
+\end{thebibliography}
+\end{document}

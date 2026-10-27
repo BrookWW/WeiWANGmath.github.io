@@ -350,8 +350,8 @@ The repository contains the stationary library and the reused Sobolev and smooth
 
 ## Project paper and exact data {#original-article}
 
-The project paper, *Small-energy regularity for stationary harmonic maps: A complete proof for compact embedded $C^2$ targets*, presents the mathematical proof, the constant ledger, a self-contained exact-arithmetic evaluator, and the correspondence with the Lean declarations. The files below are copied from the fixed revision used in this post.
+The project paper, *Small-energy regularity for stationary harmonic maps: A complete proof for compact embedded $C^2$ targets*, presents the mathematical proof, the constant ledger, a self-contained exact-arithmetic evaluator, and the correspondence with the Lean declarations. The downloadable edition uses the AMS article layout of the first post. Its mathematical text and evaluator correspond to the fixed revision used here; the exact rational data are copied from that revision.
 
-[Read the project paper (PDF, 26 pages)](../../assets/blog/stationary-harmonic-maps-in-lean/original-article.pdf){.download-link}
+[Read the project paper (PDF, 24 pages)](../../assets/blog/stationary-harmonic-maps-in-lean/original-article.pdf?v=20261027-amsart){.download-link}
 
-[Exact rational constants (JSON)](../../assets/blog/stationary-harmonic-maps-in-lean/effective-constants.json) · [Paper source and complete evaluator (LaTeX)](https://github.com/BrookWW/SmallEnergyRegularityStationaryHarmonicMaps/blob/2de3923439f56b095c9c66efc89985e590a24818/paper/main.tex) · [Proof guide](https://github.com/BrookWW/SmallEnergyRegularityStationaryHarmonicMaps/blob/2de3923439f56b095c9c66efc89985e590a24818/docs/regularity.md)
+[Exact rational constants (JSON)](../../assets/blog/stationary-harmonic-maps-in-lean/effective-constants.json) · [AMS paper source and complete evaluator (LaTeX)](../../assets/blog/stationary-harmonic-maps-in-lean/paper/main.tex) · [Proof guide](https://github.com/BrookWW/SmallEnergyRegularityStationaryHarmonicMaps/blob/2de3923439f56b095c9c66efc89985e590a24818/docs/regularity.md)
