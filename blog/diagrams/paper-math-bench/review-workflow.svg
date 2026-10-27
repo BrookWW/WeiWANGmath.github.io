@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 1220" role="img" aria-labelledby="review-title review-desc">
+  <title id="review-title">From verified reference to auditable trial</title>
+  <desc id="review-desc">Paper Math Bench completes a verified reference solution, freezes the baseline, and sends only the anonymous statement and public answer interface to a fresh reader. Editorial corrections undergo a separate mathematical-meaning comparison. A final reader and validated version hashes precede a fresh independent solver. Raw output is preserved and graded against the matching private reference. Hashes bind bytes; they do not establish mathematical equivalence.</desc>
+  <defs>
+    <pattern id="review-grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#c9dce9" stroke-opacity=".24"/></pattern>
+    <marker id="review-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#407992" stroke-width="1.6" stroke-linejoin="round"/></marker>
+    <style>
+      text { font-family: Inter, Arial, sans-serif; fill: #173b55; }
+      .eyebrow { font-size: 20px; font-weight: 700; letter-spacing: 2px; fill: #3a718d; }
+      .title { font-size: 32px; font-weight: 700; letter-spacing: -.5px; }
+      .label { font-size: 24px; font-weight: 700; }
+      .detail { font-size: 20px; fill: #496a7c; }
+      .node { fill: #ffffff; stroke: #b9d2e0; stroke-width: 1.6; }
+      .edge { fill: none; stroke: #407992; stroke-width: 2.2; marker-end: url(#review-arrow); stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect width="1040" height="1220" rx="24" fill="#f7fbfd"/>
+  <rect x="1" y="1" width="1038" height="1218" rx="23" fill="url(#review-grid)" stroke="#d8e6ee"/>
+  <path d="M56 47H103" stroke="#237b88" stroke-width="4"/>
+  <text x="120" y="54" class="eyebrow">01 / REVIEW &amp; EVALUATION</text>
+  <text x="56" y="105" class="title">From verified reference to auditable trial</text>
+  <foreignObject x="56" y="116" width="820" height="44"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:flex-start;text-align:left;width:100%;height:100%;line-height:1.35;white-space:nowrap;">Research mathematics · independent review · version-bound evidence</div></foreignObject>
+  <g fill="none" stroke="#91b7cc" stroke-opacity=".5"><circle cx="944" cy="87" r="24"/><circle cx="944" cy="87" r="38"/><path d="M893 87H995M944 36V138"/></g>
+
+  <path class="edge" d="M520 284V316"/>
+  <path class="edge" d="M520 412V444"/>
+  <path class="edge" d="M520 540V572"/>
+  <path class="edge" d="M520 684V716"/>
+  <path class="edge" d="M520 812V844"/>
+  <path class="edge" d="M520 940V972"/>
+
+  <rect class="node" x="120" y="188" width="800" height="96" rx="12"/>
+  <rect x="120" y="188" width="6" height="96" rx="3" fill="#559ab2"/>
+  <text x="520" y="226" class="label" text-anchor="middle">Research literature + verified reference solution</text>
+  <text x="520" y="260" class="detail" text-anchor="middle">Complete the mathematics before formal testing</text>
+
+  <rect class="node" x="120" y="316" width="800" height="96" rx="12"/>
+  <text x="520" y="354" class="label" text-anchor="middle">Freeze the baseline</text>
+  <text x="520" y="388" class="detail" text-anchor="middle">Statement · answer interface · reference · rubric</text>
+
+  <rect x="120" y="444" width="800" height="96" rx="12" fill="#eaf4f8" stroke="#aacbdc" stroke-width="1.6"/>
+  <text x="520" y="482" class="label" text-anchor="middle">Fresh independent statement reader</text>
+  <foreignObject x="136" y="486" width="768" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">Sees only the anonymous statement + public answer interface</div></foreignObject>
+
+  <rect x="120" y="572" width="800" height="112" rx="12" fill="#e5f3f2" stroke="#428c91" stroke-width="1.6"/>
+  <path d="M148 572H892" stroke="#237b88" stroke-width="4"/>
+  <text x="520" y="610" class="label" text-anchor="middle">Necessary edits + separate semantic checker</text>
+  <foreignObject x="136" y="616" width="768" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#245f68;font-size:20px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;">Compare baseline and final mathematical tasks<br/>Preserve meaning and answer requirements · add no solution hints</div></foreignObject>
+
+  <rect class="node" x="120" y="716" width="800" height="96" rx="12"/>
+  <text x="520" y="754" class="label" text-anchor="middle">Final reader + version validation</text>
+  <text x="520" y="788" class="detail" text-anchor="middle">Recheck the final statement · validate exact-version hashes</text>
+
+  <rect x="120" y="844" width="800" height="96" rx="12" fill="#eaf4f8" stroke="#aacbdc" stroke-width="1.6"/>
+  <text x="520" y="882" class="label" text-anchor="middle">Fresh independent solver</text>
+  <foreignObject x="136" y="886" width="768" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">Sees only the final anonymous statement + public answer interface</div></foreignObject>
+
+  <rect x="120" y="972" width="800" height="112" rx="14" fill="#e5f3f2" stroke="#428c91" stroke-width="2"/>
+  <path d="M148 972H892" stroke="#237b88" stroke-width="4"/>
+  <text x="520" y="1013" class="label" text-anchor="middle">Preserve raw output + grade the matching version</text>
+  <foreignObject x="136" y="1019" width="768" height="58"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#245f68;font-size:20px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;">Use the private verified reference and rubric<br/>Recheck frozen review evidence · retain the trial report</div></foreignObject>
+
+  <text x="520" y="1130" class="detail" text-anchor="middle">Reader: statement clarity · Checker: mathematical meaning</text>
+  <foreignObject x="56" y="1146" width="928" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;">Hashes bind bytes; mathematical equivalence needs independent judgment.</div></foreignObject>
+</svg>

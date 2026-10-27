@@ -1,5 +1,26 @@
 [
   {
+    "slug": "paper-math-bench",
+    "title": "From papers to problems: Paper Math Bench",
+    "summary": "A Codex skill for concise research-level calculations, independent statement review, and version-bound model evaluation—with a worked weighted-partition example.",
+    "date": "2026-10-28",
+    "author": "Wei Wang",
+    "category": "Research notes",
+    "tags": ["AI4Math", "Problem design", "Codex skills"],
+    "source": "paper-math-bench.md",
+    "source_date": "2026-10-28",
+    "repositories": [
+      {
+        "label": "Project code",
+        "url": "https://github.com/BrookWW/SkillofCreatingCalculationProblems/tree/a0d612260f2fabfe09f102b9bb1b59b74931450d"
+      },
+      {
+        "label": "README and worked example",
+        "url": "https://github.com/BrookWW/SkillofCreatingCalculationProblems/blob/a0d612260f2fabfe09f102b9bb1b59b74931450d/README.md"
+      }
+    ]
+  },
+  {
     "slug": "stationary-harmonic-maps-in-lean",
     "title": "Beyond minimizers: stationary harmonic maps and computable regularity constants",
     "summary": "From Evans's sphere theorem to general targets: the Rivière–Struwe proof in Lean, and exact rational bounds for the small-energy threshold and Hölder estimate.",
