@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 1500" role="img" aria-labelledby="regularity-title regularity-desc">
+  <title id="regularity-title">From stationarity to one regular representative</title>
+  <desc id="regularity-desc">Domain stationarity gives exact monotonicity and all-center critical Morrey control. Compact target geometry and tangent weak harmonicity give the signed normal-projection antisymmetric system. These inputs construct a critical Coulomb frame, compensated Hodge estimates and envelope contraction, yielding a unique target-valued Hölder representative on the entire half ball. A smooth target permits a Poisson bootstrap of this same representative to smoothness.</desc>
+  <defs>
+    <pattern id="regularity-grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#c9dce9" stroke-opacity=".24"/></pattern>
+    <marker id="regularity-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#407992" stroke-width="1.6" stroke-linejoin="round"/></marker>
+    <style>
+      text { font-family: Inter, Arial, sans-serif; fill: #173b55; }
+      .eyebrow { font-size: 20px; font-weight: 700; letter-spacing: 2px; fill: #3a718d; }
+      .title { font-size: 32px; font-weight: 700; letter-spacing: -.5px; }
+      .label { font-size: 24px; font-weight: 700; }
+      .detail { font-size: 20px; fill: #496a7c; }
+      .node { fill: #ffffff; stroke: #b9d2e0; stroke-width: 1.6; }
+      .edge { fill: none; stroke: #407992; stroke-width: 2.2; marker-end: url(#regularity-arrow); stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect width="1040" height="1500" rx="24" fill="#f7fbfd"/>
+  <rect x="1" y="1" width="1038" height="1498" rx="23" fill="url(#regularity-grid)" stroke="#d8e6ee"/>
+  <path d="M56 47H103" stroke="#237b88" stroke-width="4"/>
+  <text x="120" y="54" class="eyebrow">01 / REGULARITY</text>
+  <text x="56" y="105" class="title">From stationarity to regularity</text>
+  <foreignObject x="56" y="116" width="820" height="44"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:flex-start;text-align:left;width:100%;height:100%;line-height:1.35;white-space:nowrap;">$n\geq2$ · compact embedded target · small normalized energy</div></foreignObject>
+  <g fill="none" stroke="#91b7cc" stroke-opacity=".5"><circle cx="944" cy="87" r="24"/><circle cx="944" cy="87" r="38"/><path d="M893 87H995M944 36V138"/></g>
+
+  <path class="edge" d="M271 284V320"/>
+  <path class="edge" d="M769 284V320"/>
+  <path class="edge" d="M271 416V452"/>
+  <path class="edge" d="M769 416V452"/>
+  <path class="edge" d="M271 548V574Q271 586 283 586H452V610"/>
+  <path class="edge" d="M769 548V574Q769 586 757 586H588V610"/>
+  <path class="edge" d="M520 706V742"/>
+  <path class="edge" d="M520 838V874"/>
+  <path class="edge" d="M520 970V1006"/>
+  <path class="edge" d="M520 1118V1190"/>
+  <path class="edge" d="M236 1238H280"/>
+  <path class="edge" d="M520 1286V1356"/>
+
+  <rect class="node" x="56" y="188" width="430" height="96" rx="12"/>
+  <rect x="56" y="188" width="6" height="96" rx="3" fill="#559ab2"/>
+  <text x="271" y="226" class="label" text-anchor="middle">Domain stationarity</text>
+  <text x="271" y="260" class="detail" text-anchor="middle">Stress identity · radial tests</text>
+  <rect class="node" x="554" y="188" width="430" height="96" rx="12"/>
+  <rect x="554" y="188" width="6" height="96" rx="3" fill="#559ab2"/>
+  <foreignObject x="554" y="197" width="430" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#173b55;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">Compact $C^2$ target</div></foreignObject>
+  <text x="769" y="260" class="detail" text-anchor="middle">Tangent weak harmonicity</text>
+
+  <rect class="node" x="56" y="320" width="430" height="96" rx="12"/>
+  <text x="271" y="358" class="label" text-anchor="middle">Exact monotonicity</text>
+  <foreignObject x="56" y="362" width="430" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">$\Theta_u(a,r)\geq\Theta_u(a,s)\quad(s\leq r)$</div></foreignObject>
+  <rect class="node" x="554" y="320" width="430" height="96" rx="12"/>
+  <text x="769" y="358" class="label" text-anchor="middle">Normal-projection commutator</text>
+  <foreignObject x="554" y="362" width="430" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:22px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">$A_i=[G(u),\partial_i(G\circ u)]$</div></foreignObject>
+
+  <rect class="node" x="56" y="452" width="430" height="96" rx="12"/>
+  <text x="271" y="490" class="label" text-anchor="middle">Critical Morrey control</text>
+  <foreignObject x="56" y="494" width="430" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:20px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">Centers in $B_{3R/4}(a)$ · every radius</div></foreignObject>
+  <rect class="node" x="554" y="452" width="430" height="96" rx="12"/>
+  <text x="769" y="490" class="label" text-anchor="middle">Signed antisymmetric system</text>
+  <foreignObject x="554" y="494" width="430" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:22px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">$-\Delta u=\sum_i A_iD_i u$</div></foreignObject>
+
+  <rect class="node" x="280" y="610" width="480" height="96" rx="12"/>
+  <text x="520" y="648" class="label" text-anchor="middle">Critical Coulomb frame</text>
+  <foreignObject x="280" y="652" width="480" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:22px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">$P\in\mathrm{SO}(q)$ · natural boundary identity</div></foreignObject>
+  <rect class="node" x="280" y="742" width="480" height="96" rx="12"/>
+  <text x="520" y="780" class="label" text-anchor="middle">Compensated Hodge estimates</text>
+  <text x="520" y="814" class="detail" text-anchor="middle">One cutoff · one decomposition</text>
+  <rect class="node" x="280" y="874" width="480" height="96" rx="12"/>
+  <text x="520" y="912" class="label" text-anchor="middle">Envelope contraction</text>
+  <foreignObject x="280" y="916" width="480" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#496a7c;font-size:22px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">$\int_{B_r(x)}|Dv|^p\leq C\eta^p r^{n-p/2}$</div></foreignObject>
+
+  <rect x="220" y="1006" width="600" height="112" rx="14" fill="#e5f3f2" stroke="#428c91" stroke-width="2"/>
+  <path d="M248 1006H792" stroke="#237b88" stroke-width="4"/>
+  <text x="520" y="1047" class="label" text-anchor="middle">Unique target-valued representative</text>
+  <foreignObject x="220" y="1055" width="600" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#245f68;font-size:24px;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">$w\in C^{0,1/2}(B_{R/2}(a),N)$</div></foreignObject>
+
+  <rect x="42" y="1190" width="194" height="96" rx="12" fill="#eaf4f8" stroke="#aacbdc" stroke-width="1.6"/>
+  <text x="139" y="1232" class="detail" text-anchor="middle" font-weight="700">Smooth</text>
+  <text x="139" y="1260" class="detail" text-anchor="middle" font-weight="700">target</text>
+  <rect class="node" x="280" y="1190" width="480" height="96" rx="12"/>
+  <text x="520" y="1228" class="label" text-anchor="middle">Same-map Poisson bootstrap</text>
+  <text x="520" y="1262" class="detail" text-anchor="middle">Preserve the original weak gradient</text>
+
+  <rect x="252" y="1356" width="536" height="96" rx="14" fill="#e5f3f2" stroke="#428c91" stroke-width="2"/>
+  <path d="M280 1356H760" stroke="#237b88" stroke-width="4"/>
+  <foreignObject x="252" y="1365" width="536" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Arial,sans-serif;color:#155961;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;line-height:1.35;white-space:nowrap;">The same $w$ is smooth</div></foreignObject>
+  <text x="520" y="1428" class="detail" text-anchor="middle">On the entire open half ball</text>
+  <text x="984" y="1480" class="detail" text-anchor="end">Mathematical dependencies, not an import graph</text>
+</svg>

@@ -1,5 +1,27 @@
 [
   {
+    "slug": "stationary-harmonic-maps-in-lean",
+    "title": "Beyond minimizers: stationary harmonic maps and computable regularity constants",
+    "summary": "From Evans's sphere theorem to general targets: the Rivière–Struwe proof in Lean, and exact rational bounds for the small-energy threshold and Hölder estimate.",
+    "date": "2026-10-27",
+    "author": "Wei Wang",
+    "category": "Research notes",
+    "tags": ["AI4Math", "Lean", "Geometric analysis"],
+    "source": "stationary-harmonic-maps-in-lean.md",
+    "source_date": "2026-10-27",
+    "source_pdf": "assets/blog/stationary-harmonic-maps-in-lean/original-article.pdf",
+    "repositories": [
+      {
+        "label": "Stationary regularity code",
+        "url": "https://github.com/BrookWW/SmallEnergyRegularityStationaryHarmonicMaps/tree/2de3923439f56b095c9c66efc89985e590a24818"
+      },
+      {
+        "label": "Constant definitions",
+        "url": "https://github.com/BrookWW/SmallEnergyRegularityStationaryHarmonicMaps/blob/2de3923439f56b095c9c66efc89985e590a24818/StationaryHarmonicMaps/Analysis/EffectiveStationaryConstants.lean"
+      }
+    ]
+  },
+  {
     "slug": "harmonic-maps-in-lean",
     "title": "From small energy to singular sets: formalizing harmonic maps in Lean",
     "summary": "How a classical regularity proof becomes a reusable formal interface—and how that interface supports compactness, tangent maps, and singular-set stratification.",
