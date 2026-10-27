@@ -17,10 +17,8 @@ Given a certified extension of the normal projection and a rational derivative b
 Let $N\subset\mathbb R^q$ be a nonempty compact embedded submanifold without boundary, and let $\Omega\subset\mathbb R^n$ be open. We keep the energy convention of the minimizing project:
 
 $$
-\begin{gathered}
-E(u;B)=\int_B|Du|_{\mathrm{HS}}^2\,dx,\\
+E(u;B)=\int_B|Du|_{\mathrm{HS}}^2\,dx,\qquad
 \Theta_u(a,r)=r^{2-n}E(u;B_r(a)).
-\end{gathered}
 $$
 
 There is no factor of one half. The displayed weak gradient $Du$ is the same object in Sobolev membership, the variational identities, and the energy.
@@ -28,11 +26,9 @@ There is no factor of one half. The displayed weak gradient $Du$ is the same obj
 Weak harmonicity is the vanishing of the first variation under compactly supported tangent variations of the map. Domain stationarity is a further identity: for every $X\in C_c^\infty(\Omega,\mathbb R^n)$,
 
 $$
-\begin{gathered}
-\int_\Omega|Du|^2\operatorname{div}X\,dx\\
+\int_\Omega|Du|^2\operatorname{div}X\,dx
 =2\int_\Omega\sum_{i,j=1}^n
 \langle D_i u,D_j u\rangle\,\partial_iX_j\,dx.
-\end{gathered}
 $$
 
 In this post, a stationary harmonic map satisfies both conditions. An energy minimizer supplies them, but neither first-variation identity supplies the inequality against arbitrary competitors that a minimizing proof uses. At weak regularity, domain stationarity must also be stated explicitly; it is not silently inferred from weak harmonicity.
@@ -63,10 +59,8 @@ Their method combines a skew-symmetric coefficient, a Coulomb gauge, and critica
 Fix $n\geq2$ and a compact embedded $C^2$ target $N\subset\mathbb R^q$, with its induced Euclidean metric. Suppose
 
 $$
-\begin{gathered}
-u\in W^{1,2}_{\mathrm{loc}}(\Omega,\mathbb R^q),\\
+u\in W^{1,2}_{\mathrm{loc}}(\Omega,\mathbb R^q),\qquad
 u(x)\in N\quad\text{for almost every }x,
-\end{gathered}
 $$
 
 and suppose $u$ is weakly harmonic under tangent map variations and domain stationary. The [formal theorem](https://github.com/BrookWW/SmallEnergyRegularityStationaryHarmonicMaps/blob/2de3923439f56b095c9c66efc89985e590a24818/StationaryHarmonicMaps/Frozen/SmallEnergyRegularity.lean) supplies $\varepsilon_*>0$ and $C\geq0$, depending only on $n,N$, with the following conclusion.
@@ -82,11 +76,9 @@ $$
 then there is a unique continuous representative $w$ on $B_{R/2}(a)$. It agrees with $u$ almost everywhere, takes values in $N$ at every point, and satisfies
 
 $$
-\begin{gathered}
-|w(x)-w(y)|\\
-\leq C R^{-1/2}\sqrt{\Theta_u(a,R)}\,|x-y|^{1/2},\\
+|w(x)-w(y)|\leq C R^{-1/2}\sqrt{\Theta_u(a,R)}\,|x-y|^{1/2},
+\qquad
 x,y\in B_{R/2}(a).
-\end{gathered}
 $$
 
 The exponent is fixed at $\alpha=1/2$. The constants are chosen before the domain, map, weak gradient, center, and radius. The statement includes zero energy and covers the entire inner half ball. Uniqueness is among all continuous ambient-valued representatives agreeing almost everywhere with $u$ there.
@@ -106,11 +98,9 @@ $$
 where
 
 $$
-\begin{gathered}
 A_i=Q(u)\,\partial_i(Q\circ u)
--\partial_i(Q\circ u)\,Q(u),\\
+-\partial_i(Q\circ u)\,Q(u),\qquad
 A_i^T=-A_i.
-\end{gathered}
 $$
 
 This commutator also gives
@@ -124,12 +114,10 @@ The skew symmetry is the structure that the compensation argument exploits. An a
 Independently, domain stationarity gives the exact monotonicity identity:
 
 $$
-\begin{gathered}
-\Theta_u(a,s)-\Theta_u(a,r)\\
+\Theta_u(a,s)-\Theta_u(a,r)
 =2\int_{B_s(a)\setminus B_r(a)}
 |x-a|^{2-n}|\partial_{\mathrm{rad},a}u|^2\,dx
 \geq0.
-\end{gathered}
 $$
 
 Monotonicity at nearby centers converts small energy on the original ball into control on all smaller balls. To state that control precisely, write
@@ -193,11 +181,9 @@ G\in C_c^1\bigl(\mathbb R^q,\mathcal L(\mathbb R^q,\mathbb R^q)\bigr),
 $$
 
 $$
-\begin{gathered}
-G(y)=Q(y)\quad(y\in N),\\
+G(y)=Q(y)\quad(y\in N),\qquad
 \|DG(y)\|_{\mathrm{op}}\leq\ell
 \quad(y\in\mathbb R^q).
-\end{gathered}
 $$
 
 The derivative bound must hold throughout the ambient extension, including its cutoff region. A bound only along $N$ does not supply this certificate.
@@ -220,12 +206,11 @@ The [effective interface](https://github.com/BrookWW/SmallEnergyRegularityStatio
 With these coefficients, the final calculation is
 
 $$
-\begin{aligned}
-M&=(1+4q\ell^2)4^{n-2},\\
-K&=(1+C_g)(1+M),\\
-\varepsilon_*&=\left(\frac{\min\{\kappa,\theta\}}{K}\right)^2,\\
-C&=2C_rK,\qquad \alpha=\frac12.
-\end{aligned}
+\begin{gathered}
+M=(1+4q\ell^2)4^{n-2},\qquad K=(1+C_g)(1+M),\\
+\varepsilon_*=\left(\frac{\min\{\kappa,\theta\}}{K}\right)^2,
+\qquad C=2C_rK,\qquad \alpha=\frac12.
+\end{gathered}
 $$
 
 The energy threshold enforces both smallness conditions. The coefficient $K$ absorbs the geometric and frame estimates; the final factor $2$ accounts for transporting the intermediate representative estimate to the required half ball.
@@ -241,11 +226,9 @@ $$
 with $\chi=1$ on $B_{2/3}$ and $\chi=0$ outside $B_{3/4}$ at unit scale. For the decay iteration, the ledger chooses rational scales. If $D_0$ denotes its one-step coefficient and $H=512D_0$, then
 
 $$
-\begin{gathered}
-\vartheta=(2+8H)^{-2},\\
-\theta=\frac{\vartheta^n}{4(1+H)},\\
+\vartheta=(2+8H)^{-2},\qquad
+\theta=\frac{\vartheta^n}{4(1+H)},\qquad
 \sigma=\frac{\vartheta}{16}.
-\end{gathered}
 $$
 
 Here $\vartheta$ is a spatial contraction scale; $\theta$ is a smallness threshold. Their distinct roles are preserved in the calculation.
@@ -253,10 +236,8 @@ Here $\vartheta$ is a spatial contraction scale; $\theta$ is a smallness thresho
 Nonrational intermediate expressions are replaced by proved rational majorants. For $x\geq0$, for example,
 
 $$
-\begin{gathered}
-x^{1/p}\leq1+x\quad(p\geq1),\\
+x^{1/p}\leq1+x\quad(p\geq1),\qquad
 x^p\leq(1+x)^2\quad(1\leq p\leq2).
-\end{gathered}
 $$
 
 The resulting public functions, [<code>effectiveStationaryEnergyThreshold</code> and <code>effectiveStationaryHolderConstant</code>](https://github.com/BrookWW/SmallEnergyRegularityStationaryHarmonicMaps/blob/2de3923439f56b095c9c66efc89985e590a24818/StationaryHarmonicMaps/Analysis/EffectiveStationaryConstants.lean), use integer and rational arithmetic. The paper includes a self-contained evaluator for the complete definitions.
@@ -296,19 +277,15 @@ In this example $\theta<\kappa$. The given-frame compensated iteration therefore
 
 $$
 \varepsilon_*\approx2.227969608538\times10^{-6428},
-$$
-
-$$
+\qquad
 C\approx2.951399297746\times10^{5772}.
 $$
 
 Equivalently,
 
 $$
-\begin{gathered}
-\log_{10}\varepsilon_*\approx-6427.652090738,\\
+\log_{10}\varepsilon_*\approx-6427.652090738,\qquad
 \log_{10}C\approx5772.470027970.
-\end{gathered}
 $$
 
 The exact value of $\varepsilon_*$ has numerator $4549907209$ and a denominator with 6,438 decimal digits. The exact value of $C$ has a 5,778-digit numerator and denominator $67453$. The [downloadable rational data](../../assets/blog/stationary-harmonic-maps-in-lean/effective-constants.json) preserve all those digits.
@@ -316,10 +293,8 @@ The exact value of $\varepsilon_*$ has numerator $4549907209$ and a denominator 
 The displayed decimals are rounded evaluations. Integer cross multiplication verifies the coarser bounds
 
 $$
-\begin{gathered}
-10^{-6428}\leq\varepsilon_*<10^{-6427},\\
+10^{-6428}\leq\varepsilon_*<10^{-6427},\qquad
 10^{5772}\leq C<10^{5773}.
-\end{gathered}
 $$
 
 The repository's [numerical checker](https://github.com/BrookWW/SmallEnergyRegularityStationaryHarmonicMaps/blob/2de3923439f56b095c9c66efc89985e590a24818/scripts/check_effective_constants.py) was rerun for this post. It evaluated the public Lean functions and matched every numerator and denominator against the committed data.

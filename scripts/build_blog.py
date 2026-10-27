@@ -27,7 +27,7 @@ except ImportError as error:
 ROOT = Path(__file__).resolve().parents[1]
 BLOG = ROOT / "blog"
 BASE_URL = "https://brookww.github.io/WeiWANGmath.github.io/"
-ASSET_VERSION = "20261023-math2"
+ASSET_VERSION = "20261028-nav"
 
 
 class TextContent(HTMLParser):
@@ -221,19 +221,22 @@ def header(root: str, blog_home: str) -> str:
     links = [("Home", "#home"), ("CV", "#cv"), ("Research", "#research"),
              ("Blog", None), ("Teaching", "#teaching"), ("Talks", "#talks"), ("Notes", "#notes")]
     nav = "\n".join(
-        f'<a href="{blog_home if target is None else root + target}"'
-        + (' class="active" aria-current="page"' if target is None else "")
+        f'<a class="nav-link{" active" if target is None else ""}" href="{blog_home if target is None else root + target}"'
+        + (' aria-current="page"' if target is None else "")
         + f'>{label}</a>' for label, target in links
     )
     return f'''<a class="skip-link" href="#main-content">Skip to content</a>
 <div id="reading-progress" aria-hidden="true"></div>
 <header class="blog-header">
   <div class="blog-shell header-inner">
-    <a class="brand" href="{root}#home" aria-label="Wei Wang, academic homepage"><span class="brand-mark" aria-hidden="true">W</span><span>Wei Wang</span></a>
-    <nav class="blog-nav" id="blog-nav" aria-label="Main navigation">{nav}</nav>
+    <a class="brand" href="{root}#home" aria-label="Wei Wang, academic homepage">Wei Wang</a>
     <div class="header-actions">
-      <button id="blog-theme-toggle" class="icon-button" type="button" aria-label="Switch color theme"><span data-theme-icon aria-hidden="true">☾</span></button>
-      <button id="blog-menu-toggle" class="icon-button" type="button" aria-label="Open navigation" aria-controls="blog-nav" aria-expanded="false"><span aria-hidden="true">☰</span></button>
+      <nav class="blog-nav" id="blog-nav" aria-label="Main navigation">{nav}</nav>
+      <button id="blog-theme-toggle" class="icon-button" type="button" aria-label="Switch to day mode">
+        <svg class="nav-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>
+        <svg class="nav-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1a9 9 0 1 0 10 10Z"></path></svg>
+      </button>
+      <button id="blog-menu-toggle" class="icon-button" type="button" aria-label="Open navigation" aria-controls="blog-nav" aria-expanded="false"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg></button>
     </div>
   </div>
 </header>'''
@@ -245,12 +248,12 @@ def page(title: str, description: str, canonical: str, root: str, blog_home: str
     if structured:
         structured_script = '<script type="application/ld+json">' + json.dumps(structured, ensure_ascii=False).replace("<", "\\u003c") + "</script>"
     return f'''<!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="{text(description)}">
-  <meta name="theme-color" content="#f5f9fc">
+  <meta name="theme-color" content="#020912">
   <title>{text(title)} | Wei Wang</title>
   <link rel="canonical" href="{canonical}">
   <meta property="og:type" content="{'article' if kind == 'blog-article' else 'website'}">
@@ -261,7 +264,7 @@ def page(title: str, description: str, canonical: str, root: str, blog_home: str
   <meta name="twitter:card" content="summary">
   <link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml">
   <link rel="alternate" type="application/rss+xml" title="Wei Wang — Blog" href="{blog_home}feed.xml">
-  <script>(()=>{{let theme='light';try{{theme=localStorage.getItem('theme')==='dark'?'dark':'light';}}catch(error){{}}document.documentElement.dataset.theme=theme;document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#06121e':'#f5f9fc';}})();</script>
+  <script>(()=>{{let theme='dark';try{{theme=localStorage.getItem('theme')==='light'?'light':'dark';}}catch(error){{}}document.documentElement.dataset.theme=theme;document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#020912':'#eaf6fa';}})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&amp;display=swap" rel="stylesheet">

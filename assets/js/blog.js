@@ -6,7 +6,7 @@
     const themeButton = document.getElementById('blog-theme-toggle');
     const menuButton = document.getElementById('blog-menu-toggle');
     const navigation = document.getElementById('blog-nav');
-    const mobileQuery = window.matchMedia('(max-width: 900px)');
+    const mobileQuery = window.matchMedia('(max-width: 1179px)');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     body.classList.add('blog-js');
@@ -18,11 +18,9 @@
             const label = dark ? 'Switch to day mode' : 'Switch to night mode';
             themeButton.setAttribute('aria-label', label);
             themeButton.title = label;
-            const icon = themeButton.querySelector('[data-theme-icon]');
-            if (icon) icon.textContent = dark ? '☀' : '☾';
         }
         const themeColor = document.querySelector('meta[name="theme-color"]');
-        if (themeColor) themeColor.content = dark ? '#06121e' : '#f5f9fc';
+        if (themeColor) themeColor.content = dark ? '#020912' : '#eaf6fa';
         if (persist) {
             try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (_) {}
         }

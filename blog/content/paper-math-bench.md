@@ -62,12 +62,11 @@ The final anonymous statement is checked again, and its version-bound review rec
 The README's public example gives a concrete sense of the intended mathematics. For $x\geq0$, define
 
 $$
-\begin{gathered}
-w_0(x)=w_1(x)=1,\\
+w_0(x)=w_1(x)=1,
+\qquad
 w_j(x)=\exp\!\left(
 \frac92\frac{(j-2)x}{j+x}\right),
 \qquad j\geq2.
-\end{gathered}
 $$
 
 For each positive integer $n$, sum over all nonnegative integer vectors $m=(m_1,\ldots,m_n)$ satisfying
@@ -81,14 +80,12 @@ $$
 Writing the summand separately makes the partition sum easier to read:
 
 $$
-\begin{gathered}
 B_m(x)=
 \frac{(k!)^2w_k(x)}
-{\prod_{j=1}^n m_j!}\\
-{}\times
+{\prod_{j=1}^n m_j!}
+\times
 \prod_{j=2}^n
 \left(\frac{j!\,w_j(x)}{200}\right)^{m_j},
-\end{gathered}
 $$
 
 $$
@@ -116,9 +113,7 @@ The README gives
 $$
 \lambda=\frac{e^{3/2}}4,
 \qquad \alpha=9,
-$$
-
-$$
+\qquad
 K=
 \frac{\sqrt3\,\pi^3}{2^{18}200^3}
 \exp\!\left(-15+\frac{e^{-2}}{100}\right).
@@ -146,11 +141,10 @@ Finding this candidate is only part of the calculation. The reference uses unifo
 Near the optimum, the Hessian in three free mass coordinates is
 
 $$
-\begin{gathered}
 H=-\frac43
-\left(I_3+\mathbf1\mathbf1^T\right),\\
+\left(I_3+\mathbf1\mathbf1^T\right),
+\qquad
 \det(-H)=\frac{256}{27}.
-\end{gathered}
 $$
 
 The three-dimensional Gaussian lattice sum contributes a factor of order $n^{3/2}$. Together with a Stirling factor of order $n^{3/2}$ and a factorial-shift contribution of order $n^6$, this produces the power $n^9$. On the scale $x=n/2+z\sqrt n$, the reference obtains a Gaussian profile proportional to $e^{-4z^2/3}$.
@@ -158,11 +152,9 @@ The three-dimensional Gaussian lattice sum contributes a factor of order $n^{3/2
 Small blocks still affect the leading coefficient. If $d$ is the number of blocks of size two, their contributions sum to
 
 $$
-\begin{gathered}
 \sum_{d=0}^{\infty}
-\frac{\left((2/200)e^{-2}\right)^d}{d!}\\
+\frac{\left((2/200)e^{-2}\right)^d}{d!}
 =\exp\!\left(\frac{e^{-2}}{100}\right).
-\end{gathered}
 $$
 
 This is the small exponential correction in $K$. Keeping the main saddle while dropping these terms would lose part of the answer.
