@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/vendor/katex/katex.min.css">
-  <link rel="stylesheet" href="../../assets/css/blog.css?v=20261028-nav">
+  <link rel="stylesheet" href="../../assets/css/blog.css?v=20261028-nav-search">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "From papers to problems: Paper Math Bench", "description": "A Codex skill for concise research-level calculations, independent statement review, and version-bound model evaluation—with a worked weighted-partition example.", "author": {"@type": "Person", "name": "Wei Wang", "url": "https://brookww.github.io/WeiWANGmath.github.io/"}, "datePublished": "2026-10-28", "dateModified": "2026-10-28", "inLanguage": "en", "mainEntityOfPage": "https://brookww.github.io/WeiWANGmath.github.io/blog/paper-math-bench/", "keywords": "AI4Math, Problem design, Codex skills"}</script>
 </head>
 <body class="blog-article">
@@ -30,6 +30,15 @@
   <div class="blog-shell header-inner">
     <a class="brand" href="../../#home" aria-label="Wei Wang, academic homepage">Wei Wang</a>
     <div class="header-actions">
+      <div class="blog-search-area js-only" data-search-source="../../index.html">
+        <button id="blog-search-toggle" class="icon-button" type="button" aria-label="Open search" aria-expanded="false" aria-controls="blog-search-shell"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg></button>
+        <div class="blog-search-shell" id="blog-search-shell">
+          <svg class="nav-icon blog-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg>
+          <input type="search" id="blog-site-search" placeholder="Search the site" autocomplete="off" spellcheck="false" aria-label="Search the site" role="combobox" aria-autocomplete="list" aria-controls="blog-search-results" aria-expanded="false">
+          <div class="blog-search-results" id="blog-search-results" role="listbox" aria-label="Search results"></div>
+          <div class="sr-only" id="blog-search-status" role="status" aria-live="polite"></div>
+        </div>
+      </div>
       <nav class="blog-nav" id="blog-nav" aria-label="Main navigation"><a class="nav-link" href="../../#home">Home</a>
 <a class="nav-link" href="../../#cv">CV</a>
 <a class="nav-link" href="../../#research">Research</a>
@@ -344,6 +353,6 @@ under /absolute/path/to/cache. Use the default model and budget.
   <div class="blog-shell"><p>© 2026 Wei Wang <span>Mathematics &amp; formalization</span></p>
   <nav aria-label="Footer"><a href="../../#home">Academic homepage</a><a href="../feed.xml">RSS</a><a href="https://github.com/BrookWW">GitHub</a><a href="mailto:wwmath166@outlook.com">Contact</a></nav></div>
 </footer>
-<script src="../../assets/js/blog.js?v=20261028-nav" defer></script>
+<script src="../../assets/js/blog.js?v=20261028-nav-search" defer></script>
 </body>
 </html>

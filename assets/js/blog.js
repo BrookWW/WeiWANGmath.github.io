@@ -43,6 +43,7 @@
 
     menuButton?.addEventListener('click', () => {
         const open = menuButton.getAttribute('aria-expanded') !== 'true';
+        if (open) closeSiteSearch();
         navigation?.classList.toggle('is-open', open);
         menuButton.setAttribute('aria-expanded', String(open));
         menuButton.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
@@ -59,6 +60,256 @@
     mobileQuery.addEventListener('change', event => {
         if (!event.matches) closeMenu();
     });
+
+    const siteSearchArea = document.querySelector('.blog-search-area[data-search-source]');
+    const siteSearchToggle = document.getElementById('blog-search-toggle');
+    const siteSearchShell = document.getElementById('blog-search-shell');
+    const siteSearchInput = document.getElementById('blog-site-search');
+    const siteSearchResults = document.getElementById('blog-search-results');
+    const siteSearchStatus = document.getElementById('blog-search-status');
+    const compactSearchQuery = window.matchMedia('(max-width: 820px)');
+    const sectionLabels = {
+        'home-page': ['home', 'Home'],
+        'cv-page': ['cv', 'Curriculum Vitae'],
+        'research-page': ['research', 'Research'],
+        'teaching-page': ['teaching', 'Teaching'],
+        'talks-page': ['talks', 'Talks'],
+        'notes-page': ['notes', 'Notes']
+    };
+    let siteSearchDocuments = null;
+    let siteSearchLoading = null;
+    let siteSearchSequence = 0;
+    let siteSearchOptions = [];
+    let activeSiteSearchOption = -1;
+    let siteSearchFailed = false;
+    const searchText = value => String(value || '').normalize('NFKC').toLocaleLowerCase().trim();
+
+    function resetSiteSearchSelection() {
+        activeSiteSearchOption = -1;
+        siteSearchOptions = [];
+        siteSearchInput?.removeAttribute('aria-activedescendant');
+    }
+
+    function hideSiteSearchResults() {
+        siteSearchResults?.classList.remove('is-visible');
+        siteSearchResults?.replaceChildren();
+        siteSearchResults?.setAttribute('aria-busy', 'false');
+        siteSearchInput?.setAttribute('aria-expanded', 'false');
+        if (siteSearchStatus) siteSearchStatus.textContent = '';
+        resetSiteSearchSelection();
+    }
+
+    function closeSiteSearch({ clear = false, restoreFocus = false } = {}) {
+        siteSearchSequence += 1;
+        siteSearchShell?.classList.remove('is-open');
+        siteSearchToggle?.setAttribute('aria-expanded', 'false');
+        siteSearchToggle?.setAttribute('aria-label', 'Open search');
+        hideSiteSearchResults();
+        if (clear && siteSearchInput) siteSearchInput.value = '';
+        if (restoreFocus) {
+            if (compactSearchQuery.matches) siteSearchToggle?.focus();
+            else siteSearchInput?.focus({ preventScroll: true });
+        }
+    }
+
+    function showSiteSearchMessage(message, busy = false) {
+        if (!siteSearchResults || !siteSearchInput) return;
+        resetSiteSearchSelection();
+        const item = document.createElement('div');
+        item.className = 'blog-search-empty';
+        item.setAttribute('role', 'presentation');
+        item.textContent = message;
+        siteSearchResults.replaceChildren(item);
+        siteSearchResults.setAttribute('aria-busy', String(busy));
+        siteSearchResults.classList.add('is-visible');
+        siteSearchInput.setAttribute('aria-expanded', 'true');
+        if (siteSearchStatus) siteSearchStatus.textContent = message;
+    }
+
+    async function loadSiteSearchDocuments() {
+        if (siteSearchDocuments) return siteSearchDocuments;
+        if (siteSearchLoading) return siteSearchLoading;
+        // Read the same section text and embedded blog index used by the homepage.
+        siteSearchLoading = (async () => {
+            const sourceURL = new URL(siteSearchArea.dataset.searchSource, window.location.href);
+            if (sourceURL.origin !== window.location.origin) throw new Error('Invalid search source');
+            const controller = new AbortController();
+            const timeout = window.setTimeout(() => controller.abort(), 12000);
+            try {
+                const response = await fetch(sourceURL, { signal: controller.signal });
+                if (!response.ok) throw new Error('Search source unavailable');
+                const source = new DOMParser().parseFromString(await response.text(), 'text/html');
+                const blogData = source.getElementById('blog-search-data');
+                if (!source.querySelector('main.searchable') || !blogData) throw new Error('Invalid search source');
+                const posts = JSON.parse(blogData.textContent);
+                if (!Array.isArray(posts)) throw new Error('Invalid blog search data');
+                const documents = [];
+                source.querySelectorAll('.searchable h1, .searchable h2, .searchable h3, .searchable h4, .searchable p, .searchable li, .searchable tr').forEach(element => {
+                    const section = sectionLabels[element.closest('main.searchable')?.id];
+                    if (!section) return;
+                    const fullText = element.textContent.replace(/\s+/g, ' ').trim();
+                    if (!fullText) return;
+                    documents.push({
+                        label: section[1],
+                        text: fullText.length > 120 ? fullText.slice(0, 120) + '…' : fullText,
+                        search: searchText(fullText),
+                        url: new URL('./#' + section[0], sourceURL).href
+                    });
+                });
+                const basePath = new URL('.', sourceURL).pathname;
+                posts.forEach(post => {
+                    if (typeof post.title !== 'string' || typeof post.url !== 'string') return;
+                    const url = new URL(post.url, sourceURL);
+                    if (url.origin !== sourceURL.origin || !url.pathname.startsWith(basePath)) return;
+                    const summary = typeof post.summary === 'string' ? post.summary : '';
+                    const tags = Array.isArray(post.tags) ? post.tags.join(' ') : '';
+                    documents.push({
+                        label: 'Blog',
+                        text: post.title + (summary ? ' — ' + summary : ''),
+                        search: searchText([post.title, summary, tags, post.text].join(' ')),
+                        url: url.href
+                    });
+                });
+                siteSearchDocuments = documents;
+                return documents;
+            } finally {
+                window.clearTimeout(timeout);
+            }
+        })();
+        try {
+            return await siteSearchLoading;
+        } finally {
+            // Failed requests can be retried; successful documents remain cached.
+            siteSearchLoading = null;
+        }
+    }
+
+    function renderSiteSearchResults(matches) {
+        if (!matches.length) {
+            showSiteSearchMessage('No matches');
+            return;
+        }
+        hideSiteSearchResults();
+        matches.slice(0, 10).forEach((match, index) => {
+            const option = document.createElement('button');
+            option.type = 'button';
+            option.tabIndex = -1;
+            option.id = 'blog-search-option-' + index;
+            option.className = 'blog-search-result';
+            option.setAttribute('role', 'option');
+            option.setAttribute('aria-selected', 'false');
+            option.addEventListener('click', () => window.location.assign(match.url));
+            const label = document.createElement('span');
+            label.className = 'blog-search-result-label';
+            label.textContent = match.label;
+            const content = document.createElement('span');
+            content.className = 'blog-search-result-text';
+            content.textContent = match.text;
+            option.append(label, content);
+            siteSearchResults.append(option);
+            siteSearchOptions.push(option);
+        });
+        siteSearchResults.classList.add('is-visible');
+        siteSearchInput.setAttribute('aria-expanded', 'true');
+        if (siteSearchStatus) {
+            siteSearchStatus.textContent = matches.length > 10
+                ? 'Showing 10 of ' + matches.length + ' matches'
+                : matches.length + (matches.length === 1 ? ' match' : ' matches');
+        }
+    }
+
+    async function runSiteSearch() {
+        const sequence = ++siteSearchSequence;
+        const query = searchText(siteSearchInput?.value);
+        siteSearchFailed = false;
+        if (!query) {
+            hideSiteSearchResults();
+            return;
+        }
+        if (!siteSearchDocuments) showSiteSearchMessage('Loading search…', true);
+        try {
+            const documents = await loadSiteSearchDocuments();
+            if (sequence !== siteSearchSequence) return;
+            renderSiteSearchResults(documents.filter(entry => entry.search.includes(query)));
+        } catch (_) {
+            if (sequence !== siteSearchSequence) return;
+            siteSearchFailed = true;
+            showSiteSearchMessage('Search unavailable. Press Enter or type again to retry.');
+        }
+    }
+
+    function selectSiteSearchOption(index) {
+        if (!siteSearchOptions.length) return;
+        activeSiteSearchOption = (index + siteSearchOptions.length) % siteSearchOptions.length;
+        siteSearchOptions.forEach((option, current) => {
+            const active = current === activeSiteSearchOption;
+            option.classList.toggle('is-active', active);
+            option.setAttribute('aria-selected', String(active));
+        });
+        const option = siteSearchOptions[activeSiteSearchOption];
+        siteSearchInput.setAttribute('aria-activedescendant', option.id);
+        option.scrollIntoView({ block: 'nearest' });
+    }
+
+    if (siteSearchArea && siteSearchInput && siteSearchResults) {
+        siteSearchToggle?.addEventListener('click', () => {
+            if (siteSearchShell.classList.contains('is-open')) {
+                closeSiteSearch({ restoreFocus: true });
+                return;
+            }
+            closeMenu();
+            siteSearchShell.classList.add('is-open');
+            siteSearchToggle.setAttribute('aria-expanded', 'true');
+            siteSearchToggle.setAttribute('aria-label', 'Close search');
+            if (document.activeElement === siteSearchInput) runSiteSearch();
+            else siteSearchInput.focus();
+        });
+        siteSearchInput.addEventListener('focus', () => {
+            closeMenu();
+            runSiteSearch();
+        });
+        siteSearchInput.addEventListener('input', runSiteSearch);
+        siteSearchInput.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
+                closeSiteSearch({ clear: true, restoreFocus: true });
+            } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                if (!siteSearchOptions.length) return;
+                event.preventDefault();
+                const forward = event.key === 'ArrowDown';
+                const next = activeSiteSearchOption < 0
+                    ? (forward ? 0 : siteSearchOptions.length - 1)
+                    : activeSiteSearchOption + (forward ? 1 : -1);
+                selectSiteSearchOption(next);
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                if (siteSearchFailed) runSiteSearch();
+                else siteSearchOptions[Math.max(0, activeSiteSearchOption)]?.click();
+            }
+        });
+        siteSearchInput.closest('form')?.addEventListener('submit', event => event.preventDefault());
+        siteSearchArea.addEventListener('focusout', event => {
+            if (event.relatedTarget && !siteSearchArea.contains(event.relatedTarget)) closeSiteSearch();
+        });
+        document.addEventListener('click', event => {
+            if (!siteSearchArea.contains(event.target)) closeSiteSearch();
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && (siteSearchShell.classList.contains('is-open') || siteSearchResults.classList.contains('is-visible'))) {
+                event.preventDefault();
+                closeSiteSearch({ clear: true, restoreFocus: true });
+            }
+        });
+        compactSearchQuery.addEventListener('change', event => {
+            if (event.matches) closeSiteSearch({ restoreFocus: siteSearchArea.contains(document.activeElement) });
+            else {
+                siteSearchShell.classList.remove('is-open');
+                siteSearchToggle?.setAttribute('aria-expanded', 'false');
+                siteSearchToggle?.setAttribute('aria-label', 'Open search');
+            }
+        });
+    }
 
     const search = document.getElementById('blog-search');
     const tagButtons = Array.from(document.querySelectorAll('[data-blog-tag]'));

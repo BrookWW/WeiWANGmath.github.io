@@ -11,6 +11,7 @@ from contextlib import contextmanager
 from html.parser import HTMLParser
 from pathlib import Path
 from unittest.mock import patch
+from urllib.parse import urljoin
 
 
 PROJECT = Path(__file__).resolve().parents[1]
@@ -209,6 +210,39 @@ class SiteValidationTests(unittest.TestCase):
         with example_site() as fixture:
             fixture.replace("sitemap.xml", f"<url><loc>{BASE_URL}blog/sample-post/</loc><lastmod>2026-10-23</lastmod></url>", "")
             self.assert_diagnostic(fixture, "sitemap")
+
+
+class BlogNavigationTests(unittest.TestCase):
+    def test_site_search_is_available_at_both_blog_url_depths(self):
+        class Controls(HTMLParser):
+            def __init__(self, markup):
+                super().__init__()
+                self.elements = []
+                self.feed(markup)
+
+            def handle_starttag(self, tag, attrs):
+                self.elements.append((tag, dict(attrs)))
+
+        for page_url, root, blog_home in (
+            (BASE_URL + "blog/", "../", "./"),
+            (BASE_URL + "blog/example-post/", "../../", "../"),
+        ):
+            with self.subTest(page=page_url):
+                controls = Controls(build_blog.header(root, blog_home)).elements
+                by_id = {attrs["id"]: attrs for _, attrs in controls if attrs.get("id")}
+                search_inputs = [attrs for tag, attrs in controls
+                                 if tag == "input" and attrs.get("type") == "search"]
+                self.assertEqual(len(search_inputs), 1)
+                search = search_inputs[0]
+                self.assertEqual(search.get("aria-label"), "Search the site")
+                self.assertEqual(search.get("role"), "combobox")
+                self.assertEqual(by_id[search["aria-controls"]].get("role"), "listbox")
+                toggle = next(attrs for tag, attrs in controls
+                              if tag == "button" and attrs.get("aria-label") == "Open search")
+                self.assertIn(toggle["aria-controls"], by_id)
+                source = next(attrs["data-search-source"] for _, attrs in controls
+                              if "data-search-source" in attrs)
+                self.assertEqual(urljoin(page_url, source), BASE_URL + "index.html")
 
 
 class MathMarkup(HTMLParser):

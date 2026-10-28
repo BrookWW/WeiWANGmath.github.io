@@ -110,6 +110,8 @@ body:not(.blog-js) #blog-menu-toggle { display: none; }
     --nav-hover-background: rgba(38, 108, 142, 0.08);
     --nav-menu-background: rgba(246, 251, 252, 0.98);
     --nav-menu-border: #c9e0e7;
+    --nav-search-background: rgba(250, 253, 254, 0.97);
+    --nav-search-border: rgba(55, 111, 136, 0.28);
     position: sticky;
     z-index: 100;
     top: 0;
@@ -137,6 +139,8 @@ html[data-theme="dark"] .blog-header {
     --nav-hover-background: rgba(94, 150, 168, 0.09);
     --nav-menu-background: rgba(3, 11, 18, 0.97);
     --nav-menu-border: rgba(105, 151, 170, 0.2);
+    --nav-search-background: rgba(4, 21, 32, 0.98);
+    --nav-search-border: rgba(95, 148, 168, 0.34);
 }
 .blog-header .header-inner {
     width: min(calc(100% - 3rem), 1180px);
@@ -248,6 +252,81 @@ html[data-theme="dark"] .blog-header {
 .theme-icon-sun, html[data-theme="dark"] .theme-icon-moon { display: none; }
 html[data-theme="dark"] .theme-icon-sun { display: block; }
 #blog-menu-toggle { display: none; }
+
+.blog-search-area, .blog-search-shell { position: relative; }
+.blog-search-area { flex: 0 0 auto; }
+.blog-search-shell { width: 220px; }
+#blog-search-toggle { display: none; }
+.blog-search-shell input {
+    width: 100%;
+    height: 2.45rem;
+    padding: 0.45rem 0.9rem 0.45rem 2.25rem;
+    border: 1px solid var(--nav-search-border);
+    border-radius: 2px;
+    background: var(--nav-search-background);
+    color: var(--nav-ink);
+    font-size: 0.85rem;
+    line-height: 1.45;
+    outline: none;
+}
+.blog-search-shell input:focus {
+    border-color: var(--nav-accent);
+    box-shadow: 0 0 0 2px var(--nav-hover-background);
+}
+.blog-search-shell input::placeholder { color: var(--nav-muted); }
+.blog-search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0.85rem;
+    width: 0.85rem;
+    height: 0.85rem;
+    color: var(--nav-muted);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+.blog-search-results {
+    position: absolute;
+    z-index: 120;
+    top: calc(100% + 0.55rem);
+    right: 0;
+    display: none;
+    width: min(390px, calc(100vw - 2rem));
+    max-height: min(430px, calc(100svh - 170px));
+    overflow-y: auto;
+    border: 1px solid var(--nav-search-border);
+    border-radius: 2px;
+    background: var(--nav-search-background);
+    box-shadow: var(--nav-shadow);
+    overscroll-behavior: contain;
+}
+.blog-search-results.is-visible { display: block; }
+.blog-search-result, .blog-search-empty {
+    display: block;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 0;
+    border-bottom: 1px solid var(--nav-menu-border);
+    background: transparent;
+    color: var(--nav-ink);
+    text-align: left;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+.blog-search-result:last-child, .blog-search-empty:last-child { border-bottom: 0; }
+.blog-search-result:hover, .blog-search-result.is-active {
+    background: var(--nav-hover-background);
+    color: var(--nav-ink);
+}
+.blog-search-result-label, .blog-search-result-text { display: block; }
+.blog-search-result-label {
+    margin-bottom: 0.15rem;
+    color: var(--nav-accent);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.blog-search-result-text, .blog-search-empty { font-size: 0.8rem; line-height: 1.45; }
 
 /* Single-column blog index */
 .blog-hero {
@@ -926,8 +1005,32 @@ math { color: inherit; }
     .article-body { font-size: 1.02rem; }
 }
 
+@media (max-width: 820px) {
+    #blog-search-toggle { display: inline-grid; }
+    .blog-search-area { position: static; }
+    .blog-search-shell {
+        position: absolute;
+        z-index: 120;
+        top: calc(100% + 0.5rem);
+        right: 1rem;
+        display: none;
+        width: min(360px, calc(100% - 2rem));
+        padding: 0.7rem;
+        border: 1px solid var(--nav-search-border);
+        border-radius: 2px;
+        background: var(--nav-search-background);
+        box-shadow: var(--nav-shadow);
+    }
+    .blog-search-shell.is-open { display: block; }
+    .blog-search-shell input { height: 2.65rem; }
+    .blog-search-icon { left: 1.55rem; }
+    .blog-search-results { top: calc(100% + 0.45rem); width: 100%; }
+}
+
 @media (max-width: 600px) {
     .blog-shell { width: calc(100% - 2rem); }
+    .blog-header .header-inner { gap: 0.5rem; }
+    .header-actions { gap: 0.1rem; }
     .blog-eyebrow, .article-kicker { font-size: 0.62rem; letter-spacing: 0.12em; }
     .blog-hero { padding-top: 3rem; }
     .blog-intro { font-size: 1rem; }

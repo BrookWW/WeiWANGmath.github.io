@@ -22,7 +22,7 @@ This repository contains Wei Wang's academic homepage and blog. The website entr
 - `assets/css/ocean.css`: the main site's blue-white daytime and blue-black nighttime ocean theme.
 - `assets/css/blog.css`: independent, responsive blog and reading-page styles.
 - `assets/js/site.js`: page switching, search, navigation, and dark mode.
-- `assets/js/blog.js`: blog theme, mobile navigation, search and tag filtering, reading progress, code copying, and diagram enlargement.
+- `assets/js/blog.js`: blog theme, mobile navigation, full-site navigation search, article search and tag filtering, reading progress, code copying, and diagram enlargement.
 - `assets/cv/`: the current full academic CV in PDF format.
 - `assets/teaching/`: local teaching notes, slides, answers, and solutions grouped by course.
 - `assets/notes/`: local notes and expository paper PDFs grouped by topic.
@@ -82,7 +82,7 @@ The workflow reuses the existing build and validation scripts to check rendered 
 
 This workflow has read-only repository permissions and does not deploy or change submitted files. GitHub Pages deployment is a separate process: a successful deployment does not imply that content validation passed. Content checks detect structural and rendering errors; they do not establish the truth of mathematical claims or check the current availability of external websites.
 
-Change `assets/css/site.css`, `assets/css/ocean.css`, or `assets/js/site.js` for main-site layout and behavior; change `assets/css/blog.css` or `assets/js/blog.js` for blog presentation and interactions. The main site and blog share the saved light/dark theme. Blog content and links remain available without JavaScript.
+Change `assets/css/site.css`, `assets/css/ocean.css`, or `assets/js/site.js` for main-site layout and behavior; change `assets/css/blog.css` or `assets/js/blog.js` for blog presentation and interactions. The main site and blog share the saved light/dark theme. Blog navigation search reads the compiled homepage and its embedded blog index, covering both homepage sections and published articles. The blog listing also has its own article search and tag filters. Blog content and links remain available without JavaScript.
 
 The canonical public URL is:
 
@@ -112,7 +112,7 @@ https://brookww.github.io/WeiWANGmath.github.io/
 - `assets/css/ocean.css`：主站蓝白日间、蓝黑夜间的海洋主题。
 - `assets/css/blog.css`：独立的博客列表、文章阅读页及响应式样式。
 - `assets/js/site.js`：页面切换、搜索、导航和深色模式。
-- `assets/js/blog.js`：博客主题、移动端导航、搜索与标签筛选、阅读进度、代码复制和图示放大。
+- `assets/js/blog.js`：博客主题、移动端导航、导航栏全站搜索、文章搜索与标签筛选、阅读进度、代码复制和图示放大。
 - `assets/cv/`：当前完整版学术 CV PDF。
 - `assets/teaching/`：按课程分组保存本地讲义、课件、答案和习题解答。
 - `assets/notes/`：按主题分组保存本地 notes 和综述 PDF。
@@ -172,7 +172,7 @@ python3 scripts/check_generated.py
 
 该工作流只有仓库读取权限，不执行部署，也不修改提交。GitHub Pages 部署是独立流程；部署成功不能替代内容校验通过。内容检查能够发现结构与渲染错误，不验证数学结论的正确性，也不检查外部网站当前是否可用。
 
-主站布局与交互由 `assets/css/site.css`、`assets/css/ocean.css` 和 `assets/js/site.js` 维护；博客样式与交互由 `assets/css/blog.css` 和 `assets/js/blog.js` 维护。主站与博客共用已保存的明暗主题设置。即使禁用 JavaScript，博客正文及链接仍然可用。
+主站布局与交互由 `assets/css/site.css`、`assets/css/ocean.css` 和 `assets/js/site.js` 维护；博客样式与交互由 `assets/css/blog.css` 和 `assets/js/blog.js` 维护。主站与博客共用已保存的明暗主题设置。博客导航搜索读取编译后的主页及其嵌入的博客索引，涵盖主页栏目与已发布文章；博客列表另有文章搜索和标签筛选。即使禁用 JavaScript，博客正文及链接仍然可用。
 
 当前规范公开地址是：
 

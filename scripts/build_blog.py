@@ -27,7 +27,7 @@ except ImportError as error:
 ROOT = Path(__file__).resolve().parents[1]
 BLOG = ROOT / "blog"
 BASE_URL = "https://brookww.github.io/WeiWANGmath.github.io/"
-ASSET_VERSION = "20261028-nav"
+ASSET_VERSION = "20261028-nav-search"
 
 
 class TextContent(HTMLParser):
@@ -231,6 +231,15 @@ def header(root: str, blog_home: str) -> str:
   <div class="blog-shell header-inner">
     <a class="brand" href="{root}#home" aria-label="Wei Wang, academic homepage">Wei Wang</a>
     <div class="header-actions">
+      <div class="blog-search-area js-only" data-search-source="{root}index.html">
+        <button id="blog-search-toggle" class="icon-button" type="button" aria-label="Open search" aria-expanded="false" aria-controls="blog-search-shell"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg></button>
+        <div class="blog-search-shell" id="blog-search-shell">
+          <svg class="nav-icon blog-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg>
+          <input type="search" id="blog-site-search" placeholder="Search the site" autocomplete="off" spellcheck="false" aria-label="Search the site" role="combobox" aria-autocomplete="list" aria-controls="blog-search-results" aria-expanded="false">
+          <div class="blog-search-results" id="blog-search-results" role="listbox" aria-label="Search results"></div>
+          <div class="sr-only" id="blog-search-status" role="status" aria-live="polite"></div>
+        </div>
+      </div>
       <nav class="blog-nav" id="blog-nav" aria-label="Main navigation">{nav}</nav>
       <button id="blog-theme-toggle" class="icon-button" type="button" aria-label="Switch to day mode">
         <svg class="nav-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>
